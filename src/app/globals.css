@@ -1015,7 +1015,7 @@ textarea:focus-visible {
   z-index: 100;
   padding: 10px 16px;
 }
-.skip-link:focus {
+.skip-link:focus-visible {
   top: 10px;
 }
 [data-sonner-toast][data-type="success"] {
