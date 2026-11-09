@@ -7,3 +7,9 @@ Firestore emulator isolation/settings/version tests PASS. Local and subpath brow
 Release status and HTTPS smoke will be appended after GitHub Actions completes. Live Google authentication/write requires a real account interaction; Console configuration alone is not end-to-end cloud verification.
 
 No independent reviewer: spawn failed due unavailable inherited model. Self-review/audit sources in P0/P1/P2. Physical phones not tested.
+
+## Live Firebase verification
+
+09/11/2026: đăng nhập Google thật qua app local production/subpath thành công với tài khoản chủ project. Lưu default settings480/60/3 bằng transaction thành công; bấm Tải lại dữ liệu đọc được từ cloud, không có lỗi quyền. Không thêm ca làm thử vào sổ thật. Hosted Firestore anonymous REST probe trả403 như mong đợi.
+
+Local final regression cả Chromium/WebKit PASS, gồm cross-tab draft preservation/conflict. CI lần đầu dừng do pin Python Playwright1.65 chưa có trên PyPI; sửa1.62.0 đúng bản đã chạy local và chạy lại, không bỏ E2E gate.
