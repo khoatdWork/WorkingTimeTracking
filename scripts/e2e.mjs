@@ -20,7 +20,7 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   if (!ready) throw new Error(`App not ready: ${appUrl}`);
-  for (const script of ["tests/e2e/app.py", "tests/e2e/pwa.py"]) {
+  for (const script of ["tests/e2e/app.py", "tests/e2e/wfh.py", "tests/e2e/pwa.py"]) {
     const test = spawn(process.env.PYTHON || "python", [script], {
       env: { ...process.env, APP_URL: appUrl, PYTHONIOENCODING: "utf-8" },
       stdio: "inherit",

@@ -11,6 +11,7 @@ export interface WorkDay {
   request: RequestStatus;
   kind: DayKind;
   sessions: Session[];
+  wfhHours?: 8 | 10;
   note: string;
 }
 export interface Settings {
@@ -104,6 +105,9 @@ export function workedSeconds(
   date: string,
   now: number,
 ): number {
+  const day = state.days[date];
+  if (day?.kind === "work" && day.mode === "wfh" && day.wfhHours !== undefined)
+    return date <= dateKey(now) ? day.wfhHours * 3600 : 0;
   return Math.max(
     0,
     grossSeconds(state, date, now) - state.settings.lunchMinutes * 60,
@@ -242,6 +246,11 @@ export function validateState(input: unknown, now = Date.now()): TrackerState {
       day.sessions.length > 24
     )
       throw new Error("Ngày hoặc nội dung chấm công không hợp lệ.");
+    if (day.wfhHours !== undefined && (
+      ![8, 10].includes(day.wfhHours) || day.mode !== "wfh" ||
+      day.kind !== "work" || day.sessions.length || date > dateKey(now)
+    ))
+      throw new Error("WFH chỉ được chọn 8 hoặc 10 giờ cho hôm nay hoặc ngày trước, không kèm ca vào/về.");
     for (const session of day.sessions) {
       if (
         !session ||
@@ -268,6 +277,12 @@ export function validateState(input: unknown, now = Date.now()): TrackerState {
   for (let i = 1; i < intervals.length; i++)
     if (intervals[i].start < (intervals[i - 1].end ?? Infinity))
       throw new Error("Các ca làm việc không được trùng giờ.");
+  for (const day of Object.values(state.days)) {
+    if (day.wfhHours === undefined) continue;
+    const start = dayStart(day.date);
+    if (intervals.some((session) => session.start < start + DAY && (session.end ?? Infinity) > start))
+      throw new Error("Ngày WFH cố định đang có ca từ ngày khác đi qua. Hãy chỉnh ca đó trước để không tính trùng giờ.");
+  }
   if (new TextEncoder().encode(JSON.stringify(state)).length > 850_000)
     throw new Error(
       "Sổ đã gần đầy. Hãy xuất bản sao lưu và lưu trữ các năm cũ trước khi thêm dữ liệu.",
@@ -279,6 +294,7 @@ export function startWork(
   mode: WorkMode,
   now: number,
 ): TrackerState {
+  if (mode === "wfh") throw new Error("WFH chỉ cần chọn 8 hoặc 10 giờ, không bắt đầu ca tính giờ.");
   if (activeSession(state)) throw new Error("Hãy kết thúc ca đang chạy trước.");
   const next = structuredClone(state),
     date = dateKey(now);
@@ -287,6 +303,19 @@ export function startWork(
   day.mode = mode;
   day.sessions.push({ start: Math.floor(now / 1000) * 1000, end: null });
   next.days[date] = day;
+  return validateState(next, now);
+}
+export function setWfhHours(
+  state: TrackerState,
+  date: string,
+  hours: 8 | 10,
+  now: number,
+): TrackerState {
+  const next = structuredClone(state);
+  const day = next.days[date] ?? newDay(date, "wfh");
+  if (day.sessions.length)
+    throw new Error("Ngày đã có ca làm. Hãy mở Chỉnh sửa ngày để xác nhận thay bằng giờ WFH.");
+  next.days[date] = { ...day, mode: "wfh", kind: "work", wfhHours: hours };
   return validateState(next, now);
 }
 export function stopWork(state: TrackerState, now: number): TrackerState {

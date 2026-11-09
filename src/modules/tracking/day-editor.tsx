@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import {
   dayStart,
+  dateKey,
   newDay,
   validateState,
   type WorkDay,
@@ -54,7 +55,7 @@ export function DayEditor({
     })),
   );
   const [error, setError] = useState(""),
-    [confirm, setConfirm] = useState<"delete" | "leave" | null>(null),
+    [confirm, setConfirm] = useState<"delete" | "leave" | "replace" | null>(null),
     [dirty, setDirty] = useState(false);
   useEffect(() => {
     const unload = (event: BeforeUnloadEvent) => {
@@ -67,20 +68,24 @@ export function DayEditor({
     setDay({ ...day, ...change });
     setDirty(true);
   }
-  async function submit(event: React.FormEvent) {
-    event.preventDefault();
+  async function saveDay() {
     setError("");
     try {
-      const result = {
+      const result: WorkDay = {
         ...day,
-        sessions:
-          day.kind === "work"
-            ? sessions.map((s) => ({
-                start: toTimestamp(s.start),
-                end: s.end ? toTimestamp(s.end) : null,
-              }))
-            : [],
+        sessions: [],
       };
+      if (day.kind === "work" && day.mode === "office")
+        result.sessions = sessions.map((s) => ({
+          start: toTimestamp(s.start),
+          end: s.end ? toTimestamp(s.end) : null,
+        }));
+      if (day.kind === "work" && day.mode === "wfh" && day.wfhHours === undefined && existing?.mode === "wfh")
+        result.sessions = existing.sessions;
+      if (result.mode !== "wfh" || result.kind !== "work") delete result.wfhHours;
+      if (result.kind === "work" && result.mode === "wfh" && result.wfhHours === undefined &&
+          !result.sessions.length && date <= dateKey())
+        throw new Error("Hãy chọn 8 hoặc 10 giờ làm WFH trước khi lưu.");
       await save((current) => {
         if (current.version !== baseVersion)
           throw new Error(
@@ -100,6 +105,13 @@ export function DayEditor({
           : "Chưa lưu được. Hãy kiểm tra kết nối rồi thử lại.",
       );
     }
+  }
+  function submit(event: React.FormEvent) {
+    event.preventDefault();
+    const replacingSessions = existing?.sessions.length && day.kind === "work" && day.mode === "wfh" && day.wfhHours !== undefined;
+    const removingWfhHours = existing?.wfhHours !== undefined && (day.mode !== "wfh" || day.kind !== "work");
+    if (replacingSessions || removingWfhHours) setConfirm("replace");
+    else void saveDay();
   }
   return (
     <main id="main-content" className="editor main-content">
@@ -168,6 +180,33 @@ export function DayEditor({
             </fieldset>
             {day.mode === "wfh" && (
               <fieldset>
+                <legend>Giờ làm WFH</legend>
+                <div className="segmented">
+                  {([8, 10] as const).map((hours) => (
+                    <Button key={hours} type="button" variant="ghost"
+                      aria-pressed={day.wfhHours === hours}
+                      disabled={date > dateKey()}
+                      onClick={() => patch({ wfhHours: hours })}>
+                      {hours} giờ
+                    </Button>
+                  ))}
+                </div>
+                <p className="help">
+                  {date > dateKey()
+                    ? "Ngày tương lai chỉ lưu kế hoạch và request. Chọn giờ WFH khi đến ngày làm việc."
+                    : "Giờ làm ròng, không trừ thêm nghỉ trưa và không cần giờ vào/về."}
+                </p>
+                {!!existing?.sessions.length && (
+                  <p className="notice">
+                    {day.wfhHours === undefined
+                      ? "Các ca đã lưu được giữ nguyên. Chọn 8 hoặc 10 giờ để thay bằng giờ WFH cố định; app sẽ xác nhận khi lưu."
+                      : `Khi lưu, ${existing.sessions.length} ca đã ghi sẽ được thay bằng ${day.wfhHours} giờ WFH.`}
+                  </p>
+                )}
+              </fieldset>
+            )}
+            {day.mode === "wfh" && (
+              <fieldset>
                 <legend>Request WFH</legend>
                 <div className="request-options">
                   {(
@@ -190,7 +229,7 @@ export function DayEditor({
                 </div>
               </fieldset>
             )}
-            <fieldset className="session-fields">
+            {day.mode === "office" && <fieldset className="session-fields">
               <legend>Các ca làm việc</legend>
               <p className="help">
                 Đã tự trừ {state.settings.lunchMinutes} phút nghỉ/ngày. Tạm dừng
@@ -270,7 +309,7 @@ export function DayEditor({
                 <Plus />
                 Thêm ca làm việc
               </Button>
-            </fieldset>
+            </fieldset>}
           </>
         ) : (
           <p className="notice">
@@ -320,19 +359,26 @@ export function DayEditor({
             <AlertDialogTitle>
               {confirm === "delete"
                 ? "Xóa ngày làm việc?"
+                : confirm === "replace" ? "Thay cách ghi giờ của ngày này?"
                 : "Bỏ thay đổi chưa lưu?"}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {confirm === "delete"
                 ? `Toàn bộ ca làm và trạng thái WFH ngày ${date} sẽ bị xóa. Chỉ tiêu giờ của ngày thường sẽ trở lại bình thường.`
-                : "Những thay đổi trên màn hình này chưa được lưu."}
+                : confirm === "replace"
+                  ? day.mode === "wfh" && day.kind === "work"
+                    ? `Các ca vào/về đã lưu sẽ được bỏ và thay bằng ${day.wfhHours} giờ WFH làm ròng. Bạn có thể chọn Giữ lại để quay về bản nháp.`
+                    : "Giờ WFH cố định đã lưu sẽ được bỏ. Tổng giờ sẽ được tính lại theo nội dung hiện tại."
+                  : "Những thay đổi trên màn hình này chưa được lưu."}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Giữ lại</AlertDialogCancel>
             <AlertDialogAction
+              disabled={busy}
               onClick={async () => {
                 if (confirm === "leave") close();
+                else if (confirm === "replace") await saveDay();
                 else {
                   try {
                     await save((current) => {
@@ -354,7 +400,7 @@ export function DayEditor({
                 }
               }}
             >
-              {confirm === "delete" ? "Xóa ngày" : "Bỏ thay đổi"}
+              {confirm === "delete" ? "Xóa ngày" : confirm === "replace" ? "Thay và lưu" : "Bỏ thay đổi"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

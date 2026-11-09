@@ -39,7 +39,7 @@ export function exportCsv(state: TrackerState, now: number): string {
   return (
     "\uFEFF" +
     [
-      "Ngày,Nơi làm,Request,Loại ngày,Giờ vào,Giờ về,Ghi chú",
+      "Ngày,Nơi làm,Request,Loại ngày,Giờ vào,Giờ về,Giờ WFH đã ghi nhận,Ghi chú",
       ...Object.values(state.days)
         .sort((a, b) => a.date.localeCompare(b.date))
         .flatMap((d) => {
@@ -56,6 +56,7 @@ export function exportCsv(state: TrackerState, now: number): string {
                   ? new Date(s.end).toISOString()
                   : `Đang chạy ${new Date(now).toISOString()}`
                 : "",
+              d.wfhHours === undefined ? "" : String(d.wfhHours),
               d.note,
             ]
               .map(quote)

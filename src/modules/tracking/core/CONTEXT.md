@@ -7,3 +7,5 @@ Contract: TrackerState schema 1, version integer, settings dailyMinutes/lunchMin
 16 unit tests gồm domain + repository đã PASS, chi tiết docs/phases/P1/test-results.md. Phụ thuộc pure TS/Intl, không gọi Firebase/React. Callers overview/history/reports/editor/data; đổi contract phải cập nhật tất cả và rules nếu đổi shape.
 
 Giới hạn: đồng hồ thiết bị, timezone VN cố định, ngày lễ tự đánh dấu, config tính lại toàn lịch sử. Storage cap 850 KB. Đã dùng Ponytail full/review/audit đọc snapshot tham chiếu, không cài plugin hệ thống.
+
+P4 additive contract: WorkDay.wfhHours?:8|10. Chỉ có trên kind=work/mode=wfh, sessions rỗng, ngày <= hôm nay VN. Thiếu field vẫn đọc/tính dữ liệu cũ đúng như trước; không có migration tự làm tròn ca WFH. workedSeconds trả đúng wfhHours*3600, bỏ qua lunch settings; tương lai không được cộng. startWork từ chối WFH mới. setWfhHours giữ request/note, thay mức cũ, không tự thay ngày có sessions. validateState từ chối ca qua nửa đêm chạm ngày fixed WFH để không cộng trùng/bỏ qua giờ. Trước khi dùng field mới trên nhiều thiết bị, cập nhật các app/tab PWA cũ; code cũ không hiểu giờ WFH cố định.

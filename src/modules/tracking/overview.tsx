@@ -29,6 +29,7 @@ import {
   newDay,
   readableDuration,
   startWork,
+  setWfhHours,
   stopWork,
   summarize,
   targetSeconds,
@@ -77,9 +78,9 @@ export function Today({
     await run(
       (s) => {
         const d = s.days[today] ?? newDay(today);
-        if (d.sessions.length && d.mode !== next)
+        if ((d.sessions.length || d.wfhHours !== undefined) && d.mode !== next)
           throw new Error(
-            "Ngày đã có ca làm. Hãy chỉnh nơi làm việc trong Chỉnh sửa ngày để tránh đổi nhầm.",
+            "Ngày đã ghi giờ làm. Hãy đổi nơi làm việc trong Chỉnh sửa ngày để tránh mất giờ đã lưu.",
           );
         s.days[today] = { ...d, mode: next };
         return s;
@@ -100,8 +101,9 @@ export function Today({
             <span />
             {active
               ? "Đang làm việc"
-              : day.sessions.length
+              : day.sessions.length || day.wfhHours !== undefined
                 ? "Đã ghi nhận"
+                : day.mode === "wfh" ? "Chưa chọn giờ"
                 : "Chưa bắt đầu"}
           </span>
         </div>
@@ -141,7 +143,7 @@ export function Today({
             />
           </svg>
           <div className="clock-value">
-            <span className="clock-caption">Thời gian làm việc</span>
+            <span className="clock-caption">{day.mode === "wfh" ? "Giờ WFH đã ghi nhận" : "Thời gian làm việc"}</span>
             <strong
               className="timer-digits"
               aria-label={`Đã làm ${readableDuration(worked)}`}
@@ -214,6 +216,28 @@ export function Today({
                     : "Kết thúc WFH"}
               </Button>
             </div>
+          ) : day.mode === "wfh" ? (
+            day.sessions.length ? (
+              <p className="notice">
+                Các ca WFH cũ được giữ nguyên. Mở Chỉnh sửa ngày để thay bằng 8 hoặc 10 giờ.
+              </p>
+            ) : (
+              <fieldset>
+                <legend>Giờ làm WFH</legend>
+                <div className="segmented">
+                  {([8, 10] as const).map((hours) => (
+                    <Button key={hours} variant="ghost" disabled={busy}
+                      aria-pressed={day.wfhHours === hours}
+                      onClick={() => run(
+                        (s) => setWfhHours(s, today, hours, Date.now()),
+                        `Đã ghi nhận ${hours} giờ WFH`,
+                      )}>
+                      {hours} giờ
+                    </Button>
+                  ))}
+                </div>
+              </fieldset>
+            )
           ) : (
             <Button
               className="check-in-button"
@@ -230,18 +254,18 @@ export function Today({
                 ? "Đang lưu…"
                 : day.sessions.length
                   ? "Tiếp tục làm việc"
-                  : day.mode === "office"
-                    ? "Đã lên công ty"
-                    : "Bắt đầu WFH"}
+                  : "Đã lên công ty"}
             </Button>
           )}
         </div>
-        <div className="clock-note">
+        {day.mode === "wfh" && !day.sessions.length ? (
+          <p className="help">Chọn 8 hoặc 10 giờ làm ròng. Không cần vào/về, không trừ thêm nghỉ trưa.</p>
+        ) : <div className="clock-note">
           <Coffee size={15} />
           <span>
             Tự trừ {state.settings.lunchMinutes} phút nghỉ trưa mỗi ngày
           </span>
-        </div>
+        </div>}
         {finishAt !== null && remaining > 0 && (
           <p className="finish-time">
             Nếu làm liên tục, đủ giờ lúc{" "}

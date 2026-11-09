@@ -39,10 +39,25 @@ def main():
             page.clock.resume()
             page.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ").click()
             page.get_by_role("button", name="Work from home", exact=True).click()
+            expect(page.get_by_label("Giờ vào", exact=True)).to_have_count(0)
+            page.get_by_role("button", name="10 giờ", exact=True).click()
             page.get_by_role("button", name="Đã gửi", exact=True).click()
             page.get_by_label("Ghi chú").fill("Kiểm thử bằng dữ liệu giả")
             page.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()
+            expect(page.get_by_role("alertdialog")).to_be_visible()
+            page.get_by_role("button", name="Giữ lại", exact=True).click()
+            expect(page.get_by_label("Ghi chú")).to_have_value("Kiểm thử bằng dữ liệu giả")
+            assert page.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1')).days['2026-11-09'].mode") == "office"
+            page.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()
+            page.get_by_role("button", name="Thay và lưu", exact=True).click()
             expect(page.get_by_text("Request WFH hôm nay", exact=True)).to_be_visible()
+            expect(page.locator(".timer-digits")).to_have_text("10:00:00")
+            expect(page.get_by_role("button", name="Bắt đầu WFH", exact=True)).to_have_count(0)
+            expect(page.get_by_role("button", name="Tạm dừng", exact=True)).to_have_count(0)
+            page.get_by_role("button", name="8 giờ", exact=True).click()
+            expect(page.locator(".timer-digits")).to_have_text("08:00:00")
+            page.get_by_role("button", name="10 giờ", exact=True).click()
+            expect(page.locator(".timer-digits")).to_have_text("10:00:00")
             page.get_by_role("button", name="Đã được duyệt", exact=True).click()
             expect(page.get_by_text("Đã duyệt", exact=True)).to_be_visible()
             page.clock.fast_forward(6000)
@@ -54,7 +69,7 @@ def main():
             page.set_viewport_size({"width": 390, "height": 844})
             page.get_by_role("button", name="Lịch sử", exact=True).click()
             expect(page.get_by_role("heading", name="Lịch sử làm việc")).to_be_visible()
-            expect(page.locator(".history-row").filter(has_text="Work from home")).to_contain_text("09:00:00")
+            expect(page.locator(".history-row").filter(has_text="Work from home")).to_contain_text("10:00:00")
             page.get_by_label("Ngày cần bổ sung").fill("2026-11-06")
             page.get_by_role("button", name="Bổ sung", exact=True).click()
             page.get_by_role("button", name="Thêm ca làm việc", exact=True).click()
@@ -64,7 +79,7 @@ def main():
             expect(page.locator(".history-row").filter(has_text="06").first).to_be_visible()
             page.screenshot(path=str(OUT / f"{engine}-history.png"), full_page=True)
             page.get_by_role("button", name="Báo cáo", exact=True).click()
-            expect(page.locator(".report-number")).to_have_text("15:00:00")
+            expect(page.locator(".report-number")).to_have_text("16:00:00")
             page.clock.fast_forward(6000)
             page.screenshot(path=str(OUT / f"{engine}-reports.png"), full_page=True)
             page.get_by_role("button", name="Cài đặt", exact=True).click()
@@ -79,6 +94,8 @@ def main():
             backup = json.loads(path.read_text(encoding="utf-8"))
             assert len(backup["days"]) == 2
             assert backup["settings"]["lunchMinutes"] == 30
+            assert backup["days"]["2026-11-09"]["wfhHours"] == 10
+            assert backup["days"]["2026-11-09"]["sessions"] == []
             # Import is exercised only against isolated browser data created above.
             backup["settings"]["lunchMinutes"] = 60
             fixture = OUT / f"{engine}-import.json"
@@ -88,7 +105,7 @@ def main():
             page.get_by_role("button", name="Thay sổ hiện tại", exact=True).click()
             expect(page.get_by_label("Tự trừ nghỉ trưa (phút/ngày)")).to_have_value("60")
             page.get_by_role("button", name="Hôm nay", exact=True).click()
-            expect(page.locator(".timer-digits")).to_have_text("09:00:00")
+            expect(page.locator(".timer-digits")).to_have_text("10:00:00")
             page.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ").click()
             page.get_by_label("Ghi chú").fill("Đổi nhưng chưa lưu")
             page.get_by_role("button", name="Quay lại", exact=True).click()

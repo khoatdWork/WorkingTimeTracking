@@ -11,6 +11,7 @@ import {
   newDay,
   readableDuration,
   startWork,
+  setWfhHours,
   stopWork,
   summarize,
   targetSeconds,
@@ -167,12 +168,72 @@ describe("data validation", () => {
   });
   it("allows request planning, pause/resume and final state validation", () => {
     const time = Date.parse("2026-11-02T09:00:00+07:00");
-    let state = startWork(emptyState(), "wfh", time);
+    let state = startWork(emptyState(), "office", time);
     expect(() => startWork(state, "office", time + 1000)).toThrow();
     state = stopWork(state, time + 3600000);
-    state = startWork(state, "wfh", time + 7200000);
+    state = startWork(state, "office", time + 7200000);
     state = stopWork(state, time + 9 * 3600000);
     expect(validateState(state, now)).toBe(state);
     expect(state.days["2026-11-02"].sessions).toHaveLength(2);
+  });
+});
+describe("fixed WFH hours", () => {
+  const date = "2026-11-02";
+  it("credits exactly 8 or 10 net hours without lunch or sessions and preserves requests", () => {
+    let state = emptyState();
+    state.days[date] = { ...newDay(date, "wfh"), request: "sent", note: "WFH" };
+    state = setWfhHours(state, date, 8, now);
+    expect(workedSeconds(state, date, now)).toBe(8 * 3600);
+    expect(activeSession(state)).toBeNull();
+    expect(state.days[date].sessions).toEqual([]);
+    state.settings.lunchMinutes = 180;
+    expect(workedSeconds(state, date, now)).toBe(8 * 3600);
+    state = setWfhHours(state, date, 10, now);
+    expect(summarize(state, [date], now).balance).toBe(2 * 3600);
+    expect(state.days[date].request).toBe("sent");
+    expect(state.days[date].note).toBe("WFH");
+    expect(workedSeconds(JSON.parse(JSON.stringify(state)), date, now)).toBe(10 * 3600);
+  });
+  it("offsets an office deficit in the same month and does not leak into next month", () => {
+    let state = emptyState();
+    hours(state, "2026-11-02", 9, 16);
+    state = setWfhHours(state, "2026-11-03", 10, now);
+    expect(summarize(state, ["2026-11-02", "2026-11-03"], now).balance).toBe(0);
+    expect(summarize(state, monthDates("2026-12"), now).worked).toBe(0);
+    state = setWfhHours(state, "2026-11-07", 8, now);
+    expect(summarize(state, ["2026-11-07"], now).balance).toBe(8 * 3600);
+  });
+  it("preserves old timed WFH records and requires an explicit conversion", () => {
+    const state = emptyState();
+    hours(state, date, 9, 18);
+    state.days[date].mode = "wfh";
+    expect(validateState(state, now)).toBe(state);
+    expect(workedSeconds(state, date, now)).toBe(8 * 3600);
+    expect(() => setWfhHours(state, date, 10, now)).toThrow("Chỉnh sửa ngày");
+    expect(state.days[date].sessions).toHaveLength(1);
+    expect(() => startWork(emptyState(), "wfh", now)).toThrow("8 hoặc 10");
+  });
+  it("rejects invalid credits, future dates, mixed sessions, and cross-midnight double counting", () => {
+    const state = setWfhHours(emptyState(), date, 8, now);
+    for (const invalid of [0, 9, 11, "8", null]) {
+      const bad = JSON.parse(JSON.stringify(state));
+      bad.days[date].wfhHours = invalid;
+      expect(() => validateState(bad, now)).toThrow("WFH");
+    }
+    const badMode = structuredClone(state);
+    badMode.days[date].mode = "office";
+    expect(() => validateState(badMode, now)).toThrow("WFH");
+    badMode.days[date].mode = "wfh";
+    badMode.days[date].kind = "leave";
+    expect(() => validateState(badMode, now)).toThrow("WFH");
+    expect(() => setWfhHours(emptyState(), "2026-12-01", 8, now)).toThrow("WFH");
+    expect(workedSeconds(state, date, dayStart(date) - 1)).toBe(0);
+    hours(state, "2026-11-01", 23, 25);
+    expect(() => validateState(state, now)).toThrow("ngày khác");
+    state.days["2026-11-01"].sessions[0].end = dayStart(date);
+    expect(validateState(state, now)).toBe(state);
+    hours(state, date, 9, 18);
+    state.days[date] = { ...state.days[date], mode: "wfh", wfhHours: 8 };
+    expect(() => validateState(state, now)).toThrow("không kèm ca");
   });
 });

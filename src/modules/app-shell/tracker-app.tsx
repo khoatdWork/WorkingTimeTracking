@@ -226,7 +226,7 @@ export function TrackerApp() {
                     </div>
                     <p className="help">
                       JSON giữ nguyên ca làm, trạng thái WFH và cài đặt. CSV
-                      dùng để đối chiếu trên bảng tính. Giờ trong CSV là UTC.
+                      dùng để đối chiếu trên bảng tính. Giờ vào/về trong CSV là UTC; WFH cố định có cột số giờ riêng.
                     </p>
                     <div className="two-buttons">
                       <Button

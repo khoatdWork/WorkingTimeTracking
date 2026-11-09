@@ -9,3 +9,5 @@ Firestore rules kiểm owner và shape/settings/version; data từng ngày do va
 shortcut: một document/sổ, giới hạn app 850 KB; chuyển document theo tháng khi dữ liệu gần giới hạn hoặc tăng quy mô. Cloud cần mạng. API public config không phải private key.
 
 P3: cloud read/write kiểm navigator.onLine=false để báo lỗi ngay, không tạo queue hoặc báo thành công. Không coi onLine=true là đảm bảo kết nối: transaction vẫn chờ server và lỗi vẫn được giữ. Service worker không cache Auth/Firestore hoặc sổ tài khoản. Offline reload khi đang đăng nhập cần mạng để mở lại sổ; có sign-out để truy cập sổ thiết bị riêng. Local repository hoạt động offline như trước; unit kiểm cloud offline không gọi client/transaction.
+
+P4: JSON/local/cloud giữ optional wfhHours8|10 trong từng WorkDay, không đổi envelope/schema hay Rules. Client validateState kiểm ràng buộc chi tiết; emulator kiểm owner ghi/đọc bản có field mới. CSV thêm cột Giờ WFH đã ghi nhận; ngày WFH cố định có timestamp trống và một hàng số giờ, không dựng giờ vào/về giả. Legacy CSV ca và notes quoting giữ nguyên.

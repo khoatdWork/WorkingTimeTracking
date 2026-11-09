@@ -7,7 +7,7 @@ import {
 } from "@firebase/rules-unit-testing";
 import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { beforeAll, beforeEach, afterAll, describe, it } from "vitest";
-import { emptyState } from "@/modules/tracking/core/domain";
+import { emptyState, newDay } from "@/modules/tracking/core/domain";
 let env: RulesTestEnvironment;
 beforeAll(async () => {
   env = await initializeTestEnvironment({
@@ -54,7 +54,9 @@ describe("Firestore owner isolation and versions", () => {
     await assertFails(setDoc(ref, { ...seed(), extra: true }));
     await assertSucceeds(setDoc(ref, seed()));
     await assertFails(setDoc(ref, seed()));
-    await assertSucceeds(setDoc(ref, { ...seed(), version: 2 }));
+    await assertSucceeds(setDoc(ref, { ...seed(), version: 2, days: {
+      "2026-11-02": { ...newDay("2026-11-02", "wfh"), wfhHours: 10 },
+    } }));
     await assertFails(setDoc(doc(a, "users/a/other/state"), seed()));
   });
 });

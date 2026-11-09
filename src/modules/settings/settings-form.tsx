@@ -81,7 +81,7 @@ export function SettingsForm({
           onChange={(e) => setLunch(e.target.value)}
         />
         <p className="help">
-          Trừ một lần trên tổng ca trong ngày. Nút tạm dừng dành cho thời gian
+          Áp dụng cho ngày ghi theo ca. WFH chọn 8/10 giờ đã là giờ làm ròng, không trừ thêm. Nút tạm dừng dành cho thời gian
           nghỉ thêm ngoài nghỉ trưa.
         </p>
       </div>

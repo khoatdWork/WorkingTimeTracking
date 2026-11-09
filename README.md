@@ -9,16 +9,16 @@ Theo dõi thời gian làm việc và WFH, cân đối đủ giờ trong tháng.
 ## Sử dụng
 
 1. Vào Cài đặt, đăng nhập Google để lưu vào tài khoản Firebase. Khi chưa đăng nhập, dữ liệu chỉ ở trình duyệt hiện tại và có nhãn “Trên thiết bị”. Hai sổ tách riêng; dùng xuất/nhập JSON nếu cần chuyển dữ liệu.
-2. Chọn Văn phòng hoặc Work from home, bấm “Đã lên công ty” / “Bắt đầu WFH”. Khi về, bấm kết thúc. Đồng hồ vẫn tính khi đóng tab hoặc tắt máy vì lưu thời điểm bắt đầu, không dựa vào số lần timer chạy.
-3. Mặc định tự trừ **60 phút nghỉ trưa một lần/ngày**. Không cần tạm dừng trong giờ nghỉ trưa. Nút tạm dừng dùng cho thời gian nghỉ thêm ngoài nghỉ trưa; tiếp tục sẽ mở ca mới.
+2. Với Văn phòng: bấm “Đã lên công ty”, khi về bấm kết thúc. Đồng hồ vẫn tính khi đóng tab hoặc tắt máy vì lưu thời điểm bắt đầu. Với **Work from home: chỉ chọn 8 giờ hoặc 10 giờ**, không cần bắt đầu/kết thúc. Chọn mức khác sẽ thay số giờ trong ngày đó, không cộng dồn.
+3. Ngày văn phòng ghi theo ca mặc định trừ **60 phút nghỉ trưa một lần/ngày**. Không cần tạm dừng trong giờ nghỉ trưa. Nút tạm dừng dùng cho nghỉ thêm. **8/10 giờ WFH đã là giờ làm ròng**, không trừ thêm nghỉ trưa, kể cả khi đổi cài đặt.
 4. Với WFH, gửi request qua kênh công ty rồi đánh dấu Chưa gửi / Đã gửi / Đã duyệt tại app. Giới hạn mặc định 3 ngày mỗi tuần; có cảnh báo vượt giới hạn và request chưa gửi. App không tự gửi request cho công ty.
-5. Quên chấm công: vào Lịch sử, chọn ngày và Bổ sung. Có nhiều ca/ngày, chỉnh giờ đến giây, ghi chú, nghỉ phép và ngày lễ. Nghỉ/lễ được đánh dấu thủ công, không có lịch lễ tự động.
+5. Quên chấm công: vào Lịch sử, chọn ngày và Bổ sung. Văn phòng có nhiều ca/ngày, chỉnh giờ đến giây; WFH chọn 8/10 giờ. Có ghi chú, nghỉ phép và ngày lễ thủ công. Ngày tương lai chỉ lên kế hoạch/request WFH, chưa ghi giờ. Các ca WFH cũ vẫn được giữ và tính như trước; sửa ghi chú/request không tự đổi giờ. Chuyển ca cũ sang giờ WFH cố định hoặc bỏ giờ WFH để đổi loại ngày đều cần xác nhận.
 6. Xem Báo cáo và đối chiếu tổng. Có xuất JSON giữ đầy đủ dữ liệu và CSV các ca với thời điểm UTC.
 
 ## Cách tính
 
 - Ngày theo Việt Nam UTC+7. Ngày thường thứ Hai–thứ Sáu cần 8 giờ; cuối tuần không có chỉ tiêu nhưng vẫn ghi nhận giờ làm bù.
-- Giờ làm ròng = tổng ca làm trong ngày − nghỉ trưa (không âm). Những khoảng tạm dừng không nằm trong ca nên không cộng giờ.
+- Ngày ghi theo ca: giờ làm ròng = tổng ca trong ngày − nghỉ trưa (không âm). WFH cố định = đúng mức đã chọn 8 hoặc 10 giờ, không tạo ca giả, không trừ nghỉ trưa. Không cho cộng thêm ca vào ngày WFH cố định, kể cả ca từ ngày trước đi qua nửa đêm.
 - 6 giờ hôm nay + 10 giờ ngày mai = đủ 16 giờ hai ngày. Chỉ bù trong cùng tháng; không mang giờ dư tháng trước sang tháng sau.
 - **Thiếu đến hôm nay** đối chiếu các ngày công từ đầu kỳ tới hết hôm nay, bao gồm mục tiêu cả ngày hôm nay. **Còn lại cả tháng** = chỉ tiêu cả tháng − giờ đã làm, gồm cả những ngày chưa đến.
 - Tính bằng giây nguyên, hiển thị `giờ:phút:giây`. Thiếu 1 giây vẫn còn thiếu. Lịch sử lưu timestamp chính xác; không làm tròn tăng giờ.
