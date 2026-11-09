@@ -26,6 +26,16 @@ Theo dõi thời gian làm việc và WFH, cân đối đủ giờ trong tháng.
 - Cài đặt giờ/nghỉ/WFH áp dụng lại cho toàn bộ lịch sử. Ngày đã có ca cần chỉnh nơi làm trong màn chỉnh ngày.
 - WFH được đếm theo ngày đã chọn WFH (gồm ngày lên kế hoạch), không đếm theo số ca và không tính nghỉ phép/ngày lễ.
 
+## Cài ứng dụng và dùng offline
+
+- Mở web có mạng một lần, vào **Cài đặt → Cài ứng dụng**, chờ dòng “Giao diện đã sẵn sàng mở khi mất mạng”. Chrome/Edge có thể hiện nút **Cài Đủ giờ**; nếu chưa hiện, dùng mục Cài ứng dụng/Thêm vào màn hình chính trong menu trình duyệt.
+- iPhone/iPad: mở bằng Safari → Chia sẻ → Thêm vào Màn hình chính. App có icon riêng và mở dạng standalone.
+- **Sổ trên thiết bị** có thể vào/về, tạm dừng, chỉnh ngày và xem báo cáo khi mất mạng, kể cả đóng rồi mở lại app. Dữ liệu chỉ nằm trong trình duyệt/ứng dụng đó; hãy xuất JSON định kỳ. Cài app không tự chuyển dữ liệu giữa trình duyệt, thiết bị hoặc sổ Firebase.
+- **Sổ Firebase cần mạng để mở và lưu.** Không có hàng đợi ghi offline hoặc tự chuyển sang sổ thiết bị. Nếu lưu thất bại, giữ bản nháp, kết nối lại và thử lại. Không báo đồng bộ trước khi server xác nhận.
+- Khi có phiên bản mới, mở Cài đặt, lưu thay đổi rồi chọn **Cập nhật ứng dụng**. App hỏi trước khi tải lại cửa sổ hiện tại; các cửa sổ khác giữ bản nháp và ca đang chạy không bị kết thúc. Đóng hết cửa sổ cũng cho phép phiên bản đã tải tự áp dụng ở lần mở sau.
+
+PWA chỉ đăng ký service worker trong production build (HTTPS hoặc localhost). Khi chuyển một cổng localhost đã chạy production sang `npm run dev`, dùng Application → Service Workers → Unregister và xóa Cache Storage nếu trình duyệt vẫn mở bản cũ. Không xóa Local Storage nếu cần giữ sổ trên thiết bị.
+
 ## Chạy local
 
 Node **26.4.0**, npm **11.17.0**.
@@ -77,6 +87,7 @@ src/components/ui/          shadcn/ui cài bằng CLI
 src/lib/firebase/           Firebase browser config
 src/modules/app-shell/      navigation, state composition, backup UI
 src/modules/auth/           Google login/logout
+src/modules/pwa/            installation, offline shell, safe updates
 src/modules/tracking/core/  time/date/validation thuần TypeScript
 src/modules/tracking/data/  local/cloud persistence + session hook
 src/modules/tracking/       today/history/reports/day editor
@@ -99,4 +110,4 @@ Xem [hướng dẫn cấu hình/deploy](docs/deployment/FIREBASE-GITHUB.md). Pus
 
 Sổ cá nhân lưu một document Firestore theo user, ghi transaction với version để từ chối ghi đè khi thiết bị khác đã thay đổi. Đây là lựa chọn cho một người dùng; dữ liệu app giới hạn 850 KB để chừa khoảng dưới giới hạn 1 MiB của Firestore. Khi gần đầy cần xuất/lưu trữ năm cũ; nếu dùng dài hạn với nhiều dữ liệu, chuyển sang document theo tháng. Cloud cần mạng để ghi, không báo thành công trước khi server xác nhận. Đồng hồ dùng giờ của thiết bị, nên thiết bị cần đặt giờ đúng. Không phải bảng chấm công chính thức của công ty.
 
-Kết quả kiểm thử thực tế và phần chưa kiểm tra được ghi trong docs/phases/P2/. Không coi kiểm thử browser giả lập là kiểm thử điện thoại thật.
+Kết quả Firebase/release ban đầu ở docs/phases/P2/, PWA ở docs/phases/P3/. Không coi kiểm thử browser giả lập là kiểm thử điện thoại thật.

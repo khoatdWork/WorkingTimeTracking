@@ -29,6 +29,8 @@ def main():
             expect(page.get_by_role("button", name="Tiếp tục làm việc", exact=True)).to_be_visible()
             page.reload()
             page.wait_for_load_state("networkidle")
+            # Cached PWA navigation can finish before Firebase's scheduled auth hydration.
+            page.clock.run_for(1000)
             expect(page.locator(".timer-digits")).to_have_text("08:00:00")
             page.get_by_role("button", name="Tiếp tục làm việc", exact=True).click()
             page.clock.fast_forward(3600 * 1000)

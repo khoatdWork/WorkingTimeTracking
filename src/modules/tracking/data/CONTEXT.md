@@ -7,3 +7,5 @@ Sổ thiết bị tách sổ Google; import do người dùng bấm và xác nh�
 Firestore rules kiểm owner và shape/settings/version; data từng ngày do validateState kiểm khi read/write/import. Mô hình là self-reported personal tracker, không xác thực payroll. Anonymous/A/B và stale version đã test emulator thật (2 cases với nhiều assertions). Unit local storage stale/quota/corrupt và CSV quoting/formula escaping PASS. Browser hai tab kiểm draft conflict, xem P1/P2 test-results.
 
 shortcut: một document/sổ, giới hạn app 850 KB; chuyển document theo tháng khi dữ liệu gần giới hạn hoặc tăng quy mô. Cloud cần mạng. API public config không phải private key.
+
+P3: cloud read/write kiểm navigator.onLine=false để báo lỗi ngay, không tạo queue hoặc báo thành công. Không coi onLine=true là đảm bảo kết nối: transaction vẫn chờ server và lỗi vẫn được giữ. Service worker không cache Auth/Firestore hoặc sổ tài khoản. Offline reload khi đang đăng nhập cần mạng để mở lại sổ; có sign-out để truy cập sổ thiết bị riêng. Local repository hoạt động offline như trước; unit kiểm cloud offline không gọi client/transaction.

@@ -23,10 +23,12 @@ export function useTracker() {
     try {
       const result = uid ? await readCloud(uid) : readLocal();
       if (generation.current === ticket) setState(result);
-    } catch {
+    } catch (error) {
       if (generation.current === ticket)
         setError(
-          "Không đọc được sổ chấm công. Hãy kiểm tra kết nối, quyền truy cập hoặc bản sao lưu, rồi tải lại.",
+          navigator.onLine === false && error instanceof Error
+            ? error.message
+            : "Không đọc được sổ chấm công. Hãy kiểm tra kết nối, quyền truy cập hoặc bản sao lưu, rồi tải lại.",
         );
     } finally {
       if (generation.current === ticket) setLoading(false);

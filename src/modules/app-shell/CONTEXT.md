@@ -5,3 +5,5 @@ P0/P1 implemented 09/11/2026. tracker-app.tsx ghép modules, navigation Hôm nay
 Khung max480px, mobile320–430, palette và font QuanLyTaiSan. Bottom nav safe-area, nội dung có khoảng tránh che focus, skip link. Tabs hiện là view trong một route, filter ở local state; URL chưa lưu tab/filter. Không có dữ liệu mẫu production.
 
 Shadcn installed qua CLI; style giữ Design.md. Lint/typecheck/build và Playwright PASS, xem P1/P2. Auth/data errors khác empty; khi cloud load lỗi vẫn có sign-out. Import/reset có AlertDialog, file<=900KB và validateState, không tự trộn local/cloud. Source env và test artifacts ignored.
+
+P3: usePwa đăng ký worker production ngay ở shell; PwaPanel trong Settings có cài app/hướng dẫn/cập nhật qua AlertDialog. Banner offline không tự đổi sổ. Banner phiên bản mới đưa tới Settings, không hiện trong editor để tránh mất nháp. Brand href luôn có trailing slash để offline navigation nằm trong worker scope. Layout có manifest, Apple metadata/icon, viewport-fit và header top safe area.

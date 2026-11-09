@@ -155,12 +155,30 @@ textarea:focus-visible {
   box-shadow: 0 0 80px #152b4608;
 }
 .app-header {
-  height: 80px;
-  padding: 18px 22px;
+  height: calc(80px + env(safe-area-inset-top));
+  padding: calc(18px + env(safe-area-inset-top)) 22px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
+}
+.connection-notice {
+  margin: 0 22px 8px;
+  padding: 12px;
+  border: 1px solid #eddbbc;
+  border-radius: 11px;
+  background: #fff7e9;
+  color: #965100;
+  font-size: 12px;
+}
+.update-notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  background: #edf3ff;
+  border-color: #d8e1ec;
+  color: #152b46;
 }
 .brand {
   display: inline-flex;
@@ -1030,7 +1048,7 @@ textarea:focus-visible {
 }
 @media (max-width: 359px) {
   .app-header {
-    padding: 15px 15px;
+    padding: calc(15px + env(safe-area-inset-top)) 15px 15px;
   }
   .main-content {
     padding-left: 15px;

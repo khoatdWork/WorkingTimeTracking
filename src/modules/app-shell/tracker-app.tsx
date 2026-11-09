@@ -31,6 +31,8 @@ import { useTracker } from "@/modules/tracking/data/use-tracker";
 import { download, exportCsv } from "@/modules/tracking/data/repository";
 import { DayEditor } from "@/modules/tracking/day-editor";
 import { AccountPanel } from "@/modules/auth/account-panel";
+import { usePwa } from "@/modules/pwa/use-pwa";
+import { PwaPanel } from "@/modules/pwa/pwa-panel";
 import {
   dateKey,
   emptyState,
@@ -44,6 +46,7 @@ import { Reports } from "@/modules/tracking/reports";
 import { SettingsForm } from "@/modules/settings/settings-form";
 type Screen = "today" | "history" | "reports" | "settings";
 export function TrackerApp() {
+  const pwa = usePwa();
   const { state, user, loading, busy, error, save, reload } = useTracker();
   const [now, setNow] = useState<number | null>(null),
     [screen, setScreen] = useState<Screen>("today");
@@ -93,7 +96,7 @@ export function TrackerApp() {
       <header className="app-header">
         <a
           className="brand"
-          href={process.env.NEXT_PUBLIC_BASE_PATH || "/"}
+          href={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/`}
           aria-label="Đủ giờ, trang chủ"
         >
           <span className="brand-mark">
@@ -122,6 +125,23 @@ export function TrackerApp() {
           </Button>
         </div>
       </header>
+      {!pwa.online && (
+        <p className="connection-notice" role="status">
+          {loading
+            ? "Đang mất mạng. Sổ trên thiết bị dùng được offline; sổ Firebase cần kết nối."
+            : user
+            ? "Đang mất mạng. Sổ Firebase cần kết nối để mở và lưu. Thao tác chưa lưu cần thử lại khi có mạng."
+            : "Đang mất mạng. Bạn vẫn có thể chấm công vào sổ trên thiết bị này."}
+        </p>
+      )}
+      {pwa.waiting && !editor && screen !== "settings" && (
+        <div className="connection-notice update-notice" role="status">
+          <span>Có phiên bản mới của Đủ giờ.</span>
+          <Button variant="outline" disabled={busy} onClick={() => navigate("settings")}>
+            Xem bản cập nhật
+          </Button>
+        </div>
+      )}
       {editor && ready ? (
         <DayEditor
           key={editor}
@@ -198,6 +218,7 @@ export function TrackerApp() {
                     }
                   />
                   <AccountPanel user={user} busy={busy} />
+                  <PwaPanel pwa={pwa} busy={busy} />
                   <section className="panel form-stack">
                     <div className="section-heading">
                       <h2>Bản sao lưu</h2>

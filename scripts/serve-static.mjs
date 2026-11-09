@@ -9,6 +9,8 @@ const types = {
   ".js": "text/javascript",
   ".css": "text/css",
   ".json": "application/json",
+  ".webmanifest": "application/manifest+json",
+  ".png": "image/png",
   ".txt": "text/plain",
   ".woff2": "font/woff2",
   ".woff": "font/woff",

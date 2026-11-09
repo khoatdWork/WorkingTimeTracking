@@ -6,6 +6,8 @@ function stateRef(uid: string) {
   return doc(firebaseClients().db, "users", uid, "tracker", "state");
 }
 export async function readCloud(uid: string): Promise<TrackerState> {
+  if (globalThis.navigator?.onLine === false)
+    throw new Error("Sổ Firebase cần mạng để mở. Hãy kết nối rồi tải lại.");
   const result = await getDoc(stateRef(uid));
   return result.exists() ? validateState(result.data()) : emptyState();
 }
@@ -14,6 +16,8 @@ export async function writeCloud(
   next: TrackerState,
   expectedVersion: number,
 ): Promise<TrackerState> {
+  if (globalThis.navigator?.onLine === false)
+    throw new Error("Đang mất mạng. Thao tác chưa được lưu lên Firebase. Hãy kết nối rồi thử lại.");
   const { db, auth } = firebaseClients();
   if (auth.currentUser?.uid !== uid)
     throw new Error("Phiên đăng nhập đã thay đổi. Hãy đăng nhập lại.");

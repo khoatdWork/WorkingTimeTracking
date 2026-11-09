@@ -20,15 +20,18 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
   if (!ready) throw new Error(`App not ready: ${appUrl}`);
-  const test = spawn(process.env.PYTHON || "python", ["tests/e2e/app.py"], {
-    env: { ...process.env, APP_URL: appUrl, PYTHONIOENCODING: "utf-8" },
-    stdio: "inherit",
-  });
-  const result = await new Promise((resolve, reject) => {
-    test.on("exit", resolve);
-    test.on("error", reject);
-  });
-  process.exitCode = typeof result === "number" ? result : 1;
+  for (const script of ["tests/e2e/app.py", "tests/e2e/pwa.py"]) {
+    const test = spawn(process.env.PYTHON || "python", [script], {
+      env: { ...process.env, APP_URL: appUrl, PYTHONIOENCODING: "utf-8" },
+      stdio: "inherit",
+    });
+    const result = await new Promise((resolve, reject) => {
+      test.on("exit", resolve);
+      test.on("error", reject);
+    });
+    process.exitCode = typeof result === "number" ? result : 1;
+    if (process.exitCode) break;
+  }
 } finally {
   child?.kill();
 }
