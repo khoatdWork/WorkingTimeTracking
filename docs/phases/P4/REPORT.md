@@ -5,3 +5,5 @@ Yêu cầu: ngày WFH chỉ chọn8/10 giờ, không tracking giờ vào/về. T
 Tương thích: không tự làm tròn/chuyển ca WFH cũ. Sửa request/note legacy giữ timestamp; chọn fixed hours thay ca sau AlertDialog, hủy giữ nháp và sổ cũ. Đổi fixed WFH sang office/nghỉ xác nhận trước. JSON/local/Firebase giữ field mới, CSV có cột giờ WFH riêng, không tạo ca giả. Chỉ ngày đã đến được ghi giờ; ngày tương lai chỉ lên kế hoạch/request. Chặn trùng giữa fixed day và ca qua nửa đêm.
 
 Không đổi Firestore envelope/Rules, không queue cloud offline. Dữ liệu kiểm thử chỉ ở context local và emulator, không thêm giờ vào sổ Firebase thật. Test/review và release theo test-results.md. Cần cập nhật các tab/PWA trên thiết bị khác trước khi sửa giờ WFH mới; bản app cũ chưa hiểu field này.
+
+Released09/11/2026: code9377631, Actions42568082493 verify/deploy SUCCESS, hosted full browser suite PASS. App tại https://khoatdwork.github.io/WorkingTimeTracking/. Mở Cài đặt → Cài ứng dụng → Cập nhật ứng dụng để dùng bản mới trên PWA đã cài.

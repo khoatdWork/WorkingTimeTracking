@@ -22,3 +22,5 @@ Theo yêu cầu mới: WFH chỉ chọn8/10 giờ ròng, không tracking ca ho�
 P0, P1, P2 đã triển khai và kiểm tra trong phạm vi web cá nhân. Release code03c473f, GitHub Actions42563854172 SUCCESS cả verify-build/deploy. HTTPS full E2E Chromium/WebKit PASS, real Google sign-in trên localhost và Pages PASS, cloud default settings write/read-back PASS. Không thêm ca làm giả vào sổ thật. Link và bằng chứng tại docs/phases/P2. Physical phones và long-session token refresh chưa test, không tuyên bố PASS.
 
 P3 hoàn thành: release d86f37d, Actions42566267095 SUCCESS. Manifest/installability/offline local ledger/safe update/failed install rollback đã kiểm local + hosted theo docs/phases/P3/test-results.md. Chưa kiểm cài app trên thiết bị vật lý.
+
+P4 hoàn thành: release9377631, Actions42568082493 SUCCESS.22unit +2Rules tests, browser regression/WFH8/10/PWA local và hosted PASS; chi tiết docs/phases/P4/test-results.md. Dữ liệu cloud thật không bị thêm giờ giả.
