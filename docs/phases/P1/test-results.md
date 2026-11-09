@@ -10,3 +10,5 @@ Environment Windows, Node26.4.0/npm11.17.0, Python Playwright, static export táº
 - Playwright CLI reconnaissance attempted; Chrome channel missing. Real browser verification completed with installed Chromium/WebKit via Python skill, no false CLI PASS.
 
 Not run: physical iOS/Android, Google login inside automated isolated contexts.
+
+Final cross-tab and Linux CI: PASS, revision03c473f. Google real-account login/write/read checked separately in P2 via app, not E2E fixtures. Final CI uses Python Playwright1.62.0 (same as local).

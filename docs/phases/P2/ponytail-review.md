@@ -6,3 +6,5 @@ Known limit: rules validate top-level/settings/version, app validates individual
 
 Verdict: ship after CI and hosted smoke complete.
 Not checked: independent reviewer, physical phones, live Google account test until recorded.
+
+Release follow-up: CI verify-build/deploy SUCCESS, HTTPS Chromium/WebKit full suite PASS, real Google login (local + Pages), default settings cloud write/read PASS. Verdict: Ship. Remaining unchecked items: physical phones, long-duration Auth refresh, independent reviewer.
