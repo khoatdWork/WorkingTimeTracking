@@ -12,3 +12,11 @@ Local production build dùng Firebase web config thật + basePath /WorkingTimeT
 - Final full local suite: PASS17 unit + regression Chromium/WebKit + PWA/offline/update/rollback. Firestore emulator/CI/hosted results được ghi bên dưới sau khi hoàn tất.
 - Firestore emulator: PASS2 tests (owner/anonymous/cross-owner/validation/version assertions), portable Java21, không sửa Rules.
 - Physical phones/install/standalone Google popup: NOT RUN; browser diagnostics không thay thế kiểm thiết bị thật.
+
+## Release result
+
+Source `d86f37d5094104f3f2cda262fe2ad2d67fad0ac1`, GitHub Actions [42566267095](https://github.com/khoatdWork/WorkingTimeTracking/actions/runs/42566267095): verify-build SUCCESS + deploy SUCCESS. Ubuntu CI có đủ lint/typecheck/17unit/2Firestore tests/build/full regression + PWA/update/failure/offline Chromium và WebKit. Cache bản hosted `du-gio-pwa-%2FWorkingTimeTracking%2F-bde0dcfbf5e6c1ee`.
+
+HTTPS [GitHub Pages](https://khoatdwork.github.io/WorkingTimeTracking/): manifest200 application/manifest+json, sw.js200 application/javascript. Hosted full app regression Chromium/WebKit PASS; hosted Chromium native installability0 errors, offline check-in/pause/reload/new window/home link, cache privacy/ledger after reconnect, axe Settings320 PASS. Hosted WebKit manifest/icons/worker/offline-ready smoke PASS; offline navigation tested against local server refusal as documented above. No production Firebase work records created; all synthetic sessions isolated to test browsers' local storage. No page errors in PWA tests.
+
+No CI gate skipped. Existing GitHub Actions version deprecation annotations remain; they did not fail this run. This final evidence update is documentation-only and does not rebuild or change the verified application.
