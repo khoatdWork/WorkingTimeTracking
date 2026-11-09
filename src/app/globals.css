@@ -203,11 +203,6 @@ textarea:focus-visible {
 .brand-dot {
   color: #2257c7;
 }
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
 .storage-label {
   display: flex;
   align-items: center;
@@ -588,7 +583,7 @@ textarea:focus-visible {
   transform: translateX(-50%);
   width: min(100%, 480px);
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   padding: 7px 18px calc(9px + env(safe-area-inset-bottom));
   z-index: 20;
   gap: 10px;
@@ -737,6 +732,33 @@ textarea:focus-visible {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 9px;
+}
+.holiday-list {
+  border-top: 1px solid #d8e1ec;
+  padding-top: 21px;
+}
+.holiday-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border-bottom: 1px solid #d8e1ec;
+}
+.holiday-row:last-child {
+  border-bottom: 0;
+}
+.holiday-edit[data-slot="button"] {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  height: auto;
+  padding: 12px 6px;
+  white-space: normal;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.holiday-edit time {
+  color: #53657b;
+  font-size: 12px;
 }
 .account-panel > p {
   margin-top: 13px;
@@ -1053,9 +1075,6 @@ textarea:focus-visible {
   .main-content {
     padding-left: 15px;
     padding-right: 15px;
-  }
-  .header-right {
-    gap: 0;
   }
   .storage-label {
     font-size: 9px;

@@ -21,6 +21,10 @@ Theo yêu cầu mới: WFH chỉ chọn8/10 giờ ròng, không tracking ca ho�
 
 Thay mô hình hai sổ P2/P3 theo yêu cầu09/11/2026: mọi lần lưu giữ local trước; mỗi lần mở app/đăng nhập/có mạng trở lại tự sync. Chưa có local lấy Firebase; local chưa đồng bộ ưu tiên tải lên, local sạch nhận thay đổi Firebase. Local tách uid, nhận guest local một lần, transaction vẫn kiểm version trước ghi và chỉ báo đồng bộ sau server xác nhận. Nghiệm thu startup/offline/reopen/reconnect/server error/auth switch/real-time updates; báo cáo docs/phases/P5. Đã deploy ce5a39a; hosted app/PWA regression PASS, sync Firebase tài khoản thật P5 chưa nghiệm thu.
 
+## P6 — Quản lý ngày nghỉ lễ
+
+Thêm mục Ngày nghỉ lễ tại tab Cài đặt: khoảng Từ ngày/Đến ngày tính cả hai đầu, tên tùy chọn, danh sách theo tháng, mở sửa và xóa từng ngày có xác nhận. Cài đặt là tab thứ tư sau Báo cáo, bỏ nút header. Tái sử dụng WorkDay.kind=holiday/note để chỉ tiêu tuần/tháng tự loại ngày lễ, không trừ thêm cuối tuần. Không ghi đè ngày đã có dữ liệu: trùng bất kỳ ngày nào thì từ chối toàn khoảng; xóa kiểm version tránh mất thay đổi tab khác. Nghiệm thu lint/typecheck/build, unit, Firestore emulator và Playwright Chromium/WebKit/axe/export/import/stale tab/range/cross-year/four-tab navigation. Báo cáo docs/phases/P6; chưa deploy.
+
 ## Kết quả 09/11/2026
 
 P0, P1, P2 đã triển khai và kiểm tra trong phạm vi web cá nhân. Release code03c473f, GitHub Actions42563854172 SUCCESS cả verify-build/deploy. HTTPS full E2E Chromium/WebKit PASS, real Google sign-in trên localhost và Pages PASS, cloud default settings write/read-back PASS. Không thêm ca làm giả vào sổ thật. Link và bằng chứng tại docs/phases/P2. Physical phones và long-session token refresh chưa test, không tuyên bố PASS.

@@ -44,6 +44,7 @@ import { Today } from "@/modules/tracking/overview";
 import { History } from "@/modules/tracking/history";
 import { Reports } from "@/modules/tracking/reports";
 import { SettingsForm } from "@/modules/settings/settings-form";
+import { HolidaySettings } from "@/modules/settings/holiday-settings";
 type Screen = "today" | "history" | "reports" | "settings";
 export function TrackerApp() {
   const pwa = usePwa();
@@ -106,24 +107,10 @@ export function TrackerApp() {
             đủ giờ<span className="brand-dot">.</span>
           </span>
         </a>
-        <div className="header-right">
-          <span className="storage-label">
-            {user ? <Cloud size={14} /> : <HardDrive size={14} />}
-            {user ? "Local + Firebase" : "Trên thiết bị"}
-          </span>
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Cài đặt"
-            onClick={() => {
-              setEditor(null);
-              navigate("settings");
-            }}
-            disabled={!!editor}
-          >
-            <Settings2 size={20} />
-          </Button>
-        </div>
+        <span className="storage-label">
+          {user ? <Cloud size={14} /> : <HardDrive size={14} />}
+          {user ? "Local + Firebase" : "Trên thiết bị"}
+        </span>
       </header>
       {!pwa.online && (
         <p className="connection-notice" role="status">
@@ -211,6 +198,15 @@ export function TrackerApp() {
                       Sổ thời gian theo cách bạn làm việc.
                     </p>
                   </div>
+                  <HolidaySettings
+                    state={state}
+                    today={today}
+                    month={month || today.slice(0, 7)}
+                    setMonth={setMonth}
+                    busy={busy}
+                    save={save}
+                    edit={edit}
+                  />
                   <SettingsForm
                     key={state.version}
                     settings={state.settings}
@@ -308,8 +304,8 @@ export function TrackerApp() {
                     </Button>
                   </section>
                   <p className="footnote">
-                    Múi giờ Việt Nam (UTC+7). Ngày lễ, nghỉ phép cần đánh dấu
-                    thủ công trong Lịch sử. Trạng thái request do bạn tự ghi
+                    Múi giờ Việt Nam (UTC+7). Thêm ngày lễ tại Cài đặt; nghỉ phép đánh dấu
+                    trong Lịch sử. Trạng thái request do bạn tự ghi
                     nhận.
                   </p>
                 </>
@@ -325,6 +321,7 @@ export function TrackerApp() {
               { id: "today", label: "Hôm nay", icon: Clock3 },
               { id: "history", label: "Lịch sử", icon: CalendarDays },
               { id: "reports", label: "Báo cáo", icon: ChartNoAxesCombined },
+              { id: "settings", label: "Cài đặt", icon: Settings2 },
             ] as const
           ).map((item) => (
             <Button
@@ -333,7 +330,7 @@ export function TrackerApp() {
               aria-current={screen === item.id ? "page" : undefined}
               onClick={() => navigate(item.id)}
             >
-              <item.icon size={21} />
+              <item.icon size={21} aria-hidden="true" />
               <span>{item.label}</span>
             </Button>
           ))}

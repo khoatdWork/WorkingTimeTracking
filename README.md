@@ -93,7 +93,7 @@ src/modules/pwa/            installation, offline shell, safe updates
 src/modules/tracking/core/  time/date/validation thuần TypeScript
 src/modules/tracking/data/  local/cloud persistence + session hook
 src/modules/tracking/       today/history/reports/day editor
-src/modules/settings/      settings form
+src/modules/settings/      settings form and holiday management
 tests/unit/                 calculation and storage edge cases
 tests/database/             real Firestore emulator rules tests
 tests/e2e/                  Python Playwright Chromium/WebKit
@@ -101,6 +101,8 @@ docs/phases/                test, review, audit evidence
 ```
 
 Mỗi module có CONTEXT.md. AGENTS.md, AGENT.md, PLAN.md, Design.md dùng để tiếp tục phát triển.
+
+Tab **Cài đặt** nằm ngay sau **Báo cáo** trên thanh điều hướng dưới. Vào **Ngày nghỉ lễ**, chọn **Từ ngày / Đến ngày** (tính cả hai đầu), nhập tên nếu cần và bấm Thêm. Nghỉ một ngày thì chọn hai mốc giống nhau. Có thể thêm trước kỳ nghỉ, xuyên tháng/năm, xem danh sách theo tháng, bấm một ngày để sửa hoặc xóa từng ngày có xác nhận. Ngày lễ trong tuần tự giảm chỉ tiêu giờ; cuối tuần không giảm thêm. Khoảng có ngày đã lưu dữ liệu sẽ bị từ chối toàn bộ để tránh mất giờ; mở Chỉnh sửa ngày để xử lý riêng ngày đó hoặc chọn khoảng khác. Nghỉ phép vẫn đánh dấu trong Lịch sử.
 
 ## Firebase và deploy
 
