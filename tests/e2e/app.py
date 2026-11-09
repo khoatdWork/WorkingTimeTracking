@@ -112,7 +112,7 @@ def main():
             other.get_by_role("button", name="Lưu cài đặt", exact=True).click()
             expect(page.get_by_label("Ghi chú")).to_have_value("Giữ bản nháp khi tab khác lưu")
             page.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()
-            expect(page.get_by_role("alert")).to_contain_text("Sổ đã đổi ở tab khác")
+            expect(page.locator(".form-error[role='alert']")).to_contain_text("Sổ đã đổi ở tab khác")
             expect(page.get_by_label("Ghi chú")).to_have_value("Giữ bản nháp khi tab khác lưu")
             print(f"PASS {engine}: clock, reload, pause/resume, WFH, manual entry, reports, settings, export/import, draft, 5 viewports, axe.")
             context.close()
