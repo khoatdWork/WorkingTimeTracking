@@ -14,4 +14,12 @@
 
 Các browser context cô lập dùng dữ liệu giả lưu local. Sync dùng Auth/transport fixture; Rules dùng emulator. Không ghi dữ liệu giả lên Firebase production.
 
-Hosted P6 build/deploy, Firebase tài khoản thật cho thay đổi này và thiết bị vật lý: **NOT RUN**. Chưa commit/push/deploy. Root static build đã kiểm; không chạy thêm subpath build riêng cho P6. Review/audit không phát hiện lỗi chặn trong phạm vi thay đổi.
+Firebase tài khoản thật cho thay đổi này và thiết bị vật lý: **NOT RUN**. Local kiểm root build; CI kiểm subpath/WorkingTimeTracking cùng toàn bộ suite. Review/audit không phát hiện lỗi chặn trong phạm vi thay đổi.
+
+## Release evidence
+
+- Source87f280d21f7abfcf8319ce8bcd7a0c40871a6d73, [Actions42582851794](https://github.com/khoatdWork/WorkingTimeTracking/actions/runs/42582851794) SUCCESS: verify-build3m37s, deploy8s, kết thúc09/11/2026 lúc15:03:59 ICT.
+- CI Ubuntu: npm ci/lint/typecheck/40unit/2Rules/Pages subpath build/full production E2E Chromium+WebKit/PWA/sync fixture PASS. PWA cache du-gio-pwa-%2FWorkingTimeTracking%2F-42dd91db1fedace6.
+- Hosted HTTP: trang chính200, manifest200 đúng application/manifest+json, sw.js200 đúng application/javascript và cache khớp CI. tests/e2e/sync-fixture.html404.
+- Hosted `APP_URL=https://khoatdwork.github.io/WorkingTimeTracking/ node scripts/e2e.mjs`: PASS exit0. App/WFH/holiday regression Chromium+WebKit PASS, gồm range bao gồm hai đầu, atomic rejection, qua năm mới, chỉ tiêu đúng,4tab/keyboard, stale delete, JSON/CSV,320px và hovered-button axe. Chromium HTTPS PWA manifest/installability/offline/reload/new window/reconnect/cache privacy PASS. WebKit hosted PWA manifest/icons/worker/ready PASS; offline navigation vẫn kiểm bằng local server refusal theo giới hạn đã ghi P3.
+- Browser hosted chạy context cô lập chưa đăng nhập; không ghi Firebase production. Log `output/verification/P6-hosted-e2e.log` và screenshots `output/playwright/P6` ignored. Kết quả này xác nhận app/PWA release; không xác nhận sync tài khoản Firebase thật.

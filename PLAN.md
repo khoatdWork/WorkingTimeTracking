@@ -23,7 +23,7 @@ Thay mô hình hai sổ P2/P3 theo yêu cầu09/11/2026: mọi lần lưu giữ 
 
 ## P6 — Quản lý ngày nghỉ lễ
 
-Thêm mục Ngày nghỉ lễ tại tab Cài đặt: khoảng Từ ngày/Đến ngày tính cả hai đầu, tên tùy chọn, danh sách theo tháng, mở sửa và xóa từng ngày có xác nhận. Cài đặt là tab thứ tư sau Báo cáo, bỏ nút header. Tái sử dụng WorkDay.kind=holiday/note để chỉ tiêu tuần/tháng tự loại ngày lễ, không trừ thêm cuối tuần. Không ghi đè ngày đã có dữ liệu: trùng bất kỳ ngày nào thì từ chối toàn khoảng; xóa kiểm version tránh mất thay đổi tab khác. Nghiệm thu lint/typecheck/build, unit, Firestore emulator và Playwright Chromium/WebKit/axe/export/import/stale tab/range/cross-year/four-tab navigation. Báo cáo docs/phases/P6; chưa deploy.
+Thêm mục Ngày nghỉ lễ tại tab Cài đặt: khoảng Từ ngày/Đến ngày tính cả hai đầu, tên tùy chọn, danh sách theo tháng, mở sửa và xóa từng ngày có xác nhận. Cài đặt là tab thứ tư sau Báo cáo, bỏ nút header. Tái sử dụng WorkDay.kind=holiday/note để chỉ tiêu tuần/tháng tự loại ngày lễ, không trừ thêm cuối tuần. Không ghi đè ngày đã có dữ liệu: trùng bất kỳ ngày nào thì từ chối toàn khoảng; xóa kiểm version tránh mất thay đổi tab khác. Lint/typecheck/build,40unit,2Rules và Playwright Chromium/WebKit/axe/export/import/stale tab/range/cross-year/four-tab navigation PASS. Đã deploy87f280d, Actions42582851794 SUCCESS; báo cáo docs/phases/P6. Firebase tài khoản thật cho P6 và thiết bị vật lý NOT RUN.
 
 ## Kết quả 09/11/2026
 
@@ -34,3 +34,5 @@ P3 hoàn thành: release d86f37d, Actions42566267095 SUCCESS. Manifest/installab
 P4 hoàn thành: release9377631, Actions42568082493 SUCCESS.22unit +2Rules tests, browser regression/WFH8/10/PWA local và hosted PASS; chi tiết docs/phases/P4/test-results.md. Dữ liệu cloud thật không bị thêm giờ giả.
 
 P5 đã deploy: release ce5a39a, Actions42571234030 verify-build/deploy SUCCESS.33unit +2Rules tests, browser production/sync fixture Chromium/WebKit PASS. Hosted HTTPS app/WFH/PWA regression và smoke copy/local initialization PASS; chưa kiểm sync tài khoản Firebase thật hoặc thiết bị vật lý. Chi tiết docs/phases/P5.
+
+P6 đã deploy: release87f280d, Actions42582851794 verify-build/deploy SUCCESS.40unit +2Rules, full E2E Chromium/WebKit production/PWA/sync fixture PASS. Hosted app/WFH/holiday ranges/four-tab navigation/axe hai engines PASS, Chromium HTTPS offline PWA và WebKit manifest/worker smoke PASS. Firebase tài khoản thật P6 và thiết bị vật lý NOT RUN. Chi tiết docs/phases/P6.
