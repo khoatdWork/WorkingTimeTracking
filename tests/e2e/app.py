@@ -34,6 +34,7 @@ def main():
             page.clock.fast_forward(3600 * 1000)
             page.get_by_role("button", name="Đã rời công ty", exact=True).click()
             expect(page.locator(".timer-digits")).to_have_text("09:00:00")
+            page.clock.resume()
             page.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ").click()
             page.get_by_role("button", name="Work from home", exact=True).click()
             page.get_by_role("button", name="Đã gửi", exact=True).click()
