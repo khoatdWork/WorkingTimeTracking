@@ -1,0 +1,24 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function owner(uid) { return request.auth != null && request.auth.uid == uid; }
+    function validState(data) {
+      return data.keys().hasAll(['schema', 'version', 'settings', 'days'])
+        && data.keys().hasOnly(['schema', 'version', 'settings', 'days'])
+        && data.schema == 1 && data.version is int && data.version > 0
+        && data.days is map && data.days.size() <= 5000
+        && data.settings is map
+        && data.settings.keys().hasAll(['dailyMinutes', 'lunchMinutes', 'wfhLimit'])
+        && data.settings.keys().hasOnly(['dailyMinutes', 'lunchMinutes', 'wfhLimit'])
+        && data.settings.dailyMinutes is int && data.settings.dailyMinutes >= 1 && data.settings.dailyMinutes <= 1440
+        && data.settings.lunchMinutes is int && data.settings.lunchMinutes >= 0 && data.settings.lunchMinutes <= 180
+        && data.settings.wfhLimit in [2, 3];
+    }
+    match /users/{uid}/tracker/state {
+      allow read: if owner(uid);
+      allow create: if owner(uid) && validState(request.resource.data) && request.resource.data.version == 1;
+      allow update: if owner(uid) && validState(request.resource.data) && request.resource.data.version == resource.data.version + 1;
+      allow delete: if false;
+    }
+  }
+}
