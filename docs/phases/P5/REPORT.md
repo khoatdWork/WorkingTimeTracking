@@ -8,4 +8,8 @@ Chính sách khi cả hai phía thay đổi: ưu tiên toàn bộ sổ local ch�
 
 Phạm vi source: tracking/data, account/PWA copy, app-shell status/help, CONTEXT/AGENT/PLAN/README, tests. Không thêm dependency; dùng Vite đã có qua Vitest cho fixture browser, không đưa fixture vào Next static export. CI test:e2e chạy cả regression production và sync fixture.
 
-Kiểm tra: xem test-results.md và các báo cáo review/audit/UI. Chưa push/deploy hoặc kiểm chứng sync bằng tài khoản Firebase thật/hosted cho P5. Bằng chứng cloud thật ở P2 là lịch sử, không được dùng thay nghiệm thu P5.
+Kiểm tra: xem test-results.md và các báo cáo review/audit/UI. Bằng chứng cloud thật ở P2 là lịch sử, không được dùng thay nghiệm thu P5.
+
+Released09/11/2026: source ce5a39a36c17d32f01422d7a49a754b7e1524742, [Actions42571234030](https://github.com/khoatdWork/WorkingTimeTracking/actions/runs/42571234030) verify-build và deploy SUCCESS. [Pages](https://khoatdwork.github.io/WorkingTimeTracking/) phục vụ cache du-gio-pwa-%2FWorkingTimeTracking%2F-4d43e61fb1621ccd. Hosted app/WFH regression Chromium/WebKit PASS, Chromium offline PWA/manifest và WebKit hosted worker/manifest smoke PASS. Smoke riêng kiểm help local-first mới, tự tạo local lúc mở app và fixture không được publish (404).
+
+Chưa kiểm sync bằng tài khoản Firebase thật cho P5 hoặc thiết bị vật lý. Không thêm giờ giả vào Firebase thật. App/PWA đang cài cần Cài đặt → Cài ứng dụng → Cập nhật ứng dụng để nhận bản mới; đóng hết cửa sổ cũng cho phép worker mới áp dụng.

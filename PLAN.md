@@ -19,7 +19,7 @@ Theo yêu cầu mới: WFH chỉ chọn8/10 giờ ròng, không tracking ca ho�
 
 ## P5 — Bản local và tự đồng bộ Firebase
 
-Thay mô hình hai sổ P2/P3 theo yêu cầu09/11/2026: mọi lần lưu giữ local trước; mỗi lần mở app/đăng nhập/có mạng trở lại tự sync. Chưa có local lấy Firebase; local chưa đồng bộ ưu tiên tải lên, local sạch nhận thay đổi Firebase. Local tách uid, nhận guest local một lần, transaction vẫn kiểm version trước ghi và chỉ báo đồng bộ sau server xác nhận. Nghiệm thu startup/offline/reopen/reconnect/server error/auth switch/real-time updates; báo cáo docs/phases/P5. Chưa deploy hoặc nghiệm thu Firebase hosted cho thay đổi P5.
+Thay mô hình hai sổ P2/P3 theo yêu cầu09/11/2026: mọi lần lưu giữ local trước; mỗi lần mở app/đăng nhập/có mạng trở lại tự sync. Chưa có local lấy Firebase; local chưa đồng bộ ưu tiên tải lên, local sạch nhận thay đổi Firebase. Local tách uid, nhận guest local một lần, transaction vẫn kiểm version trước ghi và chỉ báo đồng bộ sau server xác nhận. Nghiệm thu startup/offline/reopen/reconnect/server error/auth switch/real-time updates; báo cáo docs/phases/P5. Đã deploy ce5a39a; hosted app/PWA regression PASS, sync Firebase tài khoản thật P5 chưa nghiệm thu.
 
 ## Kết quả 09/11/2026
 
@@ -28,3 +28,5 @@ P0, P1, P2 đã triển khai và kiểm tra trong phạm vi web cá nhân. Relea
 P3 hoàn thành: release d86f37d, Actions42566267095 SUCCESS. Manifest/installability/offline local ledger/safe update/failed install rollback đã kiểm local + hosted theo docs/phases/P3/test-results.md. Chưa kiểm cài app trên thiết bị vật lý.
 
 P4 hoàn thành: release9377631, Actions42568082493 SUCCESS.22unit +2Rules tests, browser regression/WFH8/10/PWA local và hosted PASS; chi tiết docs/phases/P4/test-results.md. Dữ liệu cloud thật không bị thêm giờ giả.
+
+P5 đã deploy: release ce5a39a, Actions42571234030 verify-build/deploy SUCCESS.33unit +2Rules tests, browser production/sync fixture Chromium/WebKit PASS. Hosted HTTPS app/WFH/PWA regression và smoke copy/local initialization PASS; chưa kiểm sync tài khoản Firebase thật hoặc thiết bị vật lý. Chi tiết docs/phases/P5.

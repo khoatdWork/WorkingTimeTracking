@@ -10,4 +10,4 @@ cloud.ts dùng getDocFromServer, onSnapshot includeMetadataChanges chỉ nhận 
 
 TrackerState/core/JSON/CSV không đổi schema; WorkDay.wfhHours8|10 và timestamp exact vẫn giữ. shortcut: một document/sổ, giới hạn app850KB; chuyển document theo tháng khi gần giới hạn hoặc tăng quy mô. Cloud cần mạng để xác nhận, localStorage có thể bị người dùng/trình duyệt xóa nên vẫn nên xuất JSON.
 
-P5 verification:33 unit,2 Rules emulator (Java21), Playwright sync Chromium/WebKit với Auth/transport fixture và production app/WFH/PWA regression. Chi tiết docs/phases/P5. Không coi fixture là kiểm Firebase thật; hosted/real-account sync P5 NOT RUN, chưa deploy.
+P5 verification:33 unit,2 Rules emulator (Java21), Playwright sync Chromium/WebKit với Auth/transport fixture và production app/WFH/PWA regression. Đã deploy ce5a39a, Actions42571234030 SUCCESS; hosted HTTPS app/WFH/PWA regression + local initialization/help smoke PASS. Chi tiết docs/phases/P5. Không coi fixture hoặc hosted local-mode tests là kiểm sync Firebase tài khoản thật; real-account sync P5 NOT RUN.
