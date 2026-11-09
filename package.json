@@ -11,7 +11,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test:unit": "vitest run tests/unit",
     "test:db": "firebase emulators:exec --only firestore --project demo-working-time \"vitest run tests/database\"",
-    "test:e2e": "node scripts/e2e.mjs",
+    "test:e2e": "node scripts/e2e.mjs && node scripts/e2e-sync.mjs",
+    "test:sync": "node scripts/e2e-sync.mjs",
     "firebase:login": "firebase login",
     "firebase:projects": "firebase projects:list",
     "firebase:rules": "firebase deploy --only firestore:rules"

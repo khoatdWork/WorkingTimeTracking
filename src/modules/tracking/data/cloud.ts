@@ -1,4 +1,4 @@
-import { doc, getDoc, runTransaction } from "firebase/firestore";
+import { doc, getDocFromServer, onSnapshot, runTransaction } from "firebase/firestore";
 import { FirebaseError } from "firebase/app";
 import { firebaseClients } from "@/lib/firebase/client";
 import { emptyState, validateState, type TrackerState } from "../core/domain";
@@ -8,8 +8,13 @@ function stateRef(uid: string) {
 export async function readCloud(uid: string): Promise<TrackerState> {
   if (globalThis.navigator?.onLine === false)
     throw new Error("Sổ Firebase cần mạng để mở. Hãy kết nối rồi tải lại.");
-  const result = await getDoc(stateRef(uid));
+  const result = await getDocFromServer(stateRef(uid));
   return result.exists() ? validateState(result.data()) : emptyState();
+}
+export function watchCloud(uid: string, changed: () => void, failed: (error: Error) => void) {
+  return onSnapshot(stateRef(uid), { includeMetadataChanges: true }, (snapshot) => {
+    if (!snapshot.metadata.fromCache && !snapshot.metadata.hasPendingWrites) changed();
+  }, failed);
 }
 export async function writeCloud(
   uid: string,

@@ -8,7 +8,7 @@ Theo dõi thời gian làm việc và WFH, cân đối đủ giờ trong tháng.
 
 ## Sử dụng
 
-1. Vào Cài đặt, đăng nhập Google để lưu vào tài khoản Firebase. Khi chưa đăng nhập, dữ liệu chỉ ở trình duyệt hiện tại và có nhãn “Trên thiết bị”. Hai sổ tách riêng; dùng xuất/nhập JSON nếu cần chuyển dữ liệu.
+1. App luôn giữ bản local trên thiết bị. Vào Cài đặt, đăng nhập Google để tự đồng bộ Firebase mỗi lần mở app, có mạng trở lại hoặc thay đổi dữ liệu. Chưa có local thì tải Firebase về; có thay đổi local chưa đồng bộ thì ưu tiên tải lên. Local đã đồng bộ tự nhận thay đổi mới từ Firebase. Bản local tách theo tài khoản; dữ liệu trước đăng nhập được nhận một lần vào tài khoản đầu tiên.
 2. Với Văn phòng: bấm “Đã lên công ty”, khi về bấm kết thúc. Đồng hồ vẫn tính khi đóng tab hoặc tắt máy vì lưu thời điểm bắt đầu. Với **Work from home: chỉ chọn 8 giờ hoặc 10 giờ**, không cần bắt đầu/kết thúc. Chọn mức khác sẽ thay số giờ trong ngày đó, không cộng dồn.
 3. Ngày văn phòng ghi theo ca mặc định trừ **60 phút nghỉ trưa một lần/ngày**. Không cần tạm dừng trong giờ nghỉ trưa. Nút tạm dừng dùng cho nghỉ thêm. **8/10 giờ WFH đã là giờ làm ròng**, không trừ thêm nghỉ trưa, kể cả khi đổi cài đặt.
 4. Với WFH, gửi request qua kênh công ty rồi đánh dấu Chưa gửi / Đã gửi / Đã duyệt tại app. Giới hạn mặc định 3 ngày mỗi tuần; có cảnh báo vượt giới hạn và request chưa gửi. App không tự gửi request cho công ty.
@@ -30,8 +30,8 @@ Theo dõi thời gian làm việc và WFH, cân đối đủ giờ trong tháng.
 
 - Mở web có mạng một lần, vào **Cài đặt → Cài ứng dụng**, chờ dòng “Giao diện đã sẵn sàng mở khi mất mạng”. Chrome/Edge có thể hiện nút **Cài Đủ giờ**; nếu chưa hiện, dùng mục Cài ứng dụng/Thêm vào màn hình chính trong menu trình duyệt.
 - iPhone/iPad: mở bằng Safari → Chia sẻ → Thêm vào Màn hình chính. App có icon riêng và mở dạng standalone.
-- **Sổ trên thiết bị** có thể vào/về, tạm dừng, chỉnh ngày và xem báo cáo khi mất mạng, kể cả đóng rồi mở lại app. Dữ liệu chỉ nằm trong trình duyệt/ứng dụng đó; hãy xuất JSON định kỳ. Cài app không tự chuyển dữ liệu giữa trình duyệt, thiết bị hoặc sổ Firebase.
-- **Sổ Firebase cần mạng để mở và lưu.** Không có hàng đợi ghi offline hoặc tự chuyển sang sổ thiết bị. Nếu lưu thất bại, giữ bản nháp, kết nối lại và thử lại. Không báo đồng bộ trước khi server xác nhận.
+- **Sổ local luôn có trên thiết bị**, kể cả đã đăng nhập Google. Có thể vào/về, tạm dừng, chỉnh ngày và xem báo cáo khi mất mạng, kể cả đóng rồi mở lại app. Hãy xuất JSON định kỳ để giữ bản ngoài trình duyệt.
+- **Đồng bộ Firebase tự chạy** khi mở app, đăng nhập, có mạng hoặc quay lại app; cập nhật Firebase cũng được theo dõi khi đang mở. Thao tác lưu local trước, cờ chờ đồng bộ được giữ qua lần mở lại. Chỉ hiện “Đã đồng bộ Firebase” sau server xác nhận. Lỗi mạng/quyền ghi giữ nguyên local và có nút thử lại. Khi local chưa đồng bộ và Firebase cùng có thay đổi, toàn bộ sổ local được ưu tiên tải lên theo yêu cầu; hãy xuất JSON nếu cần đối chiếu trước khi dùng nhiều thiết bị đồng thời.
 - Khi có phiên bản mới, mở Cài đặt, lưu thay đổi rồi chọn **Cập nhật ứng dụng**. App hỏi trước khi tải lại cửa sổ hiện tại; các cửa sổ khác giữ bản nháp và ca đang chạy không bị kết thúc. Đóng hết cửa sổ cũng cho phép phiên bản đã tải tự áp dụng ở lần mở sau.
 
 PWA chỉ đăng ký service worker trong production build (HTTPS hoặc localhost). Khi chuyển một cổng localhost đã chạy production sang `npm run dev`, dùng Application → Service Workers → Unregister và xóa Cache Storage nếu trình duyệt vẫn mở bản cũ. Không xóa Local Storage nếu cần giữ sổ trên thiết bị.
@@ -64,6 +64,8 @@ python -m pip install -r requirements-dev.txt
 python -m playwright install chromium webkit
 npm run test:e2e
 ```
+
+`test:e2e` gồm browser production và `test:sync` (hook/repository/sync thật, Firebase Auth/transport bằng fixture cô lập). Có thể chạy riêng `npm run test:sync`; fixture không nằm trong build/deploy.
 
 Nếu build cho subpath, dùng cùng biến khi test:
 
@@ -108,6 +110,6 @@ Xem [hướng dẫn cấu hình/deploy](docs/deployment/FIREBASE-GITHUB.md). Pus
 
 ## Giới hạn
 
-Sổ cá nhân lưu một document Firestore theo user, ghi transaction với version để từ chối ghi đè khi thiết bị khác đã thay đổi. Đây là lựa chọn cho một người dùng; dữ liệu app giới hạn 850 KB để chừa khoảng dưới giới hạn 1 MiB của Firestore. Khi gần đầy cần xuất/lưu trữ năm cũ; nếu dùng dài hạn với nhiều dữ liệu, chuyển sang document theo tháng. Cloud cần mạng để ghi, không báo thành công trước khi server xác nhận. Đồng hồ dùng giờ của thiết bị, nên thiết bị cần đặt giờ đúng. Không phải bảng chấm công chính thức của công ty.
+Sổ cá nhân lưu một document Firestore theo user, transaction từ chối ghi nếu version đổi giữa lúc đọc để sync và ghi. Khi có local chưa đồng bộ, app ưu tiên toàn bộ sổ local; không tự ghép từng ngày giữa nhiều thiết bị. Đây là lựa chọn cho một người dùng; dữ liệu app giới hạn 850 KB để chừa khoảng dưới giới hạn 1 MiB của Firestore. Khi gần đầy cần xuất/lưu trữ năm cũ; nếu dùng dài hạn với nhiều dữ liệu, chuyển sang document theo tháng. Cloud cần mạng để ghi, chỉ xác nhận đồng bộ sau server. Đồng hồ dùng giờ của thiết bị, nên thiết bị cần đặt giờ đúng. Không phải bảng chấm công chính thức của công ty.
 
 Kết quả Firebase/release ban đầu ở docs/phases/P2/, PWA ở docs/phases/P3/. Không coi kiểm thử browser giả lập là kiểm thử điện thoại thật.

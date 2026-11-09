@@ -9,3 +9,5 @@ Console configuration verified; lần đăng nhập thật và ghi cloud sẽ gh
 Live follow-up: đăng nhập Google bằng tài khoản thật, lưu default settings và đọc lại Firestore qua app local static subpath đã PASS09/11/2026. Không tạo ca làm giả. Hosted Pages smoke ghi ở P2 sau deploy; token refresh dài hạn chưa kiểm.
 
 Hosted follow-up: Google login trên https://khoatdwork.github.io/WorkingTimeTracking/ PASS, cùng ledger default settings đọc thành công. Browser Chromium/WebKit HTTPS full app suite PASS, không dùng Auth giả để tuyên bố live sign-in. Chi tiết P2/REPORT.md.
+
+P5: sau auth hydration hook mở bản local theo uid rồi tự sync. Guest local có dữ liệu được chuyển một lần vào tài khoản đầu tiên, không tái upload cho tài khoản khác. Đăng xuất mở local guest riêng, không đưa sổ tài khoản trước sang tài khoản sau. AccountPanel giải thích lưu local trước và xác nhận Firebase riêng. Tests auth switch dùng fixture, hosted Google auth cho P5 NOT RUN; bằng chứng P2 là lịch sử, không phải nghiệm thu luồng P5.

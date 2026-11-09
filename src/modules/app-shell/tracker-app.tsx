@@ -47,7 +47,7 @@ import { SettingsForm } from "@/modules/settings/settings-form";
 type Screen = "today" | "history" | "reports" | "settings";
 export function TrackerApp() {
   const pwa = usePwa();
-  const { state, user, loading, busy, error, save, reload } = useTracker();
+  const { state, user, loading, busy, error, syncError, syncing, pending, save, retrySync, reload } = useTracker();
   const [now, setNow] = useState<number | null>(null),
     [screen, setScreen] = useState<Screen>("today");
   const [editor, setEditor] = useState<string | null>(null),
@@ -109,7 +109,7 @@ export function TrackerApp() {
         <div className="header-right">
           <span className="storage-label">
             {user ? <Cloud size={14} /> : <HardDrive size={14} />}
-            {user ? "Firebase" : "Trên thiết bị"}
+            {user ? "Local + Firebase" : "Trên thiết bị"}
           </span>
           <Button
             variant="ghost"
@@ -127,12 +127,17 @@ export function TrackerApp() {
       </header>
       {!pwa.online && (
         <p className="connection-notice" role="status">
-          {loading
-            ? "Đang mất mạng. Sổ trên thiết bị dùng được offline; sổ Firebase cần kết nối."
-            : user
-            ? "Đang mất mạng. Sổ Firebase cần kết nối để mở và lưu. Thao tác chưa lưu cần thử lại khi có mạng."
-            : "Đang mất mạng. Bạn vẫn có thể chấm công vào sổ trên thiết bị này."}
+          Đang mất mạng. Dữ liệu vẫn lưu trên thiết bị và tự đồng bộ khi có mạng, đã đăng nhập Google.
         </p>
+      )}
+      {user && state && (
+        <div className="connection-notice" role="status">
+          {syncing ? "Đã giữ bản local · Đang đồng bộ Firebase…"
+            : syncError ? `Bản local vẫn được giữ. ${syncError}`
+            : pending ? "Đã lưu local · Chờ đồng bộ Firebase"
+            : "Đã lưu local · Đã đồng bộ Firebase"}
+          {syncError && <Button variant="ghost" onClick={retrySync} disabled={busy}>Thử đồng bộ lại</Button>}
+        </div>
       )}
       {pwa.waiting && !editor && screen !== "settings" && (
         <div className="connection-notice update-notice" role="status">
@@ -225,6 +230,8 @@ export function TrackerApp() {
                       <Download size={19} />
                     </div>
                     <p className="help">
+                      Dữ liệu luôn có bản local trên thiết bị. Khi mở app, đăng nhập hoặc có mạng trở lại,
+                      app tự đồng bộ với Firebase: tải về khi chưa có bản local, tải lên các thay đổi local chưa đồng bộ. {" "}
                       JSON giữ nguyên ca làm, trạng thái WFH và cài đặt. CSV
                       dùng để đối chiếu trên bảng tính. Giờ vào/về trong CSV là UTC; WFH cố định có cột số giờ riêng.
                     </p>
@@ -350,7 +357,7 @@ export function TrackerApp() {
             <AlertDialogDescription>
               {clear
                 ? "Ca làm, WFH và ngày nghỉ trong sổ hiện tại sẽ bị xóa. Hãy xuất JSON trước nếu cần giữ dữ liệu."
-                : `Bản sao lưu có ${Object.keys(importState?.days || {}).length} ngày. Thao tác này thay toàn bộ sổ ${user ? "Firebase của tài khoản đang đăng nhập" : "trên thiết bị"}. Hãy xuất sổ hiện tại trước khi tiếp tục.`}
+                : `Bản sao lưu có ${Object.keys(importState?.days || {}).length} ngày. Thao tác này thay toàn bộ sổ trên thiết bị${user ? " và tự đồng bộ lên Firebase của tài khoản đang đăng nhập" : ""}. Hãy xuất sổ hiện tại trước khi tiếp tục.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

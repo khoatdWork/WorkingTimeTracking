@@ -65,16 +65,16 @@ export function AccountPanel({
             {pending ? "Đang đăng nhập…" : "Đăng nhập với Google"}
           </Button>
           <p className="help">
-            Sổ trên thiết bị và sổ tài khoản tách riêng. Sau đăng nhập, bạn có
-            thể nhập bản sao lưu vào sổ Firebase.
+            Sau đăng nhập, app tự đưa dữ liệu đang lưu trên thiết bị lên Firebase.
+            Nếu chưa có dữ liệu local, app tải sổ Firebase về thiết bị.
           </p>
         </>
       )}
       {user && (
         <>
           <p className="help">
-            Mọi lần lưu đều chờ Firebase xác nhận. Kết nối mạng cần thiết để ghi
-            dữ liệu.
+            Mỗi lần lưu đều giữ bản local trước, rồi tự đồng bộ khi có mạng.
+            Chỉ báo đã đồng bộ sau khi Firebase xác nhận. Bản local được giữ riêng theo tài khoản.
           </p>
           <Button
             variant="outline"

@@ -32,7 +32,8 @@ export function PwaPanel({ pwa, busy }: { pwa: ReturnType<typeof usePwa>; busy: 
         </p>
       )}
       <p className="notice">
-        Sổ “Trên thiết bị” có thể chấm công khi mất mạng. Sổ Firebase cần mạng để mở và lưu; app không tự chuyển sổ hay lưu chờ đồng bộ.
+        Dữ liệu luôn lưu trên thiết bị, có thể chấm công khi mất mạng.
+        App tự đồng bộ Firebase khi có mạng và đã đăng nhập Google, kể cả sau khi mở lại app.
         Lần đầu hãy mở app có mạng và chờ giao diện sẵn sàng. Xuất JSON định kỳ để có bản sao lưu.
       </p>
       {pwa.waiting && (

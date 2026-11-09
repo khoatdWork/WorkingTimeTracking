@@ -17,6 +17,10 @@ Manifest và PNG icons (regular/maskable/Apple), standalone + safe areas, servic
 ## P4 — WFH cố định
 Theo yêu cầu mới: WFH chỉ chọn8/10 giờ ròng, không tracking ca hoặc trừ thêm nghỉ trưa. Cập nhật Today/editor, core validation/totals, JSON/CSV, tests. Legacy ca giữ nguyên đến khi người dùng xác nhận đổi; tương lai không ghi giờ, chặn mixed/cross-midnight double count. Nghiệm thu theo docs/phases/P4.
 
+## P5 — Bản local và tự đồng bộ Firebase
+
+Thay mô hình hai sổ P2/P3 theo yêu cầu09/11/2026: mọi lần lưu giữ local trước; mỗi lần mở app/đăng nhập/có mạng trở lại tự sync. Chưa có local lấy Firebase; local chưa đồng bộ ưu tiên tải lên, local sạch nhận thay đổi Firebase. Local tách uid, nhận guest local một lần, transaction vẫn kiểm version trước ghi và chỉ báo đồng bộ sau server xác nhận. Nghiệm thu startup/offline/reopen/reconnect/server error/auth switch/real-time updates; báo cáo docs/phases/P5. Chưa deploy hoặc nghiệm thu Firebase hosted cho thay đổi P5.
+
 ## Kết quả 09/11/2026
 
 P0, P1, P2 đã triển khai và kiểm tra trong phạm vi web cá nhân. Release code03c473f, GitHub Actions42563854172 SUCCESS cả verify-build/deploy. HTTPS full E2E Chromium/WebKit PASS, real Google sign-in trên localhost và Pages PASS, cloud default settings write/read-back PASS. Không thêm ca làm giả vào sổ thật. Link và bằng chứng tại docs/phases/P2. Physical phones và long-session token refresh chưa test, không tuyên bố PASS.
