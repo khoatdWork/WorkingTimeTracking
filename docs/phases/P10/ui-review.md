@@ -1,5 +1,7 @@
 # P10 — UI source review
 
+Hosted follow-up11/11:51dd10f deployed via successful Actions42956539128. Today/leave/settings plus app/WFH/holidays Chromium/WebKit PASS, including keyboard/disclosures/notes/reload/ca trước/guards/axe320390. Root/agent inspected hosted leave/Settings images. Chromium HTTPS offline PWA and WebKit worker smoke PASS; real Firebase and physical devices remain NOT RUN. Earlier local-only records below are historical.
+
 Follow-up11/11: leave state is communicated by heading/pill text as well as tint/icon; icon is aria-hidden. Note has a label, pre-wrap and overflow-wrap. Day kind wins over active-session styling. Existing named region, editor, and previous-day warning/stop stay available. Root/agent screenshot review320390 and targeted Today/leave Chromium/WebKit (axe, overflow, reload) PASS. Hosted/Firebase/physical-device limits unchanged.
 
 Ngày 11/11/2026. Source review PASS with no blocker. This record distinguishes source checks from parent browser/visual verification.

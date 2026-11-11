@@ -39,6 +39,8 @@ Yêu cầu11/11/2026: chuyển nhãn nơi lưu, thông báo mất mạng và tr�
 
 ## P10 — Hôm nay gọn hơn
 
+Đã deploy51dd10f, Actions42956539128 verify-build5m15s/deploy12s SUCCESS11/11/2026 lúc11:07:23ICT. CI lint/typecheck/build44unit/2Rules/full E2E Chromium+WebKit PASS. Hosted app/Today/WFH/holidays/leave/settings hai engines, Chromium HTTPS offline PWA và WebKit manifest/worker smoke PASS. Cache du-gio-pwa-%2FWorkingTimeTracking%2F-486b77e47d3fad89 khớp CI. Bằng chứng docs/phases/P10; Firebase tài khoản thật/thiết bị vật lý NOT RUN. Phần bản thử dưới đây là lịch sử trước deploy.
+
 Yêu cầu11/11/2026: Hôm nay thu gọn chấm công, ghép request vào WFH, nhóm tuần/tháng/ca thành hàng tóm tắt mở chi tiết. Theo yêu cầu tiếp cùng phase, chuyển toàn bộ quản lý nghỉ phép sang Cài đặt → Nghỉ phép, dùng guard giữ/bỏ nháp và giữ mục/tháng sau editor. Ngày nghỉ hôm nay có thẻ nổi bật, tiêu đề24px/ghi chú và pill ưu tiên loại ngày, giữ xử lý ca hôm trước. Không đổi nghiệp vụ. Local preview lint/typecheck/build44unit/2Rules/full E2E Chromium+WebKit PASS; màn ngắn hơn47–53%, axe/overflow/bbox320390 PASS. Sau điều chỉnh thẻ nghỉ, chạy lại lint/typecheck/build44unit/2Rules và targeted Today/leave Chromium+WebKit PASS. Bằng chứng docs/phases/P10; chưa deploy, Firebase thật/thiết bị vật lý NOT RUN.
 
 ## Kết quả 09/11/2026

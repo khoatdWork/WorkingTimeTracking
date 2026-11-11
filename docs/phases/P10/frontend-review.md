@@ -1,5 +1,7 @@
 # P10 — Frontend review
 
+Hosted follow-up11/11: release51dd10f deployed successfully. Root/agent inspected hosted green leaveToday panel390/320 and six-row Settings320: expected heading/note/actions, no clipping; axe/overflow/bbox Chromium/WebKit PASS. All production regression and HTTPS PWA checks passed within the limits in test-results.md. Prior local-only statements below describe history before release.
+
 Follow-up11/11: use a single #E4F3ED panel, #B8D9CE border, #087561 decorative calendar and24px text to make today's leave unmistakable. Keep left alignment, Be Vietnam Pro and existing edit action. Holiday wording stays distinct. Source review found no blocker. Root and browser agent inspected leave320/390 and active-prior-session320 screenshots: heading/note clear, no overflow, recovery visible; targeted Today/leave Chromium/WebKit axe PASS.
 
 Ngày 11/11/2026. Source review và final rendered verification PASS theo bằng chứng cuối bên dưới.

@@ -1,5 +1,7 @@
 # CONTEXT — App shell
 
+Release P10,11/11/2026:51dd10f deploy Pages SUCCESS11:07:23ICT, Actions42956539128 verify-build5m15s/deploy12s. CI lint/typecheck/build44unit/2Rules/full E2E và hosted app/Today/WFH/holidays/leave/settings Chromium+WebKit PASS. Chromium HTTPS offline PWA/WebKit manifest-worker smoke PASS; live cache du-gio-pwa-%2FWorkingTimeTracking%2F-486b77e47d3fad89 khớp CI. Firebase tài khoản thật/thiết bị vật lý NOT RUN. docs/phases/P10; các ghi chép local bên dưới là lịch sử.
+
 P10 bản thử local11/11/2026: ghép TimeOffPlanner dùng chung khi settingsSection=leave|holidays, kind tương ứng. Quản lý nghỉ phép chuyển hoàn toàn khỏi Today vào Settings, dùng tháng shell và guard nháp hiện có. Today không còn nhận save/leaveMonth/setLeaveMonth; todayExpanded: TodaySection[] chỉ giữ week/month/request/sessions, truyền cho Today để giữ mục mở qua editor/tab khác. Tải lại mặc định đóng, không persist UI vào ledger. Sáu hàng Settings, giữ section/month khi đóng editor. Không đổi route/navigation/busy/data/Auth. Lint/typecheck/build44unit/2Rules/full E2E Chromium+WebKit PASS. Chưa deploy; Firebase thật/thiết bị vật lý NOT RUN. Chi tiết docs/phases/P10.
 
 Release P9,11/11/2026: b1e641e đã deploy Pages, Actions42949633931 verify-build4m39s/deploy9s SUCCESS lúc10:03:43ICT. Hosted app/settings Chromium+WebKit, Chromium offline HTTPS PWA và WebKit manifest/worker smoke PASS; cache du-gio-pwa-%2FWorkingTimeTracking%2F-13ad89bf21be6143 khớp CI. Thông báo lưu trữ chỉ ở mục tài khoản. Firebase tài khoản thật/thiết bị vật lý NOT RUN; bằng chứng docs/phases/P9.

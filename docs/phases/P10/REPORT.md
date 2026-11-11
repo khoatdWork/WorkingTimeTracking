@@ -1,5 +1,7 @@
 # P10 — Hôm nay gọn hơn
 
+Release51dd10f617059c05c8609191784e6ff21de18ecf đã deploy tại https://khoatdwork.github.io/WorkingTimeTracking/. Actions https://github.com/khoatdWork/WorkingTimeTracking/actions/runs/42956539128 verify-build5m15s và deploy12s SUCCESS, hoàn tất11/11/2026 lúc11:07:23ICT. Toàn bộ kiểm tra CI và hosted regression Chromium/WebKit PASS; Chromium HTTPS offline PWA và WebKit manifest/worker smoke PASS. Cache live486b77e47d3fad89 khớp CI. Root/agent xem ảnh hosted. Firebase tài khoản thật/thiết bị vật lý NOT RUN. Các đoạn local/chưa deploy bên dưới ghi lịch sử trước release.
+
 Điều chỉnh tiếp11/11/2026: khi ngày hiện tại nghỉ phép, Today hiện thẻ xanh với tiêu đề24px “Hôm nay bạn nghỉ phép”, ghi chú rõ và pill theo loại ngày. Lễ vẫn dùng nhãn riêng, ca hôm trước giữ cảnh báo/nút kết thúc, nút sửa luôn có. Lint/typecheck/build44unit/2Rules và targeted Today/leave Chromium+WebKit PASS sau sửa. Root/agent xem ảnh320390, axe/overflow/bbox PASS. Bản local đã cập nhật qua PWA UI; chưa deploy.
 
 Ngày 11/11/2026. Người dùng nhận xét trang Hôm nay có quá nhiều nội dung, yêu cầu bố cục gọn và chỉn chu nhưng giữ chức năng.

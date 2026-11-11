@@ -2,6 +2,8 @@ What this repo does: This personal app records office/fixed WFH hours, balances 
 
 Healthy. Nothing to fix in the reviewed P10 scope.
 
+Release51dd10f11/11/2026: preflight found no additional blocker or unexpected files; CI full checks and hosted guest regression PASS. No business/schema/security changes during deployment. This remains a scoped audit, not a new whole-repo security audit; real Firebase/physical-device limits in test-results.md.
+
 This is a scoped audit of Today presentation, disclosure state and connected actions, not a fresh whole-repository audit. Traced the compact hero, request actions, week/month summaries, planner, sessions and DayEditor return through existing callbacks. Totals continue to come from domain helpers; no duplicate calculation or persistence path is introduced.
 
 Follow-up11/11: the leave-day emphasis is presentation-only in the existing non-work branch. Kind precedes active styling, notes preserve newlines/wrap, and prior-day recovery remains visible. Existing business/schema/security paths are unchanged; no extra abstraction or dependency. No new issue found in this scope.

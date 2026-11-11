@@ -1,5 +1,7 @@
 What this change does: Today prioritizes daily tracking and places secondary information behind compact summaries. Weekly/monthly calculations, request controls and session details remain available through shadcn/Radix disclosures. Leave planning moves into Settings → Nghỉ phép.
 
+Release preflight11/11: reviewer found no blockers, unexpected files or secrets in staged P10 scope; diff check clean, Radix already installed, CI includes Today suite. Release51dd10f/Actions42956539128 succeeded; root/agent hosted verification passed as recorded in test-results.md. Firebase thật/thiết bị vật lý remain NOT RUN.
+
 Follow-up source review11/11: prominent leave/holiday panel keeps the existing kind branch and actions, adds a decorative calendar icon and readable24px heading/note. Pill selects the day kind before an active prior-day session. No actionable findings; no new calculation, persistence or schema. Reviewer checked source only; root/agent browser results are recorded in test-results.md.
 
 Looks good. Ship, subject to final verification in test-results.md.
