@@ -1,11 +1,12 @@
 "use client";
 
-import { CalendarDays, ChevronRight, Clock3, Cloud, DatabaseBackup, Smartphone } from "lucide-react";
+import { CalendarCheck2, CalendarDays, ChevronRight, Clock3, Cloud, DatabaseBackup, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Settings } from "@/modules/tracking/core/domain";
 
 export const SETTINGS_TITLES = {
   hours: "Quy tắc giờ làm",
+  leave: "Nghỉ phép",
   holidays: "Ngày nghỉ lễ",
   account: "Tài khoản & đồng bộ",
   app: "Cài ứng dụng",
@@ -24,6 +25,7 @@ export function SettingsMenu({ settings, account, updateAvailable, offlineReady,
   const rows = {
     account: { icon: Cloud, summary: account || "Đăng nhập Google để đồng bộ", color: "blue" },
     hours: { icon: Clock3, summary: `${new Intl.NumberFormat("vi-VN").format(settings.dailyMinutes / 60)} giờ/ngày · Nghỉ trưa ${settings.lunchMinutes} phút`, color: "blue" },
+    leave: { icon: CalendarCheck2, summary: "Thêm và quản lý ngày nghỉ phép", color: "green" },
     holidays: { icon: CalendarDays, summary: "Thêm và quản lý lịch nghỉ lễ", color: "green" },
     app: { icon: Smartphone, summary: updateAvailable ? "Có bản cập nhật mới" : offlineReady ? "Sẵn sàng dùng khi mất mạng" : "Cài đặt và sử dụng offline", color: "green" },
     backup: { icon: DatabaseBackup, summary: "Xuất, nhập và quản lý dữ liệu", color: "slate" },
@@ -32,7 +34,7 @@ export function SettingsMenu({ settings, account, updateAvailable, offlineReady,
     <div className="settings-menu">
       {([
         { label: "Tài khoản", sections: ["account"] },
-        { label: "Chấm công", sections: ["hours", "holidays"] },
+        { label: "Chấm công", sections: ["hours", "leave", "holidays"] },
         { label: "Ứng dụng và dữ liệu", sections: ["app", "backup"] },
       ] as const).map((group) => (
         <ul className="settings-group" aria-label={group.label} key={group.label}>

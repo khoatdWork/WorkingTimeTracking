@@ -39,7 +39,7 @@ import {
   type TrackerState,
 } from "@/modules/tracking/core/domain";
 
-import { Today } from "@/modules/tracking/overview";
+import { Today, type TodaySection } from "@/modules/tracking/overview";
 import { History } from "@/modules/tracking/history";
 import { Reports } from "@/modules/tracking/reports";
 import { SettingsForm } from "@/modules/settings/settings-form";
@@ -54,6 +54,7 @@ export function TrackerApp() {
     [screen, setScreen] = useState<Screen>("today");
   const [editor, setEditor] = useState<string | null>(null),
     [month, setMonth] = useState("");
+  const [todayExpanded, setTodayExpanded] = useState<TodaySection[]>([]);
   const [importState, setImportState] = useState<TrackerState | null>(null),
     [clear, setClear] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
@@ -172,10 +173,9 @@ export function TrackerApp() {
                   now={now}
                   busy={busy}
                   run={run}
-                  save={save}
-                  leaveMonth={month || today.slice(0, 7)}
-                  setLeaveMonth={setMonth}
                   edit={edit}
+                  expanded={todayExpanded}
+                  setExpanded={setTodayExpanded}
                 />
               )}
               {screen === "history" && (
@@ -206,8 +206,8 @@ export function TrackerApp() {
                   </div>
                   {!settingsSection && <SettingsMenu settings={state.settings} account={user?.email || user?.displayName || null}
                     updateAvailable={pwa.waiting} offlineReady={pwa.ready} busy={busy} open={openSettings} />}
-                  {settingsSection === "holidays" && <TimeOffPlanner
-                    kind="holiday"
+                  {(settingsSection === "holidays" || settingsSection === "leave") && <TimeOffPlanner
+                    kind={settingsSection === "leave" ? "leave" : "holiday"}
                     state={state}
                     today={today}
                     month={month || today.slice(0, 7)}

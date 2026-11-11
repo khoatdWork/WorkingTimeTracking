@@ -9,6 +9,12 @@ OUT = Path("output/playwright/P4")
 OUT.mkdir(parents=True, exist_ok=True)
 
 
+
+def expand(page, title):
+    trigger = page.get_by_role("button", name=title, exact=True)
+    if trigger.get_attribute("aria-expanded") == "false":
+        trigger.click()
+
 def main():
     with sync_playwright() as p:
         for engine in ["chromium", "webkit"]:
@@ -24,16 +30,19 @@ def main():
             expect(page.locator(".timer-digits")).to_have_text("00:00:00")
             page.get_by_role("button", name="8 giờ", exact=True).click()
             expect(page.locator(".timer-digits")).to_have_text("08:00:00")
+            expand(page, "Request WFH hôm nay")
             page.get_by_role("button", name="Đã gửi request", exact=True).click()
             context.set_offline(True)
             page.get_by_role("button", name="10 giờ", exact=True).click()
             expect(page.locator(".timer-digits")).to_have_text("10:00:00")
             expect(page.locator(".daily-balance")).to_contain_text("Dư 2 giờ")
+            expand(page, "Tuần này")
             expect(page.locator(".week-ledger")).to_contain_text("10:00:00")
             assert page.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1')).days['2026-11-09'].sessions") == []
             context.set_offline(False)
             page.reload()
             expect(page.locator(".timer-digits")).to_have_text("10:00:00")
+            expand(page, "Request WFH hôm nay")
             expect(page.get_by_role("button", name="Đã gửi request", exact=True)).to_have_attribute("aria-pressed", "true")
             page.screenshot(path=str(OUT / f"{engine}-wfh-320.png"), full_page=True)
             assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")

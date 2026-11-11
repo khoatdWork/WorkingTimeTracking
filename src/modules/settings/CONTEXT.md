@@ -1,5 +1,7 @@
 # CONTEXT — Cài đặt giờ làm
 
+P10 điều chỉnh11/11/2026: thêm settingsSection=leave và hàng Nghỉ phép trước Ngày nghỉ lễ trong nhóm Chấm công; root có sáu mục. TimeOffPlanner kind=leave chuyển từ Today vào shell chi tiết Cài đặt, dùng save/edit/month và onDirtyChange=setSettingsDirty như holiday. Quay lại/đổi tab/PWA notice/mở ngày trùng đều qua guard; cancel giữ form, chỉ bỏ nháp khi xác nhận. Mục và tháng giữ sau DayEditor. Form nghỉ phép đặt baseline theo mặc định mới mỗi lần Thêm (kể cả sau nửa đêm/range cũ); Hủy xóa lỗi và dirty. Không đổi schema/core/sync. Kiểm tra cuối docs/phases/P10; chưa deploy.
+
 Release P9,11/11/2026: b1e641e deploy SUCCESS, Actions42949633931. Hosted settings.py Chromium/WebKit PASS: root/chi tiết/Back/tabs/nháp/stale-save/tháng lễ/backup/axe320390; ảnh root và tài khoản xác nhận header không còn nhãn lưu trữ. Firebase tài khoản thật/thiết bị vật lý NOT RUN. Bằng chứng docs/phases/P9.
 
 P9,11/11/2026: Tài khoản & đồng bộ là nơi xem nhãn nơi lưu, thông báo mất mạng, trạng thái đồng bộ local/Firebase và Thử đồng bộ lại. Màn danh sách Cài đặt và các mục khác không hiển thị các notice này. Giữ nguyên năm hàng, điều hướng/guard, form và dữ liệu. Nghiệm thu/release docs/phases/P9.

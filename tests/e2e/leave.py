@@ -9,6 +9,25 @@ OUT.mkdir(parents=True, exist_ok=True)
 NOW = datetime(2026, 11, 9, 12, 0, tzinfo=timezone.utc)
 
 
+
+def expand(page, title):
+    trigger = page.get_by_role("button", name=title, exact=True)
+    if trigger.get_attribute("aria-expanded") == "false":
+        trigger.click()
+
+def open_leave(page):
+    if page.get_by_role("heading", name="Nghỉ phép", exact=True, level=1).count() == 0:
+        page.get_by_role("button", name="Cài đặt", exact=True).click()
+        page.get_by_role("button", name="Nghỉ phép", exact=True).click()
+
+
+def check_target(page, target):
+    page.get_by_role("button", name="Hôm nay", exact=True).click()
+    expand(page, "Tháng 11")
+    expect(page.locator(".month-overview")).to_contain_text(target)
+    open_leave(page)
+
+
 def saved(page):
     return page.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1'))")
 
@@ -22,6 +41,7 @@ def open_page(context):
 
 
 def add(panel, start, end=None, note="", succeeds=True):
+    open_leave(panel.page)
     if panel.get_by_label("Từ ngày", exact=True).count() == 0:
         panel.get_by_role("button", name="Thêm ngày nghỉ phép", exact=True).click()
     panel.get_by_label("Từ ngày", exact=True).fill(start)
@@ -35,6 +55,7 @@ def add(panel, start, end=None, note="", succeeds=True):
 
 
 def edit(panel, date):
+    open_leave(panel.page)
     return panel.get_by_role("button", name=f"Sửa ngày nghỉ phép {date}", exact=True)
 
 
@@ -61,6 +82,7 @@ def main():
             page = open_page(context)
             errors = []
             page.on("pageerror", lambda error: errors.append(str(error)))
+            open_leave(page)
             panel = page.get_by_role("region", name="Nghỉ phép", exact=True)
             panel.get_by_role("button", name="Thêm ngày nghỉ phép", exact=True).click()
             expect(panel.get_by_label("Từ ngày", exact=True)).to_have_value("2026-11-10")
@@ -71,7 +93,7 @@ def main():
             add(panel, "2026-11-10", note="Nghỉ ngày mai")
             expect(edit(panel, "10/11/2026")).to_contain_text("Nghỉ ngày mai")
             expect(panel.get_by_label("Từ ngày", exact=True)).to_have_count(0)
-            expect(page.locator(".month-overview")).to_contain_text("160:00")
+            check_target(page, "160:00")
             page.reload()
             expect(edit(panel, "10/11/2026")).to_be_visible()
             assert saved(page)["days"]["2026-11-10"]["kind"] == "leave"
@@ -87,7 +109,7 @@ def main():
             panel.get_by_label("Chọn tháng").fill("2026-11")
             expect(edit(panel, "28/11/2026")).to_be_visible()
             expect(edit(panel, "29/11/2026")).to_be_visible()
-            expect(page.locator(".month-overview")).to_contain_text("152:00")
+            check_target(page, "152:00")
             before = saved(page)
             add(panel, "2026-11-09", "2026-11-11", "Giữ nháp khi trùng", succeeds=False)
             expect(panel.get_by_role("alert")).to_be_visible()
@@ -107,7 +129,7 @@ def main():
             page.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()
             expect(page.get_by_role("button", name="Lưu ngày làm việc", exact=True)).to_have_count(0)
             expect(edit(panel, "10/11/2026")).to_have_count(0)
-            expect(page.locator(".month-overview")).to_contain_text("152:00")
+            check_target(page, "152:00")
             add(panel, "2026-11-10", note="Không ghi đè ngày văn phòng", succeeds=False)
             expect(panel.get_by_role("alert")).to_be_visible()
             assert saved(page)["days"]["2026-11-10"]["kind"] == "work"
@@ -129,12 +151,13 @@ def main():
             assert backup["days"]["2026-11-16"]["note"] == "Nghỉ phép đã sửa"
             page.locator('input[type="file"]').set_input_files(str(backup_path))
             page.get_by_role("button", name="Thay sổ hiện tại", exact=True).click()
-            page.get_by_role("button", name="Hôm nay", exact=True).click()
+            open_leave(page)
             expect(edit(panel, "16/11/2026")).to_contain_text("Nghỉ phép đã sửa")
 
             remove(panel, "16/11/2026")
             expect(page.get_by_role("alertdialog")).to_contain_text("Xóa ngày nghỉ phép?")
             other = open_page(context)
+            open_leave(other)
             other_panel = other.get_by_role("region", name="Nghỉ phép", exact=True)
             edit(other_panel, "16/11/2026").click()
             other.get_by_label("Ghi chú", exact=True).fill("Đổi ở tab khác")
@@ -152,7 +175,7 @@ def main():
             page.get_by_role("button", name="Xóa ngày nghỉ phép", exact=True).click()
             expect(edit(panel, "16/11/2026")).to_have_count(0)
             assert "2026-11-16" not in saved(page)["days"]
-            expect(page.locator(".month-overview")).to_contain_text("152:00")
+            check_target(page, "152:00")
             for width in [320, 390]:
                 page.set_viewport_size({"width": width, "height": 900})
                 assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
@@ -186,15 +209,21 @@ def main():
             expect(page.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ", exact=True)).to_be_visible()
             assert saved(page)["days"]["2026-11-09"]["sessions"] == []
             assert saved(page)["days"]["2026-11-09"]["kind"] == "leave"
+            expand(page, "Tuần này")
+            expect(page.get_by_text("P: Nghỉ phép", exact=True)).to_be_visible()
             context.close()
             # The closed planner must refresh its untouched tomorrow default after midnight.
             context = browser.new_context(locale="vi-VN", timezone_id="Asia/Ho_Chi_Minh")
             page = open_page(context)
             page.clock.fast_forward(6 * 3600000)
+            open_leave(page)
             panel = page.get_by_role("region", name="Nghỉ phép", exact=True)
             panel.get_by_role("button", name="Thêm ngày nghỉ phép", exact=True).click()
             expect(panel.get_by_label("Từ ngày", exact=True)).to_have_value("2026-11-11")
             expect(panel.get_by_label("Đến ngày", exact=True)).to_have_value("2026-11-11")
+            page.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
+            expect(page.get_by_role("alertdialog")).to_have_count(0)
+            expect(page.get_by_role("button", name="Bản sao lưu", exact=True)).to_be_visible()
             context.close()
             browser.close()
             print(f"PASS {engine} leave: tomorrow/reload, ranges/weekends/month boundary, conflicts, future history, edit/targets, JSON import, stale/cancel/delete, office replacement, current-day controls, axe and 320/390px.")

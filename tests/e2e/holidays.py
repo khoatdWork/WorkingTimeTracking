@@ -9,6 +9,12 @@ OUT = Path("output/playwright/P6")
 OUT.mkdir(parents=True, exist_ok=True)
 
 
+
+def expand(page, title):
+    trigger = page.get_by_role("button", name=title, exact=True)
+    if trigger.get_attribute("aria-expanded") == "false":
+        trigger.click()
+
 def saved(page):
     return page.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1'))")
 
@@ -50,10 +56,12 @@ def range_scenario(browser, engine):
     assert set(days) == {"2026-11-13", "2026-11-14", "2026-11-15", "2026-11-16"}
     assert all(day["kind"] == "holiday" and day["note"] == "Kỳ nghỉ bốn ngày" for day in days.values())
     page.get_by_role("button", name="Hôm nay", exact=True).click()
+    expand(page, "Tháng 11")
     expect(page.locator(".month-overview")).to_contain_text("152:00")
     check_navigation(page, "Hôm nay")
     page.reload()
     page.wait_for_load_state("networkidle")
+    expand(page, "Tháng 11")
     expect(page.locator(".month-overview")).to_contain_text("152:00")
     settings.click()
     page.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
@@ -97,6 +105,7 @@ def main():
             page.get_by_role("button", name="8 giờ", exact=True).click()
             expect(page.locator(".timer-digits")).to_have_text("08:00:00")
             work = saved(page)["days"]["2026-11-09"]
+            expand(page, "Tháng 11")
             expect(page.locator(".month-overview")).to_contain_text("168:00")
             page.get_by_role("button", name="Cài đặt", exact=True).click()
             page.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
@@ -113,9 +122,11 @@ def main():
             expect(panel.get_by_role("button", name="Sửa ngày lễ 16/11/2026")).to_contain_text("Lễ tương lai, có ghi chú")
             add("2026-11-14", "Lễ cuối tuần")
             page.get_by_role("button", name="Hôm nay", exact=True).click()
+            expand(page, "Tháng 11")
             expect(page.locator(".month-overview")).to_contain_text("160:00")
             page.reload()
             page.wait_for_load_state("networkidle")
+            expand(page, "Tháng 11")
             expect(page.locator(".month-overview")).to_contain_text("160:00")
             page.get_by_role("button", name="Cài đặt", exact=True).click()
             page.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
@@ -202,6 +213,7 @@ def main():
             expect(panel.get_by_role("button", name="Sửa ngày lễ 16/11/2026")).to_have_count(0)
             assert "2026-11-16" not in saved(page)["days"]
             page.get_by_role("button", name="Hôm nay", exact=True).click()
+            expand(page, "Tháng 11")
             expect(page.locator(".month-overview")).to_contain_text("168:00")
             assert saved(page)["days"]["2026-11-09"] == work
             assert not errors, errors

@@ -90,6 +90,7 @@ export function TimeOffPlanner({
         setToDate(firstDate);
         setName("");
         setError("");
+        setBaseline({ fromDate: firstDate, toDate: firstDate, name: "" });
         setFormOpen(true);
       }}>
         <Plus size={17} aria-hidden="true" />Thêm ngày nghỉ phép
@@ -133,7 +134,7 @@ export function TimeOffPlanner({
           <Plus size={17} aria-hidden="true" />
           {busy ? "Đang lưu…" : isLeave ? "Lưu ngày nghỉ phép" : "Thêm ngày nghỉ lễ"}
         </Button>
-        {isLeave && <Button type="button" variant="ghost" disabled={busy} onClick={() => setFormOpen(false)}>Hủy</Button>}
+        {isLeave && <Button type="button" variant="ghost" disabled={busy} onClick={() => { setFormOpen(false); setError(""); }}>Hủy</Button>}
         {existingDate && (
           <p className="help">
             Ngày {dateLabel(existingDate, { day: "2-digit", month: "2-digit", year: "numeric" })} đã có dữ liệu.

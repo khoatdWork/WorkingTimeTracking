@@ -1,5 +1,6 @@
 "use client";
 
+import { useId, type ReactNode } from "react";
 import {
   Building2,
   House,
@@ -12,12 +13,14 @@ import {
   Pencil,
   Coffee,
   AlertCircle,
+  ChevronDown,
+  CalendarCheck2,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
 import { Badge } from "@/components/ui/badge";
-import { TimeOffPlanner } from "./time-off-planner";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 import {
   activeSession,
@@ -47,24 +50,23 @@ type Run = (
   message: string,
 ) => Promise<boolean>;
 const WEEK_LABELS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+export type TodaySection = "week" | "month" | "sessions" | "request";
 export function Today({
   state,
   now,
   busy,
   run,
-  save,
-  leaveMonth,
-  setLeaveMonth,
   edit,
+  expanded,
+  setExpanded,
 }: {
   state: TrackerState;
   now: number;
   busy: boolean;
   run: Run;
-  save: (change: (current: TrackerState) => TrackerState) => Promise<TrackerState>;
-  leaveMonth: string;
-  setLeaveMonth: (month: string) => void;
   edit: (d: string) => void;
+  expanded: TodaySection[];
+  setExpanded: (sections: TodaySection[]) => void;
 }) {
   const today = dateKey(now),
     day = state.days[today] ?? newDay(today),
@@ -81,6 +83,13 @@ export function Today({
     month = summarize(state, monthDates(today.slice(0, 7)), now);
   const homes = wfhDays(state, weekDates),
     pending = homes.filter((d) => d.request === "none");
+  function detail(section: TodaySection) {
+    return {
+      open: expanded.includes(section),
+      onOpenChange: (open: boolean) => setExpanded(open ? [...expanded, section] : expanded.filter((value) => value !== section)),
+      busy,
+    };
+  }
   async function mode(next: WorkMode) {
     await run(
       (s) => {
@@ -101,10 +110,10 @@ export function Today({
     : null;
   return (
     <>
-      <div className="page-heading">
+      <div className="page-heading today-heading">
         <div className="section-heading">
           <h1>Hôm nay</h1>
-          <span className={`status-pill ${active ? "is-working" : ""}`}>
+          <span className={`status-pill ${day.kind !== "work" ? "is-time-off" : active ? "is-working" : ""}`}>
             <span />
             {day.kind !== "work" ? day.kind === "leave" ? "Nghỉ phép" : "Ngày nghỉ lễ" : active
               ? "Đang làm việc"
@@ -117,10 +126,11 @@ export function Today({
         <p className="subtitle capitalize">{dateLabel(today)}</p>
       </div>
       {day.kind !== "work" ? (
-        <section className="panel form-stack" aria-label="Ngày nghỉ hôm nay">
+        <section className="panel form-stack today-time-off" aria-label="Ngày nghỉ hôm nay">
+          <CalendarCheck2 className="time-off-icon" size={32} aria-hidden="true" />
           <h2>{day.kind === "leave" ? "Hôm nay bạn nghỉ phép" : "Hôm nay là ngày nghỉ lễ"}</h2>
-          <p className="help">Không yêu cầu giờ làm hôm nay. Chỉ tiêu tuần và tháng đã cập nhật.</p>
-          {day.note && <p className="help">{day.note}</p>}
+          <p className="time-off-description">Không yêu cầu giờ làm hôm nay. Chỉ tiêu tuần và tháng đã cập nhật.</p>
+          {day.note && <div className="time-off-note"><span>Ghi chú</span><p>{day.note}</p></div>}
           {active && <div className="notice">
             Ca từ {active.day.date.split("-").reverse().join("/")} vẫn đang chạy.
             <Button variant="outline" disabled={busy} onClick={() => run(
@@ -152,8 +162,8 @@ export function Today({
             Work from home
           </Button>
         </div>
-        <div className="clock-face">
-          <svg viewBox="0 0 240 240" aria-hidden="true">
+        <div className={`clock-face${day.mode === "wfh" && !day.sessions.length ? " fixed-hours" : ""}`}>
+          {!(day.mode === "wfh" && !day.sessions.length) && <svg viewBox="0 0 240 240" aria-hidden="true">
             <circle className="clock-track" cx="120" cy="120" r="106" />
             <circle
               className="clock-progress"
@@ -163,7 +173,7 @@ export function Today({
               pathLength="100"
               strokeDasharray={`${ratio * 100} 100`}
             />
-          </svg>
+          </svg>}
           <div className="clock-value">
             <span className="clock-caption">{day.mode === "wfh" ? "Giờ WFH đã ghi nhận" : "Thời gian làm việc"}</span>
             <strong
@@ -176,11 +186,6 @@ export function Today({
               {target
                 ? `mục tiêu ${duration(target)} giờ`
                 : "Ngày không có chỉ tiêu"}
-            </span>
-            <span className="clock-progress-label">
-              {target
-                ? `${Math.floor(ratio * 100)}% hoàn thành`
-                : "Ghi thêm giờ làm bù"}
             </span>
           </div>
         </div>
@@ -281,11 +286,11 @@ export function Today({
           )}
         </div>
         {day.mode === "wfh" && !day.sessions.length ? (
-          <p className="help">Chọn 8 hoặc 10 giờ làm ròng. Không cần vào/về, không trừ thêm nghỉ trưa.</p>
+          <p className="clock-note">Giờ làm ròng, không trừ thêm nghỉ trưa.</p>
         ) : <div className="clock-note">
           <Coffee size={15} />
           <span>
-            Tự trừ {state.settings.lunchMinutes} phút nghỉ trưa mỗi ngày
+            Nghỉ trưa tự động: {state.settings.lunchMinutes} phút
           </span>
         </div>}
         {finishAt !== null && remaining > 0 && (
@@ -300,21 +305,15 @@ export function Today({
         <Button
           variant="link"
           className="edit-today"
+          aria-label="Chỉnh sửa ngày / bổ sung giờ"
           onClick={() => edit(today)}
         >
           <Pencil size={13} />
-          Chỉnh sửa ngày / bổ sung giờ
+          Chỉnh sửa ngày
         </Button>
-      </section>}
-      <TimeOffPlanner kind="leave" state={state} today={today} month={leaveMonth}
-        setMonth={setLeaveMonth} busy={busy} save={save} edit={edit} />
       {day.kind === "work" && day.mode === "wfh" && (
-        <section className="panel wfh-request">
-          <div className="section-heading">
-            <h2>
-              <House size={18} />
-              Request WFH hôm nay
-            </h2>
+        <TodayDetail title="Request WFH hôm nay" {...detail("request")} className="wfh-request"
+          summary={
             <Badge
               variant="outline"
               className={
@@ -327,7 +326,7 @@ export function Today({
                   ? "Đã gửi"
                   : "Đã duyệt"}
             </Badge>
-          </div>
+          }>
           <p>Gửi request qua kênh công ty, rồi cập nhật tại đây.</p>
           <div className="request-options">
             {(
@@ -357,8 +356,16 @@ export function Today({
               </Button>
             ))}
           </div>
-        </section>
+        </TodayDetail>
       )}
+      </section>}
+      <div className="today-details">
+      <TodayDetail title="Tuần này" {...detail("week")}
+        summary={<>
+          <span>{duration(week.worked)} / {duration(week.target)} giờ · WFH {homes.length}/{state.settings.wfhLimit}</span>
+          {pending.length > 0 && <span className="warning-text">{pending.length} ngày WFH chưa gửi request</span>}
+          {homes.length > state.settings.wfhLimit && <span className="warning-text">Vượt giới hạn {homes.length - state.settings.wfhLimit} ngày WFH</span>}
+        </>}>
       {pending.length > 0 && (
         <div className="inline-notice">
           <AlertCircle size={17} />
@@ -370,7 +377,6 @@ export function Today({
       )}
       <section className="panel week-panel">
         <div className="section-heading">
-          <h2>Tuần này</h2>
           <span className="date-range">
             {weekDates[0].slice(8)}/{weekDates[0].slice(5, 7)} –{" "}
             {weekDates[6].slice(8)}/{weekDates[6].slice(5, 7)}
@@ -435,9 +441,16 @@ export function Today({
           </p>
         )}
       </section>
+      </TodayDetail>
+      <TodayDetail title={`Tháng ${Number(today.slice(5, 7))}`} {...detail("month")}
+        summary={<>
+          <span>Còn {duration(month.remaining, true)} giờ cả tháng</span>
+          <span className={month.balance < 0 ? "warning-text" : "positive"}>
+            {month.balance < 0 ? "Thiếu" : "Dư"} {duration(Math.abs(month.balance), true)} giờ đến hôm nay
+          </span>
+        </>}>
       <section className="month-overview">
         <div className="section-heading">
-          <h2>Tháng {Number(today.slice(5, 7))} của bạn</h2>
           <span>{month.workdays} ngày công</span>
         </div>
         <div
@@ -480,9 +493,34 @@ export function Today({
           không tự cộng chỉ tiêu.
         </p>
       </section>
-      <SessionList day={day} now={now} />
+      </TodayDetail>
+      {!!day.sessions.length && <TodayDetail title="Các ca hôm nay" {...detail("sessions")}
+        summary={`${day.sessions.length} ca đã ghi${active?.day.date === today ? ", đang làm việc" : ""}`}>
+        <SessionList day={day} now={now} />
+      </TodayDetail>}
+      </div>
     </>
   );
+}
+function TodayDetail({ title, summary, open, onOpenChange, busy, className = "", children }: {
+  title: string;
+  summary: ReactNode;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  busy: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  const summaryId = useId();
+  return <Collapsible className={`today-detail ${className}`} open={open} onOpenChange={onOpenChange}>
+    <h2><CollapsibleTrigger asChild>
+      <Button variant="ghost" className="today-detail-trigger" aria-label={title} aria-describedby={summaryId} disabled={busy}>
+        <span className="today-detail-copy"><span>{title}</span><small id={summaryId}>{summary}</small></span>
+        <ChevronDown size={18} aria-hidden="true" />
+      </Button>
+    </CollapsibleTrigger></h2>
+    <CollapsibleContent forceMount className="today-detail-content">{children}</CollapsibleContent>
+  </Collapsible>;
 }
 function SessionList({
   day,
@@ -494,7 +532,6 @@ function SessionList({
   if (!day.sessions.length) return null;
   return (
     <section className="sessions-section">
-      <h2>Các ca hôm nay</h2>
       {day.sessions.map((s, i) => (
         <div className="session-row" key={s.start}>
           <span className="session-icon">

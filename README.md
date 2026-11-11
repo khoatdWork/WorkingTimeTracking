@@ -15,9 +15,9 @@ Theo dõi thời gian làm việc và WFH, cân đối đủ giờ trong tháng.
 5. Quên chấm công: vào Lịch sử, chọn ngày và Bổ sung. Văn phòng có nhiều ca/ngày, chỉnh giờ đến giây; WFH chọn 8/10 giờ. Có ghi chú, nghỉ phép và ngày lễ thủ công. Ngày tương lai chỉ lên kế hoạch/request WFH, chưa ghi giờ. Các ca WFH cũ vẫn được giữ và tính như trước; sửa ghi chú/request không tự đổi giờ. Chuyển ca cũ sang giờ WFH cố định hoặc bỏ giờ WFH để đổi loại ngày đều cần xác nhận.
 6. Xem Báo cáo và đối chiếu tổng. Có xuất JSON giữ đầy đủ dữ liệu và CSV các ca với thời điểm UTC.
 
-Nghỉ phép: tại **Hôm nay → Nghỉ phép → Thêm ngày nghỉ phép**, chọn Từ ngày/Đến ngày (mặc định ngày mai) và **Lưu ngày nghỉ phép**. Nghỉ một ngày thì chọn hai mốc giống nhau; có thể thêm ghi chú. Danh sách theo tháng cho phép sửa/xóa. Ngày nghỉ phép giảm chỉ tiêu ngày thường, không cộng giờ đã làm; cuối tuần không giảm thêm. Nếu ngày đã có dữ liệu, mở Chỉnh sửa ngày để đối chiếu trước khi đổi. Ngày nghỉ lễ vẫn thêm tại Cài đặt → Ngày nghỉ lễ.
+Nghỉ phép: tại **Cài đặt → Nghỉ phép → Thêm ngày nghỉ phép**, chọn Từ ngày/Đến ngày (mặc định ngày mai) và **Lưu ngày nghỉ phép**. Nghỉ một ngày thì chọn hai mốc giống nhau; có thể thêm ghi chú. Danh sách theo tháng cho phép sửa/xóa. Ngày nghỉ phép giảm chỉ tiêu ngày thường, không cộng giờ đã làm; cuối tuần không giảm thêm. Nếu ngày đã có dữ liệu, mở Chỉnh sửa ngày để đối chiếu trước khi đổi. Ngày nghỉ lễ vẫn thêm tại Cài đặt → Ngày nghỉ lễ.
 
-**Cài đặt** là danh sách từng mục như iPhone: Tài khoản & đồng bộ, Quy tắc giờ làm, Ngày nghỉ lễ, Cài ứng dụng và Bản sao lưu. Bấm một mục để mở phần chỉnh sửa, dùng **Quay lại Cài đặt** để trở về danh sách. Xuất/nhập/xóa sổ nằm trong Bản sao lưu. Nếu đang sửa giờ hoặc ngày lễ chưa lưu, app nhắc trước khi rời màn; Tiếp tục chỉnh sửa giữ nguyên nội dung.
+**Cài đặt** là danh sách từng mục như iPhone: Tài khoản & đồng bộ, Quy tắc giờ làm, Nghỉ phép, Ngày nghỉ lễ, Cài ứng dụng và Bản sao lưu. Bấm một mục để mở phần chỉnh sửa, dùng **Quay lại Cài đặt** để trở về danh sách. Xuất/nhập/xóa sổ nằm trong Bản sao lưu. Nếu đang sửa giờ, nghỉ phép hoặc ngày lễ chưa lưu, app nhắc trước khi rời màn; Tiếp tục chỉnh sửa giữ nguyên nội dung.
 
 ## Cách tính
 
@@ -106,7 +106,7 @@ docs/phases/                test, review, audit evidence
 
 Mỗi module có CONTEXT.md. AGENTS.md, AGENT.md, PLAN.md, Design.md dùng để tiếp tục phát triển.
 
-Tab **Cài đặt** nằm ngay sau **Báo cáo** trên thanh điều hướng dưới. Vào **Ngày nghỉ lễ**, chọn **Từ ngày / Đến ngày** (tính cả hai đầu), nhập tên nếu cần và bấm Thêm. Nghỉ một ngày thì chọn hai mốc giống nhau. Có thể thêm trước kỳ nghỉ, xuyên tháng/năm, xem danh sách theo tháng, bấm một ngày để sửa hoặc xóa từng ngày có xác nhận. Ngày lễ trong tuần tự giảm chỉ tiêu giờ; cuối tuần không giảm thêm. Khoảng có ngày đã lưu dữ liệu sẽ bị từ chối toàn bộ để tránh mất giờ; mở Chỉnh sửa ngày để xử lý riêng ngày đó hoặc chọn khoảng khác. Nghỉ phép thêm tại Hôm nay hoặc đánh dấu khi sửa ngày trong Lịch sử.
+Tab **Cài đặt** nằm ngay sau **Báo cáo** trên thanh điều hướng dưới. Vào **Ngày nghỉ lễ**, chọn **Từ ngày / Đến ngày** (tính cả hai đầu), nhập tên nếu cần và bấm Thêm. Nghỉ một ngày thì chọn hai mốc giống nhau. Có thể thêm trước kỳ nghỉ, xuyên tháng/năm, xem danh sách theo tháng, bấm một ngày để sửa hoặc xóa từng ngày có xác nhận. Ngày lễ trong tuần tự giảm chỉ tiêu giờ; cuối tuần không giảm thêm. Khoảng có ngày đã lưu dữ liệu sẽ bị từ chối toàn bộ để tránh mất giờ; mở Chỉnh sửa ngày để xử lý riêng ngày đó hoặc chọn khoảng khác. Nghỉ phép thêm tại Cài đặt → Nghỉ phép hoặc đánh dấu khi sửa ngày trong Lịch sử.
 
 ## Firebase và deploy
 

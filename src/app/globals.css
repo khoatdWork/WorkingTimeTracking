@@ -257,6 +257,12 @@ textarea:focus-visible {
   color: #087561;
   background: #e4f3ed;
 }
+.status-pill.is-time-off {
+  color: #087561;
+  background: #e4f3ed;
+  font-size: 12px;
+  font-weight: 600;
+}
 .panel {
   background: #fff;
   border: 1px solid #e1e7ef;
@@ -323,8 +329,84 @@ textarea:focus-visible {
   border-radius: 24px;
   background: #fff;
   border: 1px solid #e1e7ef;
-  padding: 18px 18px 7px;
+  padding: 14px 16px 6px;
 }
+.today-heading { margin-bottom: 16px; }
+.today-time-off {
+  margin-top: 0;
+  background: #e4f3ed;
+  border-color: #b8d9ce;
+}
+.time-off-icon { color: #087561; }
+.today-time-off h2 {
+  font-size: 24px;
+  line-height: 1.4;
+}
+.time-off-description { color: #53657b; }
+.time-off-note {
+  padding-top: 14px;
+  border-top: 1px solid #b8d9ce;
+  overflow-wrap: anywhere;
+}
+.time-off-note > span {
+  display: block;
+  color: #53657b;
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+.time-off-note > p { white-space: pre-wrap; }
+.today-details {
+  margin-top: 16px;
+  border: 1px solid #d8e1ec;
+  border-radius: 16px;
+  background: #fff;
+}
+.today-detail + .today-detail { border-top: 1px solid #e1e7ef; }
+.today-detail-trigger {
+  width: 100%;
+  height: auto;
+  min-height: 72px;
+  padding: 14px 16px;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
+  white-space: normal;
+  border-radius: 12px;
+}
+.today-detail-trigger:focus-visible { outline-offset: -4px; }
+.today-detail-copy { min-width: 0; }
+.today-detail-copy > span { display: block; font-size: 14px; font-weight: 600; color: #152b46; }
+.today-detail-copy small {
+  display: block;
+  margin-top: 4px;
+  color: #53657b;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.today-detail-copy small > span:not([data-slot="badge"]) { display: block; }
+.today-detail-trigger > svg { flex-shrink: 0; color: #53657b; }
+.today-detail-trigger[aria-expanded="true"] > svg { transform: rotate(180deg); }
+.today-detail-content { padding: 0 16px 16px; }
+.today-detail-content[data-state="closed"] { display: none; }
+.today-detail-content > .panel,
+.today-detail-content > .month-overview,
+.today-detail-content > .sessions-section {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+.today-detail-content > .form-stack > .section-heading { display: none; }
+.today-detail-content > .inline-notice { margin: 0 0 12px; }
+.clock-panel > .wfh-request { border-top: 1px solid #e1e7ef; margin-top: 4px; }
+.clock-panel > .wfh-request .today-detail-trigger { padding: 12px 0; min-height: 64px; }
+.clock-panel > .wfh-request .today-detail-content { padding: 0 0 12px; }
+.clock-panel > .wfh-request p { margin-top: 0; }
+.wfh-request .today-detail-copy { display: flex; align-items: center; justify-content: space-between; flex: 1; gap: 8px; }
+.wfh-request .today-detail-copy > span { font-size: 12px; }
+.wfh-request .today-detail-copy small { margin: 0; flex-shrink: 0; }
 .segmented {
   display: flex;
   padding: 4px;
@@ -346,11 +428,13 @@ textarea:focus-visible {
   box-shadow: 0 2px 5px #152b4610;
 }
 .clock-face {
-  width: 260px;
-  height: 260px;
-  margin: 20px auto 8px;
+  width: 212px;
+  height: 212px;
+  margin: 10px auto 0;
   position: relative;
 }
+.clock-face.fixed-hours { width: 100%; height: 126px; }
+.fixed-hours .timer-digits { font-size: 40px; }
 .clock-face svg {
   width: 100%;
   height: 100%;
@@ -392,14 +476,6 @@ textarea:focus-visible {
   color: #53657b;
   font-size: 12px;
 }
-.clock-progress-label {
-  color: #2257c7;
-  background: #eef3fd;
-  padding: 4px 9px;
-  border-radius: 12px;
-  font-size: 10px;
-  margin-top: 14px;
-}
 .daily-balance {
   display: flex;
   justify-content: center;
@@ -408,7 +484,7 @@ textarea:focus-visible {
   text-align: center;
   color: #965100;
   font-size: 11px;
-  margin: 9px 0 20px;
+  margin: 4px 0 14px;
 }
 .balance-dot {
   height: 5px;
@@ -441,9 +517,9 @@ textarea:focus-visible {
   justify-content: center;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 11px;
   color: #53657b;
-  margin-top: 14px;
+  margin-top: 10px;
 }
 .finish-time {
   text-align: center;
@@ -457,7 +533,7 @@ textarea:focus-visible {
 .edit-today {
   display: flex;
   margin: 6px auto 0;
-  font-size: 10px !important;
+  font-size: 12px !important;
   gap: 5px;
   color: #53657b;
 }
@@ -1149,9 +1225,8 @@ textarea:focus-visible {
     padding-right: 12px;
   }
   .clock-face {
-    width: 238px;
-    height: 238px;
-    margin-top: 18px;
+    width: 200px;
+    height: 200px;
   }
   .timer-digits {
     font-size: 33px;

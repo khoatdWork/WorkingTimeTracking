@@ -37,6 +37,10 @@ Yêu cầu10/11/2026: màn Cài đặt gọn theo kiểu iPhone, chạm từng m
 
 Yêu cầu11/11/2026: chuyển nhãn nơi lưu, thông báo mất mạng và trạng thái local/Firebase vào Cài đặt → Tài khoản & đồng bộ, giữ nút thử lại cùng trạng thái. Không đổi persistence hoặc điều kiện xác nhận Firebase. Deploy b1e641e, Actions42949633931 SUCCESS11/11/2026 lúc10:03:43ICT. Lint/typecheck/build,44unit/2Rules/full E2E Chromium+WebKit PASS local và CI; hosted app/settings hai engines, Chromium offline HTTPS PWA và WebKit worker smoke PASS. Firebase tài khoản thật/thiết bị vật lý NOT RUN. Chi tiết docs/phases/P9.
 
+## P10 — Hôm nay gọn hơn
+
+Yêu cầu11/11/2026: Hôm nay thu gọn chấm công, ghép request vào WFH, nhóm tuần/tháng/ca thành hàng tóm tắt mở chi tiết. Theo yêu cầu tiếp cùng phase, chuyển toàn bộ quản lý nghỉ phép sang Cài đặt → Nghỉ phép, dùng guard giữ/bỏ nháp và giữ mục/tháng sau editor. Ngày nghỉ hôm nay có thẻ nổi bật, tiêu đề24px/ghi chú và pill ưu tiên loại ngày, giữ xử lý ca hôm trước. Không đổi nghiệp vụ. Local preview lint/typecheck/build44unit/2Rules/full E2E Chromium+WebKit PASS; màn ngắn hơn47–53%, axe/overflow/bbox320390 PASS. Sau điều chỉnh thẻ nghỉ, chạy lại lint/typecheck/build44unit/2Rules và targeted Today/leave Chromium+WebKit PASS. Bằng chứng docs/phases/P10; chưa deploy, Firebase thật/thiết bị vật lý NOT RUN.
+
 ## Kết quả 09/11/2026
 
 P0, P1, P2 đã triển khai và kiểm tra trong phạm vi web cá nhân. Release code03c473f, GitHub Actions42563854172 SUCCESS cả verify-build/deploy. HTTPS full E2E Chromium/WebKit PASS, real Google sign-in trên localhost và Pages PASS, cloud default settings write/read-back PASS. Không thêm ca làm giả vào sổ thật. Link và bằng chứng tại docs/phases/P2. Physical phones và long-session token refresh chưa test, không tuyên bố PASS.

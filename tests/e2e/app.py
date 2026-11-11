@@ -8,6 +8,12 @@ BASE_URL = os.environ.get("APP_URL", "http://127.0.0.1:3000")
 OUT = Path("output/playwright/P1")
 OUT.mkdir(parents=True, exist_ok=True)
 
+
+def expand(page, title):
+    trigger = page.get_by_role("button", name=title, exact=True)
+    if trigger.get_attribute("aria-expanded") == "false":
+        trigger.click()
+
 def main():
     with sync_playwright() as p:
         for engine in ["chromium", "webkit"]:
@@ -58,6 +64,7 @@ def main():
             expect(page.locator(".timer-digits")).to_have_text("08:00:00")
             page.get_by_role("button", name="10 giờ", exact=True).click()
             expect(page.locator(".timer-digits")).to_have_text("10:00:00")
+            expand(page, "Request WFH hôm nay")
             page.get_by_role("button", name="Đã được duyệt", exact=True).click()
             expect(page.get_by_text("Đã duyệt", exact=True)).to_be_visible()
             page.clock.fast_forward(6000)
