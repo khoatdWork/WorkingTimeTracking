@@ -11,6 +11,7 @@ DAY = {"date": "2026-11-02", "kind": "work", "mode": "wfh", "request": "sent", "
 
 def main():
     Path("output/playwright/P5").mkdir(parents=True, exist_ok=True)
+    Path("output/playwright/P9").mkdir(parents=True, exist_ok=True)
     with sync_playwright() as p:
         for engine in ["chromium", "webkit"]:
             browser = getattr(p, engine).launch(headless=True)
@@ -92,26 +93,51 @@ def main():
             assert remote["a"]["days"][DAY["date"]]["note"] == "local wins"
             fresh.close()
 
-            # Exercise the real app shell: sync status, narrow header, retry preserves draft.
+            # Storage notices belong only to account settings; sync never replaces drafts.
             ui = context.new_page()
             ui.set_viewport_size({"width": 320, "height": 900})
             ui.on("pageerror", lambda e: errors.append(str(e)))
             ui.goto(URL + "?ui")
             ui.wait_for_load_state("networkidle")
-            expect(ui.get_by_text("Đã lưu local · Đã đồng bộ Firebase", exact=True)).to_be_visible()
-            assert ui.evaluate("document.documentElement.scrollWidth <= innerWidth")
+            synced = ui.get_by_text("Đã lưu local · Đã đồng bộ Firebase", exact=True)
+            expect(synced).to_have_count(0)
+            expect(ui.locator(".storage-label")).to_have_count(0)
+            ui.get_by_role("button", name="Cài đặt", exact=True).click()
+            expect(synced).to_have_count(0)
+            ui.get_by_role("button", name="Tài khoản & đồng bộ", exact=True).click()
+            expect(synced).to_be_visible()
+            ui.get_by_role("button", name="Hôm nay", exact=True).click()
             ui.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ").click()
             ui.get_by_role("button", name="Work from home", exact=True).click()
             ui.get_by_role("button", name="10 giờ", exact=True).click()
             failed = True
             ui.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()
-            expect(ui.get_by_role("button", name="Thử đồng bộ lại", exact=True)).to_be_visible()
+            expect(ui.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ")).to_be_visible()
+            ui.get_by_role("button", name="Cài đặt", exact=True).click()
+            ui.get_by_role("button", name="Tài khoản & đồng bộ", exact=True).click()
+            retry = ui.get_by_role("button", name="Thử đồng bộ lại", exact=True)
+            expect(retry).to_be_visible()
+            retry.click()
+            expect(retry).to_be_enabled()
+            expect(ui.get_by_text("Firebase write rejected", exact=False)).to_be_visible()
+            assert ui.evaluate("document.documentElement.scrollWidth <= innerWidth")
+            ui.screenshot(path=f"output/playwright/P9/{engine}-sync-account-error-320.png", full_page=True)
+            for screen in ["Lịch sử", "Báo cáo", "Hôm nay"]:
+                ui.get_by_role("button", name=screen, exact=True).click()
+                expect(retry).to_have_count(0)
+                expect(synced).to_have_count(0)
             ui.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ").click()
             ui.get_by_label("Ghi chú").fill("Bản nháp cần giữ")
             failed = False
-            ui.get_by_role("button", name="Thử đồng bộ lại", exact=True).click()
-            expect(ui.get_by_text("Đã lưu local · Đã đồng bộ Firebase", exact=True)).to_be_visible()
+            ui.evaluate("window.dispatchEvent(new Event('online'))")
+            ui.wait_for_function("JSON.parse(localStorage.getItem('du-gio.tracker.v1:b')).dirty === false")
             expect(ui.get_by_label("Ghi chú")).to_have_value("Bản nháp cần giữ")
+            expect(synced).to_have_count(0)
+            ui.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()
+            expect(ui.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ")).to_be_visible()
+            ui.get_by_role("button", name="Cài đặt", exact=True).click()
+            ui.get_by_role("button", name="Tài khoản & đồng bộ", exact=True).click()
+            expect(synced).to_be_visible()
             ui.screenshot(path=f"output/playwright/P5/{engine}-sync-ui.png", full_page=True)
             ui.close()
             assert not errors, errors

@@ -8,8 +8,6 @@ import {
   Download,
   Upload,
   RefreshCw,
-  Cloud,
-  HardDrive,
   Timer,
   AlertCircle,
   ArrowLeft,
@@ -130,25 +128,7 @@ export function TrackerApp() {
             đủ giờ<span className="brand-dot">.</span>
           </span>
         </a>
-        <span className="storage-label">
-          {user ? <Cloud size={14} /> : <HardDrive size={14} />}
-          {user ? "Local + Firebase" : "Trên thiết bị"}
-        </span>
       </header>
-      {!pwa.online && (
-        <p className="connection-notice" role="status">
-          Đang mất mạng. Dữ liệu vẫn lưu trên thiết bị và tự đồng bộ khi có mạng, đã đăng nhập Google.
-        </p>
-      )}
-      {user && state && (
-        <div className="connection-notice" role="status">
-          {syncing ? "Đã giữ bản local · Đang đồng bộ Firebase…"
-            : syncError ? `Bản local vẫn được giữ. ${syncError}`
-            : pending ? "Đã lưu local · Chờ đồng bộ Firebase"
-            : "Đã lưu local · Đã đồng bộ Firebase"}
-          {syncError && <Button variant="ghost" onClick={retrySync} disabled={busy}>Thử đồng bộ lại</Button>}
-        </div>
-      )}
       {pwa.waiting && !editor && !(screen === "settings" && settingsSection === "app") && (
         <div className="connection-notice update-notice" role="status">
           <span>Có phiên bản mới của Đủ giờ.</span>
@@ -253,7 +233,18 @@ export function TrackerApp() {
                       )
                     }
                   />}
-                  {settingsSection === "account" && <AccountPanel user={user} busy={busy} />}
+                  {settingsSection === "account" && <AccountPanel user={user} busy={busy} status={<>
+                    {!pwa.online && <div className="connection-notice" role="status">
+                      Đang mất mạng. Dữ liệu vẫn lưu trên thiết bị và tự đồng bộ khi có mạng, đã đăng nhập Google.
+                    </div>}
+                    {user && <div className="connection-notice" role="status">
+                      {syncing ? "Đã giữ bản local · Đang đồng bộ Firebase…"
+                        : syncError ? `Bản local vẫn được giữ. ${syncError}`
+                        : pending ? "Đã lưu local · Chờ đồng bộ Firebase"
+                        : "Đã lưu local · Đã đồng bộ Firebase"}
+                      {syncError && <Button variant="ghost" onClick={retrySync} disabled={busy}>Thử đồng bộ lại</Button>}
+                    </div>}
+                  </>} />}
                   {settingsSection === "app" && <PwaPanel pwa={pwa} busy={busy} />}
                   {settingsSection === "backup" && <section className="panel form-stack">
                     <div className="section-heading">

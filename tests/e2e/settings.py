@@ -47,6 +47,8 @@ def main():
             browser = getattr(p, engine).launch(headless=True)
             context = browser.new_context(viewport={"width":320,"height":900},locale="vi-VN",timezone_id="Asia/Ho_Chi_Minh")
             page = open_page(context)
+            expect(page.locator(".storage-label")).to_have_count(0)
+            expect(page.get_by_role("status").filter(has_text="Đang mất mạng")).to_have_count(0)
             for name in SECTIONS:
                 expect(button(page, name)).to_be_visible()
             expect(page.locator('input:not([type="hidden"])')).to_have_count(0)
@@ -56,6 +58,8 @@ def main():
                 for index, name in enumerate(SECTIONS):
                     button(page, name).click()
                     expect(button(page, "Quay lại Cài đặt")).to_be_visible()
+                    if name == "Tài khoản & đồng bộ":
+                        expect(page.get_by_text("Đang lưu trên trình duyệt này.", exact=False)).to_be_visible()
                     audit(page, engine, str(index), width)
                     back(page)
             button(page, "Quy tắc giờ làm").click()

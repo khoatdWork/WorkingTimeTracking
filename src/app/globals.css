@@ -208,7 +208,7 @@ textarea:focus-visible {
   align-items: center;
   gap: 5px;
   color: #53657b;
-  font-size: 10px;
+  font-size: 12px;
   white-space: nowrap;
 }
 .main-content {
@@ -823,6 +823,10 @@ textarea:focus-visible {
   color: #53657b;
   overflow-wrap: anywhere;
 }
+.account-panel .connection-notice {
+  margin: 13px 0 0;
+  overflow-wrap: anywhere;
+}
 .account-panel > [data-slot="button"] {
   margin-top: 15px;
   width: 100%;
@@ -1131,10 +1135,6 @@ textarea:focus-visible {
   .main-content {
     padding-left: 15px;
     padding-right: 15px;
-  }
-  .storage-label {
-    font-size: 9px;
-    gap: 3px;
   }
   .brand {
     font-size: 23px;

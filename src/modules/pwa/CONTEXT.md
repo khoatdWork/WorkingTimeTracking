@@ -1,5 +1,7 @@
 # CONTEXT — PWA
 
+P9,11/11/2026: thông báo mất mạng chuyển từ shell toàn cục vào Cài đặt → Tài khoản & đồng bộ. usePwa, service worker, offline persistence và thông báo cập nhật có hành động không đổi. Browser regression kiểm notice ẩn tại Hôm nay, hiện tại tài khoản khi offline và biến mất tại đó khi có mạng. Kết quả thực và release docs/phases/P9.
+
 Release11/11/2026: P7/P8 ecf7375 đã deploy, Actions42946545547 SUCCESS, cache Pages du-gio-pwa-%2FWorkingTimeTracking%2F-39d7eb10f41038fa khớp CI. Hosted Chromium manifest/installability/offline checkin/reload/newwindow/reconnect/cache privacy PASS; WebKit manifest/icons/worker/ready PASS theo giới hạn offline đã ghi. Cập nhật qua Settings mới đã PASS trên CI với fixture2release; không xem là kiểm cập nhật trên thiết bị vật lý. Chi tiết docs/phases/P8.
 
 P8,10/11/2026: PwaPanel chỉ mở khi chọn Cài đặt → Cài ứng dụng. Notice phiên bản mới mở thẳng mục này kể cả từ root Cài đặt hoặc mục khác, qua guard nếu đang sửa giờ/ngày lễ. Nội dung/cơ chế update/install/service worker không đổi; không tự reload nháp. Kiểm tra hồi quy update/offline ghi tại docs/phases/P8. Chưa deploy P8.

@@ -1,5 +1,7 @@
 # CONTEXT — Firebase Google Auth
 
+P9,11/11/2026: AccountPanel nhận status?: ReactNode từ app-shell để chứa thông báo mất mạng/local/Firebase và nút thử lại tại mục Tài khoản & đồng bộ. Nhãn Local + Firebase/Trên thiết bị chuyển từ header vào panel; status nằm sau mô tả tài khoản, có role status và CSS xuống dòng trong panel. Auth, đăng xuất phục hồi lỗi mở sổ, scope local theo uid và điều kiện xác nhận server không đổi. Nghiệm thu/release docs/phases/P9; fixture không thay thế Firebase tài khoản thật.
+
 Implemented P2, 09/11/2026. account-panel.tsx dùng Firebase signInWithPopup Google và signOut, không lưu token tự viết. lib/firebase/client.ts initialize singleton browser config từ NEXT_PUBLIC_*; thiếu config thì local mode ghi nhãn rõ.
 
 Firebase project workingtimetracking-f974c, Google provider đã Enabled, GitHub Pages hostname authorized. Đã được người dùng duyệt email hỗ trợ và cấu hình Google. Sổ owner do data hook và Firestore rules bảo vệ; đổi user không trộn dữ liệu. Không có password hay service-account trong code. Mọi Google user có sổ riêng; không có admin allowlist.

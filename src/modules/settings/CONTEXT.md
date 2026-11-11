@@ -1,5 +1,7 @@
 # CONTEXT — Cài đặt giờ làm
 
+P9,11/11/2026: Tài khoản & đồng bộ là nơi xem nhãn nơi lưu, thông báo mất mạng, trạng thái đồng bộ local/Firebase và Thử đồng bộ lại. Màn danh sách Cài đặt và các mục khác không hiển thị các notice này. Giữ nguyên năm hàng, điều hướng/guard, form và dữ liệu. Nghiệm thu/release docs/phases/P9.
+
 Release11/11/2026: P7/P8 ecf7375 đã deploy, Actions42946545547 SUCCESS, full E2E trên CI và hosted settings.py Chromium+WebKit PASS (danh sách/chi tiết/back/nháp/stale settings/tháng lễ/backup/axe320390). Bằng chứng docs/phases/P8. Firebase tài khoản thật và thiết bị vật lý NOT RUN; trạng thái chưa deploy trong các ghi chép10/11 phía dưới là lịch sử.
 
 P8,10/11/2026: settings-menu.tsx có năm mục trong ba nhóm kiểu iPhone: tài khoản; quy tắc giờ và ngày lễ; ứng dụng và bản sao lưu. Mỗi hàng là Button shadcn, icon/nội dung/chevron, min76px, tóm tắt cài giờ/tài khoản/PWA hiện tại. Chỉ khi mở mục mới mount panel tương ứng; không thêm route hay dependency. SettingsForm giữ draft chuỗi nullable và baseline settings lúc sửa đầu tiên; pristine nhận settings mới, dirty không bị reset bởi state.version. onDirtyChange báo shell chặn rời màn; beforeunload nhắc khi refresh. onSave nhận baseline, shell đối chiếu settings hiện tại trước lưu để tránh đè cài đặt tab khác. Save false/lỗi giữ nháp, success bỏ draft; input và nútWFH disable khi busy tránh mất sửa trong lúc lưu. Chi tiết P8 ở docs/phases/P8, chưa deploy.

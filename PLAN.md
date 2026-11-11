@@ -33,6 +33,10 @@ Yêu cầu 10/11/2026: có chỗ dễ tìm để đánh dấu trước ngày ngh
 
 Yêu cầu10/11/2026: màn Cài đặt gọn theo kiểu iPhone, chạm từng mục mới chỉnh. Ba nhóm, năm mục Tài khoản & đồng bộ/Quy tắc giờ làm/Ngày nghỉ lễ/Cài ứng dụng/Bản sao lưu; mở một màn chi tiết và Quay lại Cài đặt, giữ bốn tab dưới. Tái sử dụng panel và đường lưu hiện tại. Nhắc bỏ nháp khi quay lại/đổi tab/mở cập nhật/sửa ngày lễ, giữ nháp khi lưu lỗi hoặc cài đặt đổi ở tab khác. PWA notice mở thẳng mục Cài ứng dụng. Lint/typecheck/build,44unit/2Rules emulator và full E2E Chromium/WebKit app/WFH/holidays/leave/settings/PWA/sync fixture PASS trên CI. Deploy cùng P7 tại ecf7375, Actions42946545547 SUCCESS11/11/2026 lúc09:36:05ICT; hosted Settings/leave/holiday/app/WFH Chromium+WebKit và HTTPS PWA smoke PASS. Chi tiết docs/phases/P8; Firebase tài khoản thật/thiết bị vật lý NOT RUN.
 
+## P9 — Trạng thái lưu trữ trong Cài đặt
+
+Yêu cầu11/11/2026: chuyển nhãn nơi lưu, thông báo mất mạng và trạng thái local/Firebase vào Cài đặt → Tài khoản & đồng bộ, giữ nút thử lại cùng trạng thái. Không đổi persistence hoặc điều kiện xác nhận Firebase. Đang kiểm tra và chuẩn bị release theo docs/phases/P9.
+
 ## Kết quả 09/11/2026
 
 P0, P1, P2 đã triển khai và kiểm tra trong phạm vi web cá nhân. Release code03c473f, GitHub Actions42563854172 SUCCESS cả verify-build/deploy. HTTPS full E2E Chromium/WebKit PASS, real Google sign-in trên localhost và Pages PASS, cloud default settings write/read-back PASS. Không thêm ca làm giả vào sổ thật. Link và bằng chứng tại docs/phases/P2. Physical phones và long-session token refresh chưa test, không tuyên bố PASS.

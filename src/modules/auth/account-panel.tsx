@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import {
   GoogleAuthProvider,
   signInWithPopup,
@@ -12,9 +12,11 @@ import { Cloud, HardDrive, LogIn, LogOut, ExternalLink } from "lucide-react";
 export function AccountPanel({
   user,
   busy,
+  status,
 }: {
   user: User | null;
   busy: boolean;
+  status?: ReactNode;
 }) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState("");
@@ -37,11 +39,16 @@ export function AccountPanel({
         <h2 id="account-title">Lưu trữ & tài khoản</h2>
         {user ? <Cloud size={19} /> : <HardDrive size={19} />}
       </div>
+      <div className="storage-label">
+        {user ? <Cloud size={14} /> : <HardDrive size={14} />}
+        {user ? "Local + Firebase" : "Trên thiết bị"}
+      </div>
       <p>
         {user
           ? `Đã đăng nhập: ${user.email || user.displayName}`
           : "Đang lưu trên trình duyệt này. Xuất bản sao lưu để giữ dữ liệu khi đổi máy hoặc xóa trình duyệt."}
       </p>
+      {status}
       {!firebaseConfigured && (
         <div className="notice">
           <strong>Firebase chưa được kết nối</strong>

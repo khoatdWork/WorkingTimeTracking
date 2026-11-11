@@ -55,7 +55,14 @@ def offline_suite(browser, engine, url=BASE_URL, release=None):
         return
     page.get_by_role("button", name="Hôm nay", exact=True).click()
     context.set_offline(True)
-    expect(page.get_by_role("status").filter(has_text="Đang mất mạng")).to_be_visible()
+    offline = page.get_by_role("status").filter(has_text="Đang mất mạng")
+    expect(offline).to_have_count(0)
+    page.get_by_role("button", name="Cài đặt", exact=True).click()
+    page.get_by_role("button", name="Tài khoản & đồng bộ", exact=True).click()
+    expect(offline).to_be_visible()
+    assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
+    page.get_by_role("button", name="Hôm nay", exact=True).click()
+    expect(offline).to_have_count(0)
     if release is not None:
         # WebKit's emulated offline navigation fails before consulting its worker.
         # Refuse every server request instead; cached navigation must still work.
@@ -97,6 +104,9 @@ def offline_suite(browser, engine, url=BASE_URL, release=None):
     context.set_offline(False)
     if release is not None:
         release["online"] = True
+    page.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
+    page.get_by_role("button", name="Tài khoản & đồng bộ", exact=True).click()
+    expect(page.get_by_role("status").filter(has_text="Đang mất mạng")).to_have_count(0)
     expect(page.locator(".connection-notice")).to_have_count(0)
     page.reload()
     expect(page.get_by_role("button", name="Tiếp tục làm việc", exact=True)).to_be_visible()
