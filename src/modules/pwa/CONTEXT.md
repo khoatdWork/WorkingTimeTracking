@@ -1,5 +1,7 @@
 # CONTEXT — PWA
 
+Release P9,11/11/2026: b1e641e deploy SUCCESS, Actions42949633931, cache Pages du-gio-pwa-%2FWorkingTimeTracking%2F-13ad89bf21be6143 khớp CI. Hosted Chromium offline HTTPS PASS cả vị trí notice tại tài khoản và reconnect; WebKit manifest/icons/worker/ready smoke PASS. Hosted WebKit offline navigation NOT RUN theo giới hạn automation; local refusal-based offline regression PASS. Thiết bị vật lý/Firebase tài khoản thật NOT RUN, chi tiết docs/phases/P9.
+
 P9,11/11/2026: thông báo mất mạng chuyển từ shell toàn cục vào Cài đặt → Tài khoản & đồng bộ. usePwa, service worker, offline persistence và thông báo cập nhật có hành động không đổi. Browser regression kiểm notice ẩn tại Hôm nay, hiện tại tài khoản khi offline và biến mất tại đó khi có mạng. Kết quả thực và release docs/phases/P9.
 
 Release11/11/2026: P7/P8 ecf7375 đã deploy, Actions42946545547 SUCCESS, cache Pages du-gio-pwa-%2FWorkingTimeTracking%2F-39d7eb10f41038fa khớp CI. Hosted Chromium manifest/installability/offline checkin/reload/newwindow/reconnect/cache privacy PASS; WebKit manifest/icons/worker/ready PASS theo giới hạn offline đã ghi. Cập nhật qua Settings mới đã PASS trên CI với fixture2release; không xem là kiểm cập nhật trên thiết bị vật lý. Chi tiết docs/phases/P8.

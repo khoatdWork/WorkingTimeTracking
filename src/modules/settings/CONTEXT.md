@@ -1,5 +1,7 @@
 # CONTEXT — Cài đặt giờ làm
 
+Release P9,11/11/2026: b1e641e deploy SUCCESS, Actions42949633931. Hosted settings.py Chromium/WebKit PASS: root/chi tiết/Back/tabs/nháp/stale-save/tháng lễ/backup/axe320390; ảnh root và tài khoản xác nhận header không còn nhãn lưu trữ. Firebase tài khoản thật/thiết bị vật lý NOT RUN. Bằng chứng docs/phases/P9.
+
 P9,11/11/2026: Tài khoản & đồng bộ là nơi xem nhãn nơi lưu, thông báo mất mạng, trạng thái đồng bộ local/Firebase và Thử đồng bộ lại. Màn danh sách Cài đặt và các mục khác không hiển thị các notice này. Giữ nguyên năm hàng, điều hướng/guard, form và dữ liệu. Nghiệm thu/release docs/phases/P9.
 
 Release11/11/2026: P7/P8 ecf7375 đã deploy, Actions42946545547 SUCCESS, full E2E trên CI và hosted settings.py Chromium+WebKit PASS (danh sách/chi tiết/back/nháp/stale settings/tháng lễ/backup/axe320390). Bằng chứng docs/phases/P8. Firebase tài khoản thật và thiết bị vật lý NOT RUN; trạng thái chưa deploy trong các ghi chép10/11 phía dưới là lịch sử.

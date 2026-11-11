@@ -1,5 +1,7 @@
 # CONTEXT — App shell
 
+Release P9,11/11/2026: b1e641e đã deploy Pages, Actions42949633931 verify-build4m39s/deploy9s SUCCESS lúc10:03:43ICT. Hosted app/settings Chromium+WebKit, Chromium offline HTTPS PWA và WebKit manifest/worker smoke PASS; cache du-gio-pwa-%2FWorkingTimeTracking%2F-13ad89bf21be6143 khớp CI. Thông báo lưu trữ chỉ ở mục tài khoản. Firebase tài khoản thật/thiết bị vật lý NOT RUN; bằng chứng docs/phases/P9.
+
 P9,11/11/2026: bỏ nhãn nơi lưu khỏi header và chuyển thông báo mất mạng/local/Firebase cùng Thử đồng bộ lại vào status slot của AccountPanel tại Cài đặt → Tài khoản & đồng bộ. Các điều kiện syncing/syncError/pending và callback retrySync giữ nguyên; chỉ render khi đang xem mục tài khoản và đã có state. AccountPanel tại lỗi mở sổ vẫn cho đăng xuất mà không cần status. PWA update notice vẫn toàn cục và qua guard cũ; lỗi mở/lưu sổ/toast thao tác không đổi. Chi tiết nghiệm thu/release tại docs/phases/P9.
 
 Release P7/P8,11/11/2026: ecf7375 đã deploy Pages, Actions42946545547 verify-build/deploy SUCCESS. Hosted Settings/leave/holiday/app/WFH Chromium+WebKit PASS; PWA HTTPS Chromium offline và WebKit manifest/worker/ready PASS. Cache du-gio-pwa-%2FWorkingTimeTracking%2F-39d7eb10f41038fa khớp CI. Bằng chứng docs/phases/P7 và P8; Firebase tài khoản thật/thiết bị vật lý NOT RUN. Các dòng chưa deploy phía dưới ghi trạng thái triển khai local ngày10/11 trước release.

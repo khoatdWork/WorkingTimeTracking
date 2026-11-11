@@ -35,7 +35,7 @@ Yêu cầu10/11/2026: màn Cài đặt gọn theo kiểu iPhone, chạm từng m
 
 ## P9 — Trạng thái lưu trữ trong Cài đặt
 
-Yêu cầu11/11/2026: chuyển nhãn nơi lưu, thông báo mất mạng và trạng thái local/Firebase vào Cài đặt → Tài khoản & đồng bộ, giữ nút thử lại cùng trạng thái. Không đổi persistence hoặc điều kiện xác nhận Firebase. Đang kiểm tra và chuẩn bị release theo docs/phases/P9.
+Yêu cầu11/11/2026: chuyển nhãn nơi lưu, thông báo mất mạng và trạng thái local/Firebase vào Cài đặt → Tài khoản & đồng bộ, giữ nút thử lại cùng trạng thái. Không đổi persistence hoặc điều kiện xác nhận Firebase. Deploy b1e641e, Actions42949633931 SUCCESS11/11/2026 lúc10:03:43ICT. Lint/typecheck/build,44unit/2Rules/full E2E Chromium+WebKit PASS local và CI; hosted app/settings hai engines, Chromium offline HTTPS PWA và WebKit worker smoke PASS. Firebase tài khoản thật/thiết bị vật lý NOT RUN. Chi tiết docs/phases/P9.
 
 ## Kết quả 09/11/2026
 

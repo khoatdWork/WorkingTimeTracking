@@ -1,5 +1,7 @@
 # CONTEXT — Firebase Google Auth
 
+Release P9,11/11/2026: b1e641e deploy SUCCESS, Actions42949633931. Hosted guest account Settings Chromium/WebKit/axe320390 PASS; sync/error/retry dùng Auth/transport fixture và giữ nháp PASS cả hai engines. Không đăng nhập/ghi cloud thật cho P9; Firebase tài khoản thật NOT RUN. Chi tiết docs/phases/P9.
+
 P9,11/11/2026: AccountPanel nhận status?: ReactNode từ app-shell để chứa thông báo mất mạng/local/Firebase và nút thử lại tại mục Tài khoản & đồng bộ. Nhãn Local + Firebase/Trên thiết bị chuyển từ header vào panel; status nằm sau mô tả tài khoản, có role status và CSS xuống dòng trong panel. Auth, đăng xuất phục hồi lỗi mở sổ, scope local theo uid và điều kiện xác nhận server không đổi. Nghiệm thu/release docs/phases/P9; fixture không thay thế Firebase tài khoản thật.
 
 Implemented P2, 09/11/2026. account-panel.tsx dùng Firebase signInWithPopup Google và signOut, không lưu token tự viết. lib/firebase/client.ts initialize singleton browser config từ NEXT_PUBLIC_*; thiếu config thì local mode ghi nhãn rõ.
