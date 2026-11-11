@@ -8,4 +8,4 @@ Nếu bất kỳ ngày trong khoảng đã có dữ liệu, từ chối toàn kh
 
 Thiết kế giữ palette, Be Vietnam Pro, max480px, native date và nút shadcn. Form một cột, danh sách có đường kẻ và ghi chú xuống dòng; phần chấm công vẫn là thao tác chính. Không thêm quản lý số dư phép, phép nửa ngày hoặc quy trình duyệt vì chưa được yêu cầu.
 
-Nghiệm thu local và giới hạn ghi tại test-results.md; đánh giá code và giao diện ở các file cùng phase. P7 chưa deploy. Hosted Firebase tài khoản thật và thiết bị vật lý NOT RUN.
+Nghiệm thu và giới hạn ghi tại test-results.md; đánh giá code và giao diện ở các file cùng phase. Release ecf7375eb231c0b184d988588fe98193d561e43e deploy cùng P8 ngày11/11/2026 lúc09:36:05ICT. [Actions42946545547](https://github.com/khoatdWork/WorkingTimeTracking/actions/runs/42946545547) verify-build4m48s/deploy8s SUCCESS, gồm44unit/2Rules/full E2E trên Pages subpath. Hosted leave/holiday/settings/app/WFH Chromium+WebKit PASS; Chromium HTTPS offline PWA và WebKit manifest/worker/ready PASS. Firebase tài khoản thật và thiết bị vật lý NOT RUN.

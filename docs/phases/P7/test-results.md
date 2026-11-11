@@ -1,6 +1,6 @@
 # P7 verification — 10/11/2026
 
-Final production build served locally at `/` for regression and `/scope/` for the isolated leave suite, with fake ledger data in isolated browser contexts. No test data was written to a real Firebase account. P7 is not deployed.
+Initial10/11 local production build served at `/` for regression and `/scope/` for the isolated leave suite, with fake ledger data in isolated browser contexts. No test data was written to a real Firebase account. Deployment follow-up11/11 is recorded below.
 
 | Check | Result |
 | --- | --- |
@@ -15,7 +15,8 @@ Final production build served locally at `/` for regression and `/scope/` for th
 | New leave suite, Chromium/WebKit | PASS |
 | PWA offline/installability/update suite | PASS, Chromium/WebKit; explicit update/cancel/failed-install rollback |
 | `npm run test:sync` | PASS, Chromium/WebKit with isolated Auth/transport fixture |
-| Hosted P7 smoke / real-account Firebase sync | NOT RUN |
+| Hosted P7 smoke | PASS11/11; release follow-up below |
+| Real-account Firebase sync | NOT RUN |
 | Physical phones / installed physical PWA | NOT RUN |
 
 Core leave cases cover tomorrow, inclusive ranges, weekday week/month targets, weekends, conflict rejection without mutation, removal/restored targets, current-kind protection, invalid dates/notes and existing JSON/CSV compatibility. Existing holiday tests use the same generalized core helpers; boundary/leap/year/storage-cap coverage remains.
@@ -35,4 +36,12 @@ npm run test:e2e
 
 Screenshots and backups are ignored under `output/playwright/P7/`: both engines' leave form, leave list at320/390, and today's leave view. Root inspected the Chromium full-page form, cropped planner and current-rest screenshots; existing fixed navigation/skip-link can appear mid-page in a stitched full-page capture. Final visual review is described in frontend-review.md. Native date presentation follows browser locale, while saved dates use YYYY-MM-DD and business dates use Vietnam UTC+7.
 
-These results verify local persistence and fixture behavior. They do not establish P7 hosted deployment, live account synchronization or physical-device behavior.
+The initial10/11 checks verify local persistence and fixture behavior; hosted verification is recorded in the release follow-up. Live account synchronization and physical-device behavior remain unverified.
+
+## Release follow-up — 11/11/2026
+
+- Source ecf7375eb231c0b184d988588fe98193d561e43e; [Actions42946545547](https://github.com/khoatdWork/WorkingTimeTracking/actions/runs/42946545547) SUCCESS. verify-build4m48s, deploy8s; completed09:36:05ICT. CI ran the full combined E2E command successfully on `/WorkingTimeTracking/`, including44unit,2Rules emulator and all Chromium/WebKit suites with sync fixture.
+- Hosted [Pages](https://khoatdwork.github.io/WorkingTimeTracking/) main/manifest/sw return200, fixture URL404. Cache du-gio-pwa-%2FWorkingTimeTracking%2F-39d7eb10f41038fa matches CI.
+- Hosted leave.py/holidays.py/settings.py/app.py/wfh.py PASS both engines. Inclusive ranges, tomorrow defaults, targets, imports, stale/cancel/confirmed changes, new Settings navigation and axe/mobile layout remain correct. Screenshots/guest exports stored separately under ignored `output/playwright/hosted-ecf7375/`.
+- Hosted Chromium HTTPS PWA manifest/installability/offline persistence/reload/newwindow/cache privacy/reconnect PASS. WebKit manifest/icons/worker/ready PASS; offline navigation limitation remains as documented.
+- All hosted contexts were fresh, unauthenticated and used synthetic guest data only. Real-account Firebase sync and physical devices remain NOT RUN.

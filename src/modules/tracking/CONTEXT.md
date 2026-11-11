@@ -1,5 +1,7 @@
 # CONTEXT — Chấm công, lịch sử và báo cáo
 
+Release11/11/2026: P7/P8 ecf7375 đã deploy, Actions42946545547 SUCCESS. Hosted leave/holiday/app/WFH Chromium+WebKit PASS trong guest context cô lập, không ghi Firebase thật. Kiểm ngày mai/range/conflict/tháng/nháp/JSON/sửa-xóa/chỉ tiêu và giao diện320390; chi tiết docs/phases/P7,P8. Firebase tài khoản thật và thiết bị vật lý NOT RUN; các ghi chép chưa deploy ngày10/11 phía dưới là lịch sử.
+
 P8,10/11/2026: TimeOffPlanner nhận onDirtyChange tùy chọn khi ghép tại mục Ngày nghỉ lễ trong Cài đặt. So ngày/ghi chú với baseline lần lưu gần nhất để shell nhắc trước khi rời màn; save thành công mới rebase, lỗi giữ nháp. Có beforeunload khi tích hợp guard. Planner nghỉ phép tại Today không đổi cách ghép P7.
 
 Implemented P1, 09/11/2026. overview.tsx chấm công hôm nay, WFH/request, vòng giờ, tuần/tháng và ca. history.tsx lọc tháng/WFH/thiếu; reports.tsx tổng tháng + tuần giới hạn trong tháng + bar chart; month-picker.tsx dùng Input type month; day-editor.tsx thêm/sửa/xóa ca, location, request, nghỉ/lễ và note.

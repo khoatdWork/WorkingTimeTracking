@@ -1,5 +1,7 @@
 # CONTEXT — PWA
 
+Release11/11/2026: P7/P8 ecf7375 đã deploy, Actions42946545547 SUCCESS, cache Pages du-gio-pwa-%2FWorkingTimeTracking%2F-39d7eb10f41038fa khớp CI. Hosted Chromium manifest/installability/offline checkin/reload/newwindow/reconnect/cache privacy PASS; WebKit manifest/icons/worker/ready PASS theo giới hạn offline đã ghi. Cập nhật qua Settings mới đã PASS trên CI với fixture2release; không xem là kiểm cập nhật trên thiết bị vật lý. Chi tiết docs/phases/P8.
+
 P8,10/11/2026: PwaPanel chỉ mở khi chọn Cài đặt → Cài ứng dụng. Notice phiên bản mới mở thẳng mục này kể cả từ root Cài đặt hoặc mục khác, qua guard nếu đang sửa giờ/ngày lễ. Nội dung/cơ chế update/install/service worker không đổi; không tự reload nháp. Kiểm tra hồi quy update/offline ghi tại docs/phases/P8. Chưa deploy P8.
 
 P3, 09/11/2026. Manifest src/app/manifest.ts tạo id/start_url/scope theo NEXT_PUBLIC_BASE_PATH. PNG192/512, maskable512 (nền kín, clock nằm trong safe circle), Apple180 được render từ public/icon.svg; không thêm dependency.
