@@ -34,6 +34,7 @@ def range_scenario(browser, engine):
     settings.focus()
     expect(settings).to_be_focused()
     settings.press("Enter")
+    page.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
     check_navigation(page, "Cài đặt")
     panel = page.get_by_role("region", name="Ngày nghỉ lễ", exact=True)
 
@@ -55,6 +56,7 @@ def range_scenario(browser, engine):
     page.wait_for_load_state("networkidle")
     expect(page.locator(".month-overview")).to_contain_text("152:00")
     settings.click()
+    page.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
     check_navigation(page, "Cài đặt")
     before = saved(page)
     # Free edges must not be written when an occupied date lies inside the range.
@@ -97,6 +99,7 @@ def main():
             work = saved(page)["days"]["2026-11-09"]
             expect(page.locator(".month-overview")).to_contain_text("168:00")
             page.get_by_role("button", name="Cài đặt", exact=True).click()
+            page.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
             check_navigation(page, "Cài đặt")
             panel = page.get_by_role("region", name="Ngày nghỉ lễ", exact=True)
 
@@ -115,6 +118,7 @@ def main():
             page.wait_for_load_state("networkidle")
             expect(page.locator(".month-overview")).to_contain_text("160:00")
             page.get_by_role("button", name="Cài đặt", exact=True).click()
+            page.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
             expect(panel.get_by_role("button", name="Sửa ngày lễ 16/11/2026")).to_be_visible()
             for date in ["2026-11-16", "2026-11-09"]:
                 before = saved(page)["days"]
@@ -126,11 +130,14 @@ def main():
                 assert saved(page)["days"] == before
             assert saved(page)["days"]["2026-11-09"] == work
             panel.get_by_role("button", name="Sửa ngày lễ 16/11/2026").click()
+            page.get_by_role("button", name="Bỏ thay đổi", exact=True).click()
             expect(page.get_by_role("button", name="Ngày lễ", exact=True)).to_have_attribute("aria-pressed", "true")
             page.get_by_label("Ghi chú", exact=True).fill("Lễ đã sửa")
             page.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()
             expect(panel.get_by_role("button", name="Sửa ngày lễ 16/11/2026")).to_contain_text("Lễ đã sửa")
 
+            page.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
+            page.get_by_role("button", name="Bản sao lưu", exact=True).click()
             # JSON is the supported import format; CSV preserves holiday type and note for spreadsheets.
             with page.expect_download() as download:
                 page.get_by_role("button", name="Xuất JSON", exact=True).click()
@@ -149,6 +156,8 @@ def main():
             assert holiday["Loại ngày"] == "holiday" and holiday["Ghi chú"] == "Lễ đã sửa"
             page.locator('input[type="file"]').set_input_files(str(backup_path))
             page.get_by_role("button", name="Thay sổ hiện tại", exact=True).click()
+            page.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
+            page.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
             expect(panel.get_by_role("button", name="Sửa ngày lễ 16/11/2026")).to_contain_text("Lễ đã sửa")
 
             add("2026-12-01", "Lễ tháng sau")
@@ -175,6 +184,7 @@ def main():
             other.goto(os.environ["APP_URL"])
             other.wait_for_load_state("networkidle")
             other.get_by_role("button", name="Cài đặt", exact=True).click()
+            other.get_by_role("button", name="Ngày nghỉ lễ", exact=True).click()
             other.get_by_role("button", name="Sửa ngày lễ 16/11/2026").click()
             other.get_by_label("Ghi chú", exact=True).fill("Lễ đổi ở tab khác")
             other.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()

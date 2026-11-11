@@ -46,6 +46,7 @@ def offline_suite(browser, engine, url=BASE_URL, release=None):
         width, height = struct.unpack(">II", response.body()[16:24])
         assert f"{width}x{height}" == icon["sizes"]
     page.get_by_role("button", name="Cài đặt", exact=True).click()
+    page.get_by_role("button", name="Cài ứng dụng", exact=True).click()
     expect(page.get_by_text("Giao diện đã sẵn sàng", exact=False)).to_be_visible()
     if engine == "webkit" and release is None:
         assert not errors, errors
@@ -78,7 +79,8 @@ def offline_suite(browser, engine, url=BASE_URL, release=None):
     page.get_by_role("link", name="Đủ giờ, trang chủ", exact=True).click()
     expect(page.get_by_role("button", name="Tiếp tục làm việc", exact=True)).to_be_visible()
     page.get_by_role("button", name="Cài đặt", exact=True).click()
-    expect(page.get_by_role("heading", name="Cài ứng dụng", exact=True)).to_be_visible()
+    page.get_by_role("button", name="Cài ứng dụng", exact=True).click()
+    expect(page.get_by_role("heading", name="Cài ứng dụng", exact=True, level=1)).to_be_visible()
     page.evaluate("document.fonts.ready")
     page.screenshot(path=str(OUT / f"{engine}-offline-settings.png"), full_page=True)
     assert page.evaluate("document.documentElement.scrollWidth <= innerWidth")
@@ -169,22 +171,39 @@ def update_suite(browser, url, release):
         updater = context.new_page()
         updater.goto(url)
         updater.get_by_role("button", name="Cài đặt", exact=True).click()
+        updater.get_by_role("button", name="Quy tắc giờ làm", exact=True).click()
         updater.get_by_label("Tự trừ nghỉ trưa (phút/ngày)").fill("30")
+        updater.get_by_role("button", name="Lưu cài đặt", exact=True).click()
+        updater.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
+        updater.get_by_role("button", name="Cài ứng dụng", exact=True).click()
         release["version"] = 2
         updater.evaluate("async () => (await navigator.serviceWorker.getRegistration()).update()")
         button = updater.get_by_role("button", name="Cập nhật ứng dụng", exact=True)
         expect(button).to_be_visible()
+        updater.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
+        notice = updater.get_by_role("button", name="Xem bản cập nhật", exact=True)
+        expect(notice).to_be_visible()
+        notice.click()
+        expect(updater.get_by_role("heading", name="Cài ứng dụng", exact=True, level=1)).to_be_visible()
         expect(draft.get_by_label("Ghi chú")).to_have_value("Giữ bản nháp khi cập nhật PWA")
         button.click()
         updater.get_by_role("button", name="Để sau", exact=True).click()
+        updater.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
+        updater.get_by_role("button", name="Quy tắc giờ làm", exact=True).click()
         expect(updater.get_by_label("Tự trừ nghỉ trưa (phút/ngày)")).to_have_value("30")
         updater.get_by_label("Tự trừ nghỉ trưa (phút/ngày)").fill("60")
+        notice.click()
+        expect(updater.get_by_role("alertdialog")).to_contain_text("Bỏ thay đổi chưa lưu?")
+        updater.get_by_role("button", name="Tiếp tục chỉnh sửa", exact=True).click()
+        expect(updater.get_by_label("Tự trừ nghỉ trưa (phút/ngày)")).to_have_value("60")
         updater.get_by_role("button", name="Lưu cài đặt", exact=True).click()
+        updater.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
+        updater.get_by_role("button", name="Cài ứng dụng", exact=True).click()
         button.click()
         updater.get_by_role("button", name="Cập nhật và tải lại", exact=True).click()
         expect(updater.get_by_role("heading", name="Hôm nay", exact=True)).to_be_visible()
         expect(draft.get_by_label("Ghi chú")).to_have_value("Giữ bản nháp khi cập nhật PWA")
-        assert updater.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1')).version") == 1
+        assert updater.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1')).version") == 2
         assert updater.evaluate("async () => (await (await caches.open('another-pages-app')).match('/unrelated')).text()") == "keep"
         context.set_offline(True)
         updater.reload()
@@ -205,7 +224,7 @@ def update_suite(browser, url, release):
         context.set_offline(True)
         updater.reload()
         expect(updater.get_by_role("button", name="Đã lên công ty", exact=True)).to_be_visible()
-        print("PASS PWA update: explicit confirmation/cancel, one-window reload, other draft/ledger/cache retained, failed install rollback/offline.")
+        print("PASS PWA update: notice routes directly from settings root, dirty hours guard preserves draft, explicit confirmation/cancel, one-window reload, other draft/ledger/cache retained, failed install rollback/offline.")
     finally:
         context.close()
 

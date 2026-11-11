@@ -126,7 +126,7 @@ export function History({
                             : "Cuối tuần"}
                 </strong>
                 <small>
-                  {day?.mode === "wfh"
+                  {day && day.kind !== "work" ? day.note || "Không yêu cầu giờ làm" : day?.mode === "wfh"
                     ? day.request === "none"
                       ? "Request chưa gửi"
                       : day.request === "sent"

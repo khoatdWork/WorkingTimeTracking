@@ -73,30 +73,33 @@ export function monthDates(month: string): string[] {
 export function newDay(date: string, mode: WorkMode = "office"): WorkDay {
   return { date, mode, request: "none", kind: "work", sessions: [], note: "" };
 }
-export function addHolidays(
+export function addTimeOff(
   state: TrackerState,
+  kind: "leave" | "holiday",
   fromDate: string,
   toDate: string,
   note: string,
   now = Date.now(),
 ): TrackerState {
+  const label = kind === "leave" ? "nghỉ phép" : "nghỉ lễ";
   if (!isDate(fromDate) || !isDate(toDate) || fromDate > toDate)
-    throw new Error("Khoảng ngày nghỉ lễ không hợp lệ. Ngày kết thúc phải từ ngày bắt đầu trở đi.");
+    throw new Error(`Khoảng ngày ${label} không hợp lệ. Ngày kết thúc phải từ ngày bắt đầu trở đi.`);
   const next = structuredClone(state);
   for (let date = fromDate; date <= toDate; date = addDays(date, 1)) {
     if (next.days[date])
-      throw new Error(`Ngày ${date.split("-").reverse().join("/")} đã có dữ liệu. Hãy mở Chỉnh sửa ngày để đổi thành ngày lễ.`);
-    next.days[date] = { ...newDay(date), kind: "holiday", note };
+      throw new Error(`Ngày ${date.split("-").reverse().join("/")} đã có dữ liệu. Hãy mở Chỉnh sửa ngày để đổi thành ngày ${label}.`);
+    next.days[date] = { ...newDay(date), kind, note };
   }
   return validateState(next, now);
 }
-export function removeHoliday(
+export function removeTimeOff(
   state: TrackerState,
+  kind: "leave" | "holiday",
   date: string,
   now = Date.now(),
 ): TrackerState {
-  if (state.days[date]?.kind !== "holiday")
-    throw new Error("Ngày này không còn là ngày lễ. Hãy kiểm tra lại dữ liệu.");
+  if (state.days[date]?.kind !== kind)
+    throw new Error(`Ngày này không còn là ngày ${kind === "leave" ? "nghỉ phép" : "lễ"}. Hãy kiểm tra lại dữ liệu.`);
   const next = structuredClone(state);
   delete next.days[date];
   return validateState(next, now);

@@ -8,12 +8,16 @@ Theo dõi thời gian làm việc và WFH, cân đối đủ giờ trong tháng.
 
 ## Sử dụng
 
-1. App luôn giữ bản local trên thiết bị. Vào Cài đặt, đăng nhập Google để tự đồng bộ Firebase mỗi lần mở app, có mạng trở lại hoặc thay đổi dữ liệu. Chưa có local thì tải Firebase về; có thay đổi local chưa đồng bộ thì ưu tiên tải lên. Local đã đồng bộ tự nhận thay đổi mới từ Firebase. Bản local tách theo tài khoản; dữ liệu trước đăng nhập được nhận một lần vào tài khoản đầu tiên.
+1. App luôn giữ bản local trên thiết bị. Vào Cài đặt → Tài khoản & đồng bộ, đăng nhập Google để tự đồng bộ Firebase mỗi lần mở app, có mạng trở lại hoặc thay đổi dữ liệu. Chưa có local thì tải Firebase về; có thay đổi local chưa đồng bộ thì ưu tiên tải lên. Local đã đồng bộ tự nhận thay đổi mới từ Firebase. Bản local tách theo tài khoản; dữ liệu trước đăng nhập được nhận một lần vào tài khoản đầu tiên.
 2. Với Văn phòng: bấm “Đã lên công ty”, khi về bấm kết thúc. Đồng hồ vẫn tính khi đóng tab hoặc tắt máy vì lưu thời điểm bắt đầu. Với **Work from home: chỉ chọn 8 giờ hoặc 10 giờ**, không cần bắt đầu/kết thúc. Chọn mức khác sẽ thay số giờ trong ngày đó, không cộng dồn.
 3. Ngày văn phòng ghi theo ca mặc định trừ **60 phút nghỉ trưa một lần/ngày**. Không cần tạm dừng trong giờ nghỉ trưa. Nút tạm dừng dùng cho nghỉ thêm. **8/10 giờ WFH đã là giờ làm ròng**, không trừ thêm nghỉ trưa, kể cả khi đổi cài đặt.
 4. Với WFH, gửi request qua kênh công ty rồi đánh dấu Chưa gửi / Đã gửi / Đã duyệt tại app. Giới hạn mặc định 3 ngày mỗi tuần; có cảnh báo vượt giới hạn và request chưa gửi. App không tự gửi request cho công ty.
 5. Quên chấm công: vào Lịch sử, chọn ngày và Bổ sung. Văn phòng có nhiều ca/ngày, chỉnh giờ đến giây; WFH chọn 8/10 giờ. Có ghi chú, nghỉ phép và ngày lễ thủ công. Ngày tương lai chỉ lên kế hoạch/request WFH, chưa ghi giờ. Các ca WFH cũ vẫn được giữ và tính như trước; sửa ghi chú/request không tự đổi giờ. Chuyển ca cũ sang giờ WFH cố định hoặc bỏ giờ WFH để đổi loại ngày đều cần xác nhận.
 6. Xem Báo cáo và đối chiếu tổng. Có xuất JSON giữ đầy đủ dữ liệu và CSV các ca với thời điểm UTC.
+
+Nghỉ phép: tại **Hôm nay → Nghỉ phép → Thêm ngày nghỉ phép**, chọn Từ ngày/Đến ngày (mặc định ngày mai) và **Lưu ngày nghỉ phép**. Nghỉ một ngày thì chọn hai mốc giống nhau; có thể thêm ghi chú. Danh sách theo tháng cho phép sửa/xóa. Ngày nghỉ phép giảm chỉ tiêu ngày thường, không cộng giờ đã làm; cuối tuần không giảm thêm. Nếu ngày đã có dữ liệu, mở Chỉnh sửa ngày để đối chiếu trước khi đổi. Ngày nghỉ lễ vẫn thêm tại Cài đặt → Ngày nghỉ lễ.
+
+**Cài đặt** là danh sách từng mục như iPhone: Tài khoản & đồng bộ, Quy tắc giờ làm, Ngày nghỉ lễ, Cài ứng dụng và Bản sao lưu. Bấm một mục để mở phần chỉnh sửa, dùng **Quay lại Cài đặt** để trở về danh sách. Xuất/nhập/xóa sổ nằm trong Bản sao lưu. Nếu đang sửa giờ hoặc ngày lễ chưa lưu, app nhắc trước khi rời màn; Tiếp tục chỉnh sửa giữ nguyên nội dung.
 
 ## Cách tính
 
@@ -32,7 +36,7 @@ Theo dõi thời gian làm việc và WFH, cân đối đủ giờ trong tháng.
 - iPhone/iPad: mở bằng Safari → Chia sẻ → Thêm vào Màn hình chính. App có icon riêng và mở dạng standalone.
 - **Sổ local luôn có trên thiết bị**, kể cả đã đăng nhập Google. Có thể vào/về, tạm dừng, chỉnh ngày và xem báo cáo khi mất mạng, kể cả đóng rồi mở lại app. Hãy xuất JSON định kỳ để giữ bản ngoài trình duyệt.
 - **Đồng bộ Firebase tự chạy** khi mở app, đăng nhập, có mạng hoặc quay lại app; cập nhật Firebase cũng được theo dõi khi đang mở. Thao tác lưu local trước, cờ chờ đồng bộ được giữ qua lần mở lại. Chỉ hiện “Đã đồng bộ Firebase” sau server xác nhận. Lỗi mạng/quyền ghi giữ nguyên local và có nút thử lại. Khi local chưa đồng bộ và Firebase cùng có thay đổi, toàn bộ sổ local được ưu tiên tải lên theo yêu cầu; hãy xuất JSON nếu cần đối chiếu trước khi dùng nhiều thiết bị đồng thời.
-- Khi có phiên bản mới, mở Cài đặt, lưu thay đổi rồi chọn **Cập nhật ứng dụng**. App hỏi trước khi tải lại cửa sổ hiện tại; các cửa sổ khác giữ bản nháp và ca đang chạy không bị kết thúc. Đóng hết cửa sổ cũng cho phép phiên bản đã tải tự áp dụng ở lần mở sau.
+- Khi có phiên bản mới, chọn **Xem bản cập nhật** để mở thẳng **Cài đặt → Cài ứng dụng**, rồi chọn **Cập nhật ứng dụng**. App nhắc nếu đang sửa chưa lưu và hỏi trước khi tải lại cửa sổ hiện tại; các cửa sổ khác giữ bản nháp và ca đang chạy không bị kết thúc. Đóng hết cửa sổ cũng cho phép phiên bản đã tải tự áp dụng ở lần mở sau.
 
 PWA chỉ đăng ký service worker trong production build (HTTPS hoặc localhost). Khi chuyển một cổng localhost đã chạy production sang `npm run dev`, dùng Application → Service Workers → Unregister và xóa Cache Storage nếu trình duyệt vẫn mở bản cũ. Không xóa Local Storage nếu cần giữ sổ trên thiết bị.
 
@@ -102,7 +106,7 @@ docs/phases/                test, review, audit evidence
 
 Mỗi module có CONTEXT.md. AGENTS.md, AGENT.md, PLAN.md, Design.md dùng để tiếp tục phát triển.
 
-Tab **Cài đặt** nằm ngay sau **Báo cáo** trên thanh điều hướng dưới. Vào **Ngày nghỉ lễ**, chọn **Từ ngày / Đến ngày** (tính cả hai đầu), nhập tên nếu cần và bấm Thêm. Nghỉ một ngày thì chọn hai mốc giống nhau. Có thể thêm trước kỳ nghỉ, xuyên tháng/năm, xem danh sách theo tháng, bấm một ngày để sửa hoặc xóa từng ngày có xác nhận. Ngày lễ trong tuần tự giảm chỉ tiêu giờ; cuối tuần không giảm thêm. Khoảng có ngày đã lưu dữ liệu sẽ bị từ chối toàn bộ để tránh mất giờ; mở Chỉnh sửa ngày để xử lý riêng ngày đó hoặc chọn khoảng khác. Nghỉ phép vẫn đánh dấu trong Lịch sử.
+Tab **Cài đặt** nằm ngay sau **Báo cáo** trên thanh điều hướng dưới. Vào **Ngày nghỉ lễ**, chọn **Từ ngày / Đến ngày** (tính cả hai đầu), nhập tên nếu cần và bấm Thêm. Nghỉ một ngày thì chọn hai mốc giống nhau. Có thể thêm trước kỳ nghỉ, xuyên tháng/năm, xem danh sách theo tháng, bấm một ngày để sửa hoặc xóa từng ngày có xác nhận. Ngày lễ trong tuần tự giảm chỉ tiêu giờ; cuối tuần không giảm thêm. Khoảng có ngày đã lưu dữ liệu sẽ bị từ chối toàn bộ để tránh mất giờ; mở Chỉnh sửa ngày để xử lý riêng ngày đó hoặc chọn khoảng khác. Nghỉ phép thêm tại Hôm nay hoặc đánh dấu khi sửa ngày trong Lịch sử.
 
 ## Firebase và deploy
 

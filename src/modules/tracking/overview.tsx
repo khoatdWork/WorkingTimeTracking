@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { Badge } from "@/components/ui/badge";
+import { TimeOffPlanner } from "./time-off-planner";
 
 import {
   activeSession,
@@ -51,12 +52,18 @@ export function Today({
   now,
   busy,
   run,
+  save,
+  leaveMonth,
+  setLeaveMonth,
   edit,
 }: {
   state: TrackerState;
   now: number;
   busy: boolean;
   run: Run;
+  save: (change: (current: TrackerState) => TrackerState) => Promise<TrackerState>;
+  leaveMonth: string;
+  setLeaveMonth: (month: string) => void;
   edit: (d: string) => void;
 }) {
   const today = dateKey(now),
@@ -99,7 +106,7 @@ export function Today({
           <h1>Hôm nay</h1>
           <span className={`status-pill ${active ? "is-working" : ""}`}>
             <span />
-            {active
+            {day.kind !== "work" ? day.kind === "leave" ? "Nghỉ phép" : "Ngày nghỉ lễ" : active
               ? "Đang làm việc"
               : day.sessions.length || day.wfhHours !== undefined
                 ? "Đã ghi nhận"
@@ -109,7 +116,22 @@ export function Today({
         </div>
         <p className="subtitle capitalize">{dateLabel(today)}</p>
       </div>
-      <section className="clock-panel" aria-label="Chấm công hôm nay">
+      {day.kind !== "work" ? (
+        <section className="panel form-stack" aria-label="Ngày nghỉ hôm nay">
+          <h2>{day.kind === "leave" ? "Hôm nay bạn nghỉ phép" : "Hôm nay là ngày nghỉ lễ"}</h2>
+          <p className="help">Không yêu cầu giờ làm hôm nay. Chỉ tiêu tuần và tháng đã cập nhật.</p>
+          {day.note && <p className="help">{day.note}</p>}
+          {active && <div className="notice">
+            Ca từ {active.day.date.split("-").reverse().join("/")} vẫn đang chạy.
+            <Button variant="outline" disabled={busy} onClick={() => run(
+              (s) => stopWork(s, Date.now()), "Đã ghi nhận giờ kết thúc ca",
+            )}>Kết thúc ca đang chạy</Button>
+          </div>}
+          <Button variant="outline" disabled={busy} onClick={() => edit(today)}>
+            <Pencil size={17} aria-hidden="true" />Chỉnh sửa ngày / bổ sung giờ
+          </Button>
+        </section>
+      ) : <section className="clock-panel" aria-label="Chấm công hôm nay">
         <div className="segmented mode-select">
           <Button
             variant="ghost"
@@ -283,8 +305,10 @@ export function Today({
           <Pencil size={13} />
           Chỉnh sửa ngày / bổ sung giờ
         </Button>
-      </section>
-      {day.mode === "wfh" && (
+      </section>}
+      <TimeOffPlanner kind="leave" state={state} today={today} month={leaveMonth}
+        setMonth={setLeaveMonth} busy={busy} save={save} edit={edit} />
+      {day.kind === "work" && day.mode === "wfh" && (
         <section className="panel wfh-request">
           <div className="section-heading">
             <h2>
@@ -369,7 +393,7 @@ export function Today({
                 variant="ghost"
                 key={date}
                 className={`week-day ${date === today ? "is-today" : ""} ${seconds >= required && seconds > 0 ? "is-complete" : ""}`}
-                aria-label={`${dateLabel(date)}: ${readableDuration(seconds)}. Chỉnh sửa`}
+                aria-label={`${dateLabel(date)}: ${record?.kind === "leave" ? "Nghỉ phép. " : record?.kind === "holiday" ? "Ngày nghỉ lễ. " : ""}${readableDuration(seconds)}. Chỉnh sửa`}
                 onClick={() => edit(date)}
               >
                 <span>{WEEK_LABELS[i]}</span>
@@ -377,7 +401,7 @@ export function Today({
                 <span
                   className={`day-marker ${record?.mode === "wfh" ? "wfh" : ""}`}
                 >
-                  {seconds > 0 ? (
+                  {record?.kind === "leave" ? "P" : seconds > 0 ? (
                     <Check size={11} />
                   ) : required === 0 ? (
                     "–"
@@ -389,6 +413,7 @@ export function Today({
             );
           })}
         </div>
+        {weekDates.some((date) => state.days[date]?.kind === "leave") && <p className="help">P: Nghỉ phép</p>}
         <div className="week-footer">
           <span>
             <House size={15} />

@@ -12,6 +12,7 @@ import {
   HardDrive,
   Timer,
   AlertCircle,
+  ArrowLeft,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -44,8 +45,10 @@ import { Today } from "@/modules/tracking/overview";
 import { History } from "@/modules/tracking/history";
 import { Reports } from "@/modules/tracking/reports";
 import { SettingsForm } from "@/modules/settings/settings-form";
-import { HolidaySettings } from "@/modules/settings/holiday-settings";
+import { SettingsMenu, SETTINGS_TITLES, type SettingsSection } from "@/modules/settings/settings-menu";
+import { TimeOffPlanner } from "@/modules/tracking/time-off-planner";
 type Screen = "today" | "history" | "reports" | "settings";
+type Destination = { screen: Screen; section: SettingsSection | null } | { date: string };
 export function TrackerApp() {
   const pwa = usePwa();
   const { state, user, loading, busy, error, syncError, syncing, pending, save, retrySync, reload } = useTracker();
@@ -56,6 +59,11 @@ export function TrackerApp() {
   const [importState, setImportState] = useState<TrackerState | null>(null),
     [clear, setClear] = useState(false);
   const fileInput = useRef<HTMLInputElement>(null);
+  const settingsHeading = useRef<HTMLHeadingElement>(null);
+  const [settingsSection, setSettingsSection] = useState<SettingsSection | null>(null);
+  const [settingsDirty, setSettingsDirty] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState<Destination | null>(null);
+  useEffect(() => { settingsHeading.current?.focus(); }, [screen, settingsSection, editor]);
   useEffect(() => {
     const tick = () => setNow(Date.now());
     tick();
@@ -80,13 +88,28 @@ export function TrackerApp() {
       return false;
     }
   }
-  function navigate(next: Screen) {
-    setScreen(next);
+  function move(destination: Destination) {
+    setSettingsDirty(false);
+    if ("date" in destination) setEditor(destination.date);
+    else {
+      setScreen(destination.screen);
+      setSettingsSection(destination.section);
+    }
     window.scrollTo({ top: 0, behavior: "instant" });
   }
+  function requestMove(destination: Destination) {
+    if (busy) return;
+    if (settingsDirty) setPendingNavigation(destination);
+    else move(destination);
+  }
+  function navigate(next: Screen) {
+    requestMove({ screen: next, section: null });
+  }
+  function openSettings(section: SettingsSection | null) {
+    requestMove({ screen: "settings", section });
+  }
   function edit(date: string) {
-    setEditor(date);
-    window.scrollTo({ top: 0, behavior: "instant" });
+    requestMove({ date });
   }
   const ready = state && now;
   return (
@@ -126,10 +149,10 @@ export function TrackerApp() {
           {syncError && <Button variant="ghost" onClick={retrySync} disabled={busy}>Thử đồng bộ lại</Button>}
         </div>
       )}
-      {pwa.waiting && !editor && screen !== "settings" && (
+      {pwa.waiting && !editor && !(screen === "settings" && settingsSection === "app") && (
         <div className="connection-notice update-notice" role="status">
           <span>Có phiên bản mới của Đủ giờ.</span>
-          <Button variant="outline" disabled={busy} onClick={() => navigate("settings")}>
+          <Button variant="outline" disabled={busy} onClick={() => openSettings("app")}>
             Xem bản cập nhật
           </Button>
         </div>
@@ -144,7 +167,7 @@ export function TrackerApp() {
           busy={busy}
         />
       ) : (
-        <main id="main-content" className="main-content">
+        <main id="main-content" className={`main-content${screen === "settings" && settingsSection ? " settings-detail" : ""}`}>
           {loading || !now ? (
             <div className="loading-state" role="status">
               <Timer className="loading-icon" />
@@ -169,6 +192,9 @@ export function TrackerApp() {
                   now={now}
                   busy={busy}
                   run={run}
+                  save={save}
+                  leaveMonth={month || today.slice(0, 7)}
+                  setLeaveMonth={setMonth}
                   edit={edit}
                 />
               )}
@@ -192,13 +218,16 @@ export function TrackerApp() {
               )}
               {screen === "settings" && (
                 <>
+                  {settingsSection && <Button className="back-button" variant="ghost" disabled={busy}
+                    onClick={() => openSettings(null)}><ArrowLeft aria-hidden="true" />Quay lại Cài đặt</Button>}
                   <div className="page-heading">
-                    <h1>Cài đặt</h1>
-                    <p className="subtitle">
-                      Sổ thời gian theo cách bạn làm việc.
-                    </p>
+                    <h1 ref={settingsHeading} tabIndex={-1}>{settingsSection ? SETTINGS_TITLES[settingsSection] : "Cài đặt"}</h1>
+                    {!settingsSection && <p className="subtitle">Chọn mục bạn muốn điều chỉnh.</p>}
                   </div>
-                  <HolidaySettings
+                  {!settingsSection && <SettingsMenu settings={state.settings} account={user?.email || user?.displayName || null}
+                    updateAvailable={pwa.waiting} offlineReady={pwa.ready} busy={busy} open={openSettings} />}
+                  {settingsSection === "holidays" && <TimeOffPlanner
+                    kind="holiday"
                     state={state}
                     today={today}
                     month={month || today.slice(0, 7)}
@@ -206,21 +235,27 @@ export function TrackerApp() {
                     busy={busy}
                     save={save}
                     edit={edit}
-                  />
-                  <SettingsForm
-                    key={state.version}
+                    onDirtyChange={setSettingsDirty}
+                  />}
+                  {settingsSection === "hours" && <SettingsForm
                     settings={state.settings}
                     busy={busy}
-                    onSave={(settings) =>
+                    onDirtyChange={setSettingsDirty}
+                    onSave={(settings, baseline) =>
                       run(
-                        (current) => validateState({ ...current, settings }),
+                        (current) => {
+                          if (current.settings.dailyMinutes !== baseline.dailyMinutes ||
+                            current.settings.lunchMinutes !== baseline.lunchMinutes || current.settings.wfhLimit !== baseline.wfhLimit)
+                            throw new Error("Cài đặt đã đổi ở tab khác. Giữ lại nội dung đang nhập để đối chiếu, quay lại rồi mở mục này trước khi lưu.");
+                          return validateState({ ...current, settings });
+                        },
                         "Đã lưu cài đặt",
                       )
                     }
-                  />
-                  <AccountPanel user={user} busy={busy} />
-                  <PwaPanel pwa={pwa} busy={busy} />
-                  <section className="panel form-stack">
+                  />}
+                  {settingsSection === "account" && <AccountPanel user={user} busy={busy} />}
+                  {settingsSection === "app" && <PwaPanel pwa={pwa} busy={busy} />}
+                  {settingsSection === "backup" && <section className="panel form-stack">
                     <div className="section-heading">
                       <h2>Bản sao lưu</h2>
                       <Download size={19} />
@@ -302,12 +337,7 @@ export function TrackerApp() {
                     >
                       Xóa toàn bộ sổ hiện tại
                     </Button>
-                  </section>
-                  <p className="footnote">
-                    Múi giờ Việt Nam (UTC+7). Thêm ngày lễ tại Cài đặt; nghỉ phép đánh dấu
-                    trong Lịch sử. Trạng thái request do bạn tự ghi
-                    nhận.
-                  </p>
+                  </section>}
                 </>
               )}
             </>
@@ -328,6 +358,7 @@ export function TrackerApp() {
               key={item.id}
               variant="ghost"
               aria-current={screen === item.id ? "page" : undefined}
+              disabled={busy}
               onClick={() => navigate(item.id)}
             >
               <item.icon size={21} aria-hidden="true" />
@@ -337,6 +368,18 @@ export function TrackerApp() {
         </nav>
       )}
       <Toaster position="top-center" richColors />
+      <AlertDialog open={!!pendingNavigation} onOpenChange={(open) => { if (!open) setPendingNavigation(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bỏ thay đổi chưa lưu?</AlertDialogTitle>
+            <AlertDialogDescription>Những thay đổi trong mục này chưa được lưu. Bạn có thể tiếp tục chỉnh sửa hoặc bỏ thay đổi để rời màn hình.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Tiếp tục chỉnh sửa</AlertDialogCancel>
+            <AlertDialogAction onClick={() => { if (pendingNavigation) move(pendingNavigation); setPendingNavigation(null); }}>Bỏ thay đổi</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog
         open={!!importState || clear}
         onOpenChange={(open) => {

@@ -1,5 +1,7 @@
 # CONTEXT — PWA
 
+P8,10/11/2026: PwaPanel chỉ mở khi chọn Cài đặt → Cài ứng dụng. Notice phiên bản mới mở thẳng mục này kể cả từ root Cài đặt hoặc mục khác, qua guard nếu đang sửa giờ/ngày lễ. Nội dung/cơ chế update/install/service worker không đổi; không tự reload nháp. Kiểm tra hồi quy update/offline ghi tại docs/phases/P8. Chưa deploy P8.
+
 P3, 09/11/2026. Manifest src/app/manifest.ts tạo id/start_url/scope theo NEXT_PUBLIC_BASE_PATH. PNG192/512, maskable512 (nền kín, clock nằm trong safe circle), Apple180 được render từ public/icon.svg; không thêm dependency.
 
 scripts/build-pwa.mjs chạy sau next build, đọc scope từ manifest đã export, liệt kê public shell/icons/font/CSS/JS, hash nội dung + worker template để đặt cache phiên bản, tạo out/sw.js. Không chỉnh out bằng tay. Worker.js là template có placeholder; chỉ out/sw.js là worker có thể deploy. Dev không đăng ký worker.

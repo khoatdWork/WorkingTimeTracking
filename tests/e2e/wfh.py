@@ -55,7 +55,10 @@ def main():
             assert page.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1')).days['2026-11-09'].wfhHours") == 10
             page.get_by_role("button", name="Lưu ngày làm việc", exact=True).click()
             page.get_by_role("button", name="Thay và lưu", exact=True).click()
-            expect(page.locator(".timer-digits")).to_have_text("00:00:00")
+            expect(page.get_by_role("region", name="Ngày nghỉ hôm nay", exact=True)).to_contain_text("Hôm nay là ngày nghỉ lễ")
+            expect(page.locator(".timer-digits")).to_have_count(0)
+            expect(page.get_by_role("button", name="Work from home", exact=True)).to_have_count(0)
+            expect(page.get_by_role("button", name="Chỉnh sửa ngày / bổ sung giờ", exact=True)).to_be_visible()
             assert "wfhHours" not in page.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1')).days['2026-11-09']")
             context.close()
             # Old WFH sessions remain exact when editing only note/request.

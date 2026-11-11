@@ -110,7 +110,8 @@ export function DayEditor({
     event.preventDefault();
     const replacingSessions = existing?.sessions.length && day.kind === "work" && day.mode === "wfh" && day.wfhHours !== undefined;
     const removingWfhHours = existing?.wfhHours !== undefined && (day.mode !== "wfh" || day.kind !== "work");
-    if (replacingSessions || removingWfhHours) setConfirm("replace");
+    const removingSessions = existing?.sessions.length && day.kind !== "work";
+    if (replacingSessions || removingWfhHours || removingSessions) setConfirm("replace");
     else void saveDay();
   }
   return (
@@ -368,7 +369,9 @@ export function DayEditor({
                 : confirm === "replace"
                   ? day.mode === "wfh" && day.kind === "work"
                     ? `Các ca vào/về đã lưu sẽ được bỏ và thay bằng ${day.wfhHours} giờ WFH làm ròng. Bạn có thể chọn Giữ lại để quay về bản nháp.`
-                    : "Giờ WFH cố định đã lưu sẽ được bỏ. Tổng giờ sẽ được tính lại theo nội dung hiện tại."
+                    : day.kind !== "work"
+                      ? "Giờ làm đã lưu của ngày này sẽ bị bỏ khi chuyển sang ngày nghỉ. Chỉ tiêu tuần và tháng sẽ được tính lại."
+                      : "Giờ WFH cố định đã lưu sẽ được bỏ. Tổng giờ sẽ được tính lại theo nội dung hiện tại."
                   : "Những thay đổi trên màn hình này chưa được lưu."}
             </AlertDialogDescription>
           </AlertDialogHeader>

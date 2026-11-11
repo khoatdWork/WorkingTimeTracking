@@ -25,6 +25,14 @@ Thay mô hình hai sổ P2/P3 theo yêu cầu09/11/2026: mọi lần lưu giữ 
 
 Thêm mục Ngày nghỉ lễ tại tab Cài đặt: khoảng Từ ngày/Đến ngày tính cả hai đầu, tên tùy chọn, danh sách theo tháng, mở sửa và xóa từng ngày có xác nhận. Cài đặt là tab thứ tư sau Báo cáo, bỏ nút header. Tái sử dụng WorkDay.kind=holiday/note để chỉ tiêu tuần/tháng tự loại ngày lễ, không trừ thêm cuối tuần. Không ghi đè ngày đã có dữ liệu: trùng bất kỳ ngày nào thì từ chối toàn khoảng; xóa kiểm version tránh mất thay đổi tab khác. Lint/typecheck/build,40unit,2Rules và Playwright Chromium/WebKit/axe/export/import/stale tab/range/cross-year/four-tab navigation PASS. Đã deploy87f280d, Actions42582851794 SUCCESS; báo cáo docs/phases/P6. Firebase tài khoản thật cho P6 và thiết bị vật lý NOT RUN.
 
+## P7 — Lên lịch nghỉ phép
+
+Yêu cầu 10/11/2026: có chỗ dễ tìm để đánh dấu trước ngày nghỉ phép, ví dụ ngày mai. Thêm mục Nghỉ phép tại Hôm nay, mở form khoảng ngày mặc định ngày mai, ghi chú tùy chọn, xem/sửa/xóa theo tháng. Tái sử dụng trình quản lý nghỉ lễ thành TimeOffPlanner và addTimeOff/removeTimeOff, giữ WorkDay.kind=leave/holiday và schema hiện có. Ngày nghỉ hiện tại thay đồng hồ bằng trạng thái rõ ràng; ngày nghỉ phép có ký hiệu P trên tuần. Từ chối nguyên khoảng trùng dữ liệu; chuyển ca văn phòng sang ngày nghỉ có xác nhận. Lint/typecheck/build,44unit/2Rules emulator và từng suite Playwright Chromium/WebKit app/WFH/holiday/leave/PWA/sync fixture PASS. Nghiệm thu và giới hạn tại docs/phases/P7; chưa deploy P7, hosted Firebase thật/thiết bị vật lý NOT RUN.
+
+## P8 — Cài đặt dạng danh sách
+
+Yêu cầu10/11/2026: màn Cài đặt gọn theo kiểu iPhone, chạm từng mục mới chỉnh. Ba nhóm, năm mục Tài khoản & đồng bộ/Quy tắc giờ làm/Ngày nghỉ lễ/Cài ứng dụng/Bản sao lưu; mở một màn chi tiết và Quay lại Cài đặt, giữ bốn tab dưới. Tái sử dụng panel và đường lưu hiện tại. Nhắc bỏ nháp khi quay lại/đổi tab/mở cập nhật/sửa ngày lễ, giữ nháp khi lưu lỗi hoặc cài đặt đổi ở tab khác. PWA notice mở thẳng mục Cài ứng dụng. Lint/typecheck/build,44unit/2Rules emulator và từng suite Chromium/WebKit app/WFH/holidays/leave/settings/PWA/sync fixture PASS. Nghiệm thu và giới hạn tại docs/phases/P8; chưa deploy P8, hosted Firebase thật/thiết bị vật lý NOT RUN.
+
 ## Kết quả 09/11/2026
 
 P0, P1, P2 đã triển khai và kiểm tra trong phạm vi web cá nhân. Release code03c473f, GitHub Actions42563854172 SUCCESS cả verify-build/deploy. HTTPS full E2E Chromium/WebKit PASS, real Google sign-in trên localhost và Pages PASS, cloud default settings write/read-back PASS. Không thêm ca làm giả vào sổ thật. Link và bằng chứng tại docs/phases/P2. Physical phones và long-session token refresh chưa test, không tuyên bố PASS.

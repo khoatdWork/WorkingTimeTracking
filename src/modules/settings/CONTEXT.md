@@ -1,5 +1,9 @@
 # CONTEXT — Cài đặt giờ làm
 
+P8,10/11/2026: settings-menu.tsx có năm mục trong ba nhóm kiểu iPhone: tài khoản; quy tắc giờ và ngày lễ; ứng dụng và bản sao lưu. Mỗi hàng là Button shadcn, icon/nội dung/chevron, min76px, tóm tắt cài giờ/tài khoản/PWA hiện tại. Chỉ khi mở mục mới mount panel tương ứng; không thêm route hay dependency. SettingsForm giữ draft chuỗi nullable và baseline settings lúc sửa đầu tiên; pristine nhận settings mới, dirty không bị reset bởi state.version. onDirtyChange báo shell chặn rời màn; beforeunload nhắc khi refresh. onSave nhận baseline, shell đối chiếu settings hiện tại trước lưu để tránh đè cài đặt tab khác. Save false/lỗi giữ nháp, success bỏ draft; input và nútWFH disable khi busy tránh mất sửa trong lúc lưu. Chi tiết P8 ở docs/phases/P8, chưa deploy.
+
+P7, 10/11/2026: holiday-settings.tsx chuyển thành tracking/time-off-planner.tsx dùng chung cho nghỉ phép và lễ. App-shell ghép TimeOffPlanner kind=holiday ở vị trí cũ trong Cài đặt; nhãn, khoảng ngày, danh sách theo tháng và hành vi lễ giữ nguyên. Core chuyển addHolidays/removeHoliday thành addTimeOff/removeTimeOff với kind; dữ liệu lễ cũ không đổi. Nghỉ phép nằm ở Hôm nay. Chi tiết và kết quả hồi quy tại docs/phases/P7; chưa deploy P7.
+
 Implemented P1, 09/11/2026. settings-form.tsx với shadcn Input/Label/Button. Daily hours chuyển thành dailyMinutes integer, nghỉ 0..180 phút, WFH 2 hoặc3. Default480/60/3 theo user. Cấu hình thay đổi tính lại toàn lịch sử và có notice trước lưu.
 
 Save dùng app-shell run + tracking data transaction, không báo success sớm. Browser đã kiểm đổi nghỉ60→30, WFH3→2, export JSON và restore60. Native numeric bounds + core validator khi persistence. Chưa có config hiệu lực theo ngày vì user chưa yêu cầu.

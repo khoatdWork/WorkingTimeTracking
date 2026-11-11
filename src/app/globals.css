@@ -264,6 +264,61 @@ textarea:focus-visible {
   padding: 20px;
   margin-top: 22px;
 }
+.settings-menu {
+  display: grid;
+  gap: 22px;
+}
+.settings-group {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: #fff;
+  border: 1px solid #d8e1ec;
+  border-radius: 17px;
+  overflow: hidden;
+}
+.settings-group li + li {
+  border-top: 1px solid #d8e1ec;
+}
+.settings-row[data-slot="button"] {
+  width: 100%;
+  height: auto;
+  min-height: 76px;
+  padding: 15px 14px;
+  border-radius: 0;
+  justify-content: flex-start;
+  gap: 12px;
+  text-align: left;
+  white-space: normal;
+}
+.settings-row[data-slot="button"]:focus-visible {
+  outline: 2px solid #2257c7;
+  outline-offset: -3px;
+}
+.settings-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.settings-icon.blue { background: #2257c7; }
+.settings-icon.green { background: #087f6d; }
+.settings-icon.slate { background: #53657b; }
+.settings-row-copy { flex: 1; min-width: 0; }
+.settings-row-copy strong { display: block; font-size: 14px; font-weight: 600; }
+.settings-row-copy small {
+  display: block;
+  color: #53657b;
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+}
+.settings-chevron { color: #53657b; flex-shrink: 0; }
+.settings-detail > .panel > .section-heading { display: none; }
 .clock-panel {
   border-radius: 24px;
   background: #fff;
@@ -718,6 +773,7 @@ textarea:focus-visible {
 }
 .form-stack .help {
   margin-top: 6px;
+  overflow-wrap: anywhere;
 }
 .form-stack .notice {
   margin: 0;

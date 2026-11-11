@@ -1,5 +1,9 @@
 # CONTEXT — App shell
 
+P8,10/11/2026: Settings mở danh sách nhóm thay vì mount mọi panel. settingsSection=hours|holidays|account|app|backup|null, điều hướng local theo bốn tab hiện có. Chi tiết có Quay lại Cài đặt và focus h1 sau chuyển mục; bỏ tiêu đề panel lặp qua CSS riêng .settings-detail. move/requestMove giữ draft qua AlertDialog cho giờ/ngày lễ, bỏ nháp chỉ khi người dùng xác nhận; không chuyển lúc đang save. Quay lại từ DayEditor giữ section lễ và tháng. Chọn tab Cài đặt mở root. Notice PWA hiện cả root/chi tiết khác và mở thẳng app section, đi qua guard. Backup/import/reset và AccountPanel vẫn dùng hành vi cũ. Bỏ SettingsForm key=state.version, so baseline settings khi save; cập nhật ngày khác không xóa nháp. CONTEXT/report P8 chưa xác nhận hosted.
+
+P7, 10/11/2026: ghép TimeOffPlanner kind=holiday thay HolidaySettings trong Cài đặt; truyền save và tháng/setMonth xuống Today để ghép planner kind=leave, giữ tháng đang xem sau khi mở/đóng DayEditor. Help cuối Cài đặt chỉ đúng Nghỉ phép tại Hôm nay. Navigation, Auth, local-first và trạng thái Firebase không đổi. Báo cáo P7 ở docs/phases/P7; chưa deploy P7.
+
 P0/P1 implemented 09/11/2026. tracker-app.tsx ghép modules, navigation Hôm nay/Lịch sử/Báo cáo và Settings header, clock tick client-only sau hydrate, backup/import/reset dialogs. Route src/app/page.tsx chỉ composition; layout metadata/font/globals. Static export, basePath từ env cho GitHub Pages.
 
 Khung max480px, mobile320–430, palette và font QuanLyTaiSan. Bottom nav safe-area, nội dung có khoảng tránh che focus, skip link. Tabs hiện là view trong một route, filter ở local state; URL chưa lưu tab/filter. Không có dữ liệu mẫu production.

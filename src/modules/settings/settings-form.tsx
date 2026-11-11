@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Clock3 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -12,14 +12,39 @@ export function SettingsForm({
   settings,
   busy,
   onSave,
+  onDirtyChange,
 }: {
   settings: Settings;
   busy: boolean;
-  onSave: (s: Settings) => Promise<boolean>;
+  onSave: (s: Settings, baseline: Settings) => Promise<boolean>;
+  onDirtyChange: (dirty: boolean) => void;
 }) {
-  const [daily, setDaily] = useState(String(settings.dailyMinutes / 60)),
-    [lunch, setLunch] = useState(String(settings.lunchMinutes)),
-    [limit, setLimit] = useState(settings.wfhLimit);
+  const [draft, setDraft] = useState<{
+    daily: string;
+    lunch: string;
+    limit: number;
+    baseline: Settings;
+  } | null>(null);
+  const daily = draft?.daily ?? String(settings.dailyMinutes / 60);
+  const lunch = draft?.lunch ?? String(settings.lunchMinutes);
+  const limit = draft?.limit ?? settings.wfhLimit;
+  const baseline = draft?.baseline ?? settings;
+  const dirty = daily === "" || lunch === "" || Number(daily) * 60 !== baseline.dailyMinutes ||
+    Number(lunch) !== baseline.lunchMinutes || limit !== baseline.wfhLimit;
+  function patch(change: Partial<{ daily: string; lunch: string; limit: number }>) {
+    setDraft((current) => ({
+      ...(current ?? { daily, lunch, limit, baseline: { ...settings } }),
+      ...change,
+    }));
+  }
+  useEffect(() => { onDirtyChange(dirty); }, [dirty, onDirtyChange]);
+  useEffect(() => {
+    const unload = (event: BeforeUnloadEvent) => {
+      if (dirty) event.preventDefault();
+    };
+    window.addEventListener("beforeunload", unload);
+    return () => window.removeEventListener("beforeunload", unload);
+  }, [dirty]);
   const [error, setError] = useState("");
   return (
     <form
@@ -41,29 +66,32 @@ export function SettingsForm({
           );
           return;
         }
-        await onSave({
+        const saved = await onSave({
           dailyMinutes,
           lunchMinutes: Number(lunch),
           wfhLimit: limit,
-        });
+        }, baseline);
+        if (saved) setDraft(null);
       }}
     >
       <div className="section-heading">
         <h2>Quy tắc giờ làm</h2>
-        <Clock3 size={18} />
+        <Clock3 size={18} aria-hidden="true" />
       </div>
       <div>
         <Label htmlFor="daily-hours">Giờ làm mỗi ngày</Label>
         <Input
           id="daily-hours"
           name="daily-hours"
+          autoComplete="off"
+          disabled={busy}
           type="number"
           min="0.1"
           max="24"
           step="0.1"
           required
           value={daily}
-          onChange={(e) => setDaily(e.target.value)}
+          onChange={(e) => patch({ daily: e.target.value })}
         />
         <p className="help">Áp dụng thứ Hai đến thứ Sáu.</p>
       </div>
@@ -72,13 +100,15 @@ export function SettingsForm({
         <Input
           id="lunch-minutes"
           name="lunch-minutes"
+          autoComplete="off"
+          disabled={busy}
           type="number"
           min="0"
           max="180"
           step="1"
           required
           value={lunch}
-          onChange={(e) => setLunch(e.target.value)}
+          onChange={(e) => patch({ lunch: e.target.value })}
         />
         <p className="help">
           Áp dụng cho ngày ghi theo ca. WFH chọn 8/10 giờ đã là giờ làm ròng, không trừ thêm. Nút tạm dừng dành cho thời gian
@@ -94,7 +124,8 @@ export function SettingsForm({
               type="button"
               variant="ghost"
               aria-pressed={limit === n}
-              onClick={() => setLimit(n)}
+              disabled={busy}
+              onClick={() => patch({ limit: n })}
             >
               {n} ngày
             </Button>
