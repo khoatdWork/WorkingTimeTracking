@@ -1,5 +1,7 @@
 # CONTEXT — PWA
 
+Release P12,20/11/2026:4e94360/Actions44717065768 deploy SUCCESS17:55:13ICT; Firestore Rules bảo toàn history publish21:27ICT. Hosted cache du-gio-pwa-%2FWorkingTimeTracking%2F-caab7680aded1cb0 khớp từng byte Actions artifact. Chromium HTTPS installability/offline/reload/newwindow/reconnect/cache privacy PASS; WebKit hosted manifest/icons/worker/ready smoke PASS, offline navigation chỉ nghiệm thu local. PWA cũ phải cập nhật tại Cài đặt → Cài ứng dụng → Cập nhật ứng dụng để ghi cloud theo Rules mới; giữ local pending khi client cũ bị từ chối, không xóa dữ liệu/gỡ app để cập nhật. Physical iPhone/long-session và authenticated Firebase P12 NOT RUN. docs/phases/P12.
+
 Release P9,11/11/2026: b1e641e deploy SUCCESS, Actions42949633931, cache Pages du-gio-pwa-%2FWorkingTimeTracking%2F-13ad89bf21be6143 khớp CI. Hosted Chromium offline HTTPS PASS cả vị trí notice tại tài khoản và reconnect; WebKit manifest/icons/worker/ready smoke PASS. Hosted WebKit offline navigation NOT RUN theo giới hạn automation; local refusal-based offline regression PASS. Thiết bị vật lý/Firebase tài khoản thật NOT RUN, chi tiết docs/phases/P9.
 
 P9,11/11/2026: thông báo mất mạng chuyển từ shell toàn cục vào Cài đặt → Tài khoản & đồng bộ. usePwa, service worker, offline persistence và thông báo cập nhật có hành động không đổi. Browser regression kiểm notice ẩn tại Hôm nay, hiện tại tài khoản khi offline và biến mất tại đó khi có mạng. Kết quả thực và release docs/phases/P9.

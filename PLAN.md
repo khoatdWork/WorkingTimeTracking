@@ -2,7 +2,7 @@
 
 ## P12 — Chặn nhầm sổ và bảo toàn lịch sử dữ liệu
 
-Theo yêu cầu20/11 sau P11, người dùng xác nhận nhập JSON đã đúng và yêu cầu sửa lâu dài. Source đã giữ uid khi mất Auth, persistent login, merge có baseline/dừng conflict/missing/regression, checkpoint local, immutable cloud history+rules chặn client cũ, export/resolve/history UI, guard owner/version khi nhập/xóa.65unit/4Rules+SDK emulator, lint/typecheck/build và full Playwright Chromium/WebKit PASS trong phạm vi local. Chưa publish app/Rules; hosted Firebase P12/physical iPhone NOT RUN. Báo cáo docs/phases/P12, không coi P11 Console read-only hoặc user-confirmed JSON restore là P12 live verification.
+Theo yêu cầu20/11 sau P11, người dùng xác nhận nhập JSON đã đúng và yêu cầu sửa lâu dài. Source đã giữ uid khi mất Auth, persistent login, merge có baseline/dừng conflict/missing/regression, checkpoint local, immutable cloud history+rules chặn client cũ, export/resolve/history UI, guard owner/version khi nhập/xóa.65unit/4Rules+SDK emulator, lint/typecheck/build và full Playwright Chromium/WebKit PASS local+CI. Release4e94360 đã deploy Pages17:55:13ICT20/11/2026, Actions44717065768 SUCCESS; Rules P12 publish21:27ICT. Hosted guest regression hai engines/Chromium HTTPS offline PWA/WebKit worker smoke PASS, cache caab7680aded1cb0 khớp CI artifact. Authenticated hosted Firebase P12/physical iPhone NOT RUN. Báo cáo docs/phases/P12, không coi P11 Console read-only hoặc user-confirmed JSON restore là P12 live verification.
 
 ## P11 — Điều tra dữ liệu tháng 11 không xuất hiện
 

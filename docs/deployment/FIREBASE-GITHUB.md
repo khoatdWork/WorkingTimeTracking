@@ -8,7 +8,7 @@
 - Firestore `(default)`, Standard, Singapore `asia-southeast1`, Spark miễn phí. Không bật Analytics/Gemini, không nâng billing.
 - Web app “Đủ giờ Web”; Auth Google với display name “Đủ giờ”, email hỗ trợ theo cấu hình người dùng đã duyệt.
 - Authorized domains có `khoatdwork.github.io`, hai domain mặc định Firebase và localhost.
-- Firestore rules đã publish từ firestore.rules. Mỗi user chỉ đọc/ghi `users/{uid}/tracker/state`, anonymous bị từ chối; version tăng đúng 1. Rules kiểm shape top-level/settings/version. Chi tiết từng ngày/ca được validator app kiểm; đây là sổ tự ghi của chủ tài khoản, không phải nguồn xác thực cho payroll.
+- Firestore Rules P12 đã publish từ `firestore.rules` ngày20/11/2026 lúc21:27ICT. Mỗi user chỉ đọc/ghi state của mình và đọc/tạo `users/{uid}/trackerHistory/{version}`; anonymous bị từ chối. State version tăng đúng1, mỗi lần thay phải giữ nguyên state trước trong history, history cấm sửa/xóa. Rules kiểm shape top-level/settings/version. Chi tiết từng ngày/ca được validator app kiểm; đây là sổ tự ghi của chủ tài khoản, không phải nguồn xác thực cho payroll. Bằng chứng release `4e94360` tại docs/phases/P12.
 
 ## Khi thay Firebase project
 

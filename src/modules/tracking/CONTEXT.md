@@ -1,6 +1,6 @@
 # CONTEXT — Chấm công, lịch sử và báo cáo
 
-P12 source20/11: thêm backup-history.tsx trong Cài đặt → Bản sao lưu, tải snapshot local và10snapshot server gần nhất bằng JSON, không tự import. Các bản được validate qua core. Không đổi Today/history/reports/core math/schema; guard/sync phục hồi ở data/app-shell. Full regression Chromium/WebKit và65unit PASS local, chưa deploy; docs/phases/P12.
+P12 source20/11: thêm backup-history.tsx trong Cài đặt → Bản sao lưu, tải snapshot local và10snapshot server gần nhất bằng JSON, không tự import. Các bản được validate qua core. Không đổi Today/history/reports/core math/schema; guard/sync phục hồi ở data/app-shell. Full regression Chromium/WebKit và65unit PASS local+CI. Release4e94360/Actions44717065768 đã deploy20/11, Rules P12 publish21:27ICT; hosted guest regression hai engines PASS. Authenticated Firebase history UI/physical iPhone P12 NOT RUN; docs/phases/P12.
 
 Release P10,11/11/2026:51dd10f đã deploy, Actions42956539128 SUCCESS11:07:23ICT. CI full E2E và hosted app/Today/WFH/holiday/leave/settings Chromium+WebKit PASS, gồm thẻ nghỉ phép/note/reload, ca trước còn chạy, guard Settings, targets và axe320390. Root/agent xem ảnh hosted. HTTPS PWA Chromium offline và WebKit manifest/worker smoke PASS. Firebase tài khoản thật/thiết bị vật lý NOT RUN; docs/phases/P10. Các ghi chép local chưa deploy bên dưới là lịch sử.
 

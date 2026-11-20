@@ -4,4 +4,6 @@
 
 Đã xem ảnh WebKit320 mất phiên/conflict/recovery và chạy axe/overflow các màn mới. Copy tài khoản có fallback thay vì hiện undefined khi fixture thiếu email/displayName. Không còn duplicate đoạn conflict. Full app/Today/settings/PWA axe320390 vẫn PASS; có cảnh báo guest nên màn Today cao hơn P10, đây là thay đổi an toàn có chủ đích.
 
-Không kiểm iPhone vật lý, VoiceOver thực hoặc long-session. Sonner transition có thể tạo kết quả contrast trung gian trong WebKit; audit ổn định sau khi toast rời, CSS error color hiện có vẫn giữ. Không tuyên bố hosted UI đã kiểm khi chưa publish.
+Hosted release4e94360 đã kiểm app/Today/WFH/ngày lễ/nghỉ phép/Cài đặt với Chromium+WebKit, axe/overflow và các viewports hiện có PASS20/11/2026; screenshot ở output/release/P12 và output/playwright. Màn P12 authenticated conflict/recovery vẫn kiểm bằng fixture local/CI, không gán thành production Auth test.
+
+Không kiểm iPhone vật lý, VoiceOver thực hoặc long-session. Sonner transition có thể tạo kết quả contrast trung gian trong WebKit; audit ổn định sau khi toast rời, CSS error color hiện có vẫn giữ.

@@ -6,5 +6,5 @@ Fixed during review: an edit during initial pull must be rebased before recordin
 
 No remaining must-fix finding in the checked scope. Core math and schema stay unchanged. History creation and state replacement are checked in one transaction and enforced by emulator-tested Rules; acknowledgement cannot clear newer edits.
 
-Verdict: Ready for coordinated release of app and Rules after approval. This is not a hosted-verification verdict.
+Verdict: App4e94360 deployed (Actions44717065768 success); approved Rules published20/11/2026 at21:27ICT. Hosted guest regression and PWA checks passed; worker matches CI artifact. This does not verify authenticated live P12 Firebase transactions.
 Not checked: real iPhone persistence/long-session, live P12 Firebase writes, project-admin actions outside client Rules. Independent agent review unavailable because inherited model was rejected by the tool.

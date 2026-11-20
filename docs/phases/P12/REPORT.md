@@ -1,6 +1,6 @@
 # P12 — Bảo vệ sổ và phục hồi sau sự cố mất phiên
 
-20/11/2026, Asia/Ho_Chi_Minh. Người dùng xác nhận dữ liệu đã đúng sau khi nhập JSON ở P11 và yêu cầu sửa nguyên nhân để tránh tái diễn. **Đã kiểm thử local/emulator; người dùng đã phê duyệt triển khai ngay app+Rules.** Kết quả deploy/hosted được ghi sau khi xác nhận thực tế; không lấy nghiệm thu fixture làm hosted Firebase sync.
+20/11/2026, Asia/Ho_Chi_Minh. Người dùng xác nhận dữ liệu đã đúng sau khi nhập JSON ở P11 và yêu cầu sửa lâu dài. **Đã triển khai app và Firestore Rules theo phê duyệt “Triển khai ngay”.** Không lấy nghiệm thu fixture hoặc publish Rules làm bằng chứng hosted Firebase sync tài khoản thật.
 
 ## Vấn đề và hành vi mới
 
@@ -28,6 +28,14 @@ Không sửa giờ giả trong Firebase production. Chưa kiểm P12 Google sign
 
 ## Triển khai và giới hạn
 
-Publish rules P12 và release Pages là thay đổi production, cần phối hợp cập nhật PWA. Đã mở Console read-only xác nhận rules09/11 còn đang áp dụng và không có history; chưa sửa editor/publish. Rules mới chặn cách ghi P5/P10; app cũ vẫn giữ local pending, phải cập nhật để đồng bộ. Không rollback về rules cũ chỉ để bỏ qua lỗi, vì sẽ mở lại đường ghi không lưu lịch sử. Mở app mới trước khi rules publish có thể báo chưa sync được vì path history chưa được cấp quyền; local giữ nguyên.
+Release `4e943601d7b56fcac616fea9d16e0ae7dbb3393c` đã deploy lên [GitHub Pages](https://khoatdwork.github.io/WorkingTimeTracking/). [Actions44717065768](https://github.com/khoatdWork/WorkingTimeTracking/actions/runs/44717065768) SUCCESS cả verify-build và deploy; deployment hoàn tất20/11/2026 lúc17:55:13ICT. CI lint/typecheck/build,65unit,4Rules+SDK emulator và full Playwright Chromium/WebKit PASS.
+
+Firestore Rules P12 đã publish qua Console project thật `workingtimetracking-f974c` lúc21:27ICT20/11/2026. Nội dung editor khớp `firestore.rules` trước publish (chuẩn hóa whitespace), Publish hoàn tất và danh sách phiên bản đánh dấu sao “Today • 9:27 PM”. Rules SHA256 `80809BFA4436C37FAA650AF5DBC8427D1B584720D9D7A814BEE81DB70492BBE9`. Bản rules trước release được giữ tại `.private/release/P12/firestore-before.rules`; ảnh xác nhận ở `output/release/P12/firestore-published.jpg` (ignored). Không thay document dữ liệu production trong quá trình publish.
+
+Service worker hosted khớp từng byte với artifact của Actions: cache `du-gio-pwa-%2FWorkingTimeTracking%2F-caab7680aded1cb0`, SHA256 `8fd98f43138d84a99db86d1c76a0f11e4531d5130a2523404f40081008db301c`. Bằng chứng tại `output/release/P12/worker-verification.json` và `actions-result.json` (ignored).
+
+Hosted regression sau deploy PASS (runner exit0): app/Today/WFH/ngày lễ/nghỉ phép/Cài đặt trên Chromium+WebKit, gồm persistence/import/export/nháp/axe/màn nhỏ. Chromium HTTPS PWA offline/reload/newwindow/reconnect/cache privacy PASS; WebKit hosted manifest/icons/worker/ready smoke PASS, offline navigation chỉ kiểm local với server refusal. Context guest cô lập; không đăng nhập hoặc tạo giờ giả trên Firebase thật. Screenshots và tóm tắt ở `output/release/P12/` (ignored).
+
+Rules mới chặn cách ghi P5/P10; app cũ vẫn giữ local pending, phải cập nhật để đồng bộ. Người dùng iPhone mở Cài đặt → Cài ứng dụng → Cập nhật ứng dụng, mở lại, đăng nhập đúng Google nếu được yêu cầu rồi kiểm tra “Đã đồng bộ Firebase”. Không xóa dữ liệu website hoặc gỡ PWA để cập nhật. Không rollback về rules cũ chỉ để bỏ qua lỗi, vì sẽ mở lại đường ghi không lưu lịch sử. Khoảng trước publish Rules, app mới có thể bị từ chối đọc/ghi history; local vẫn giữ và có thể thử đồng bộ lại sau publish.
 
 History bắt đầu ở lần ghi đầu qua P12, không hồi tạo những phiên bản đã mất trước đó. Mỗi lần cập nhật thêm một snapshot server và đọc transaction; theo dõi quota/dung lượng Spark, tách sổ/history theo tháng trước khi gần đầy. Quota đầy làm sync lỗi và giữ pending, không giả báo thành công. Snapshot local vẫn cùng vùng lưu trữ trình duyệt; nếu iOS/người dùng xóa dữ liệu trước khi giờ offline lên cloud, không có phần mềm web nào phục hồi được bản chưa từng tải lên. Admin Firebase có thể thay/xóa dữ liệu qua công cụ quản trị ngoài Rules; P12 không ngăn quyền quản trị. Không bật billing, PITR hoặc dịch vụ trả phí trong phase này.
