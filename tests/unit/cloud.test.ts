@@ -3,7 +3,8 @@ import { emptyState } from "../../src/modules/tracking/core/domain";
 
 vi.mock("@/lib/firebase/client", () => ({ firebaseClients: vi.fn() }));
 const firestore = vi.hoisted(() => ({
-  doc: vi.fn(() => "state-ref"), getDocFromServer: vi.fn(), onSnapshot: vi.fn(), runTransaction: vi.fn(),
+  doc: vi.fn((_, ...path: string[]) => path.join("/")), getDocFromServer: vi.fn(), onSnapshot: vi.fn(), runTransaction: vi.fn(),
+  collection: vi.fn(), query: vi.fn(), orderBy: vi.fn(), limit: vi.fn(), getDocsFromServer: vi.fn(),
 }));
 vi.mock("firebase/firestore", () => firestore);
 import { firebaseClients } from "../../src/lib/firebase/client";
@@ -23,7 +24,7 @@ it("reads from the server and only reacts to server-confirmed snapshots", async 
   vi.mocked(firebaseClients).mockReturnValue({ db: {} } as ReturnType<typeof firebaseClients>);
   firestore.getDocFromServer.mockResolvedValue({ exists: () => true, data: emptyState });
   expect(await readCloud("owner")).toEqual(emptyState());
-  expect(firestore.getDocFromServer).toHaveBeenCalledWith("state-ref");
+  expect(firestore.getDocFromServer).toHaveBeenCalledWith("users/owner/tracker/state");
   const changed = vi.fn(), failed = vi.fn();
   watchCloud("owner", changed, failed);
   const snapshot = firestore.onSnapshot.mock.calls[0][2];
@@ -37,7 +38,8 @@ it("reads from the server and only reacts to server-confirmed snapshots", async 
 it("waits for transaction acknowledgement and refuses a concurrent server edit", async () => {
   vi.mocked(firebaseClients).mockReturnValue({ db: {}, auth: { currentUser: { uid: "owner" } } } as ReturnType<typeof firebaseClients>);
   let acknowledge!: () => void;
-  const transaction = { get: vi.fn(async () => ({ exists: () => true, data: () => ({ version: 3 }) })), set: vi.fn() };
+  const prior = { ...emptyState(), version: 3 };
+  const transaction = { get: vi.fn(async (ref: string) => ({ exists: () => ref.endsWith("/state"), data: () => prior })), set: vi.fn() };
   firestore.runTransaction.mockImplementation(async (_, operation) => {
     await operation(transaction);
     await new Promise<void>((resolve) => { acknowledge = resolve; });
@@ -45,6 +47,7 @@ it("waits for transaction acknowledgement and refuses a concurrent server edit",
   let resolved = false;
   const task = writeCloud("owner", emptyState(), 3).then((state) => { resolved = true; return state; });
   await vi.waitFor(() => expect(transaction.set).toHaveBeenCalled());
+  expect(transaction.set).toHaveBeenCalledWith("users/owner/trackerHistory/3", prior);
   expect(resolved).toBe(false);
   acknowledge();
   expect((await task).version).toBe(4);

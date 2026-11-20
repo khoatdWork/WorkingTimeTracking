@@ -3,7 +3,6 @@ import { useState, type ReactNode } from "react";
 import {
   GoogleAuthProvider,
   signInWithPopup,
-  signOut,
   type User,
 } from "firebase/auth";
 import { firebaseClients, firebaseConfigured } from "@/lib/firebase/client";
@@ -13,10 +12,14 @@ export function AccountPanel({
   user,
   busy,
   status,
+  accountLabel,
+  logout,
 }: {
   user: User | null;
   busy: boolean;
   status?: ReactNode;
+  accountLabel?: string;
+  logout: () => Promise<void>;
 }) {
   const [pending, setPending] = useState(false),
     [error, setError] = useState("");
@@ -41,12 +44,13 @@ export function AccountPanel({
       </div>
       <div className="storage-label">
         {user ? <Cloud size={14} /> : <HardDrive size={14} />}
-        {user ? "Local + Firebase" : "Trên thiết bị"}
+        {user ? "Local + Firebase" : accountLabel ? "Sổ tài khoản trên thiết bị" : "Trên thiết bị"}
       </div>
       <p>
         {user
-          ? `Đã đăng nhập: ${user.email || user.displayName}`
-          : "Đang lưu trên trình duyệt này. Xuất bản sao lưu để giữ dữ liệu khi đổi máy hoặc xóa trình duyệt."}
+          ? `Đã đăng nhập: ${user.email || user.displayName || "Tài khoản Google"}`
+          : accountLabel ? `Chưa đăng nhập. Đang giữ sổ của ${accountLabel} trên thiết bị; cần đăng nhập lại để đồng bộ.`
+          : "Chưa đăng nhập Google. Đang dùng sổ riêng trên thiết bị này."}
       </p>
       {status}
       {!firebaseConfigured && (
@@ -72,8 +76,8 @@ export function AccountPanel({
             {pending ? "Đang đăng nhập…" : "Đăng nhập với Google"}
           </Button>
           <p className="help">
-            Sau đăng nhập, app tự đưa dữ liệu đang lưu trên thiết bị lên Firebase.
-            Nếu chưa có dữ liệu local, app tải sổ Firebase về thiết bị.
+            Đăng nhập đúng tài khoản để mở lại sổ. App chỉ ghép các thay đổi không xung đột;
+            nếu hai bản khác nhau ở cùng một ngày, app giữ cả hai để bạn đối chiếu.
           </p>
         </>
       )}
@@ -89,7 +93,7 @@ export function AccountPanel({
             onClick={async () => {
               setPending(true);
               try {
-                await signOut(firebaseClients().auth);
+                await logout();
               } catch {
                 setError("Chưa đăng xuất được. Hãy thử lại.");
               } finally {

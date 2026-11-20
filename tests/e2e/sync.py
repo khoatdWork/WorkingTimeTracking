@@ -68,7 +68,7 @@ def main():
 
             # A rejected Firebase write keeps an explicit pending local backup.
             failed = True
-            page.get_by_role("button", name="Lưu 10 giờ").click()
+            page.get_by_role("button", name="Lưu 8 giờ").click()
             expect(page.locator("#error")).to_contain_text("rejected")
             expect(page.locator("#pending")).to_have_text("true")
             failed = False
@@ -79,18 +79,19 @@ def main():
             expect(page.locator("#syncing")).to_have_text("false")
             page.wait_for_function("JSON.parse(document.querySelector('#state').textContent)?.days && Object.keys(JSON.parse(document.querySelector('#state').textContent).days).length === 0")
             assert "b" not in writes
-            assert page.evaluate(f"JSON.parse(localStorage.getItem('{KEY}:a')).state.days['2026-11-02'].wfhHours") == 10
+            assert page.evaluate(f"JSON.parse(localStorage.getItem('{KEY}:a')).state.days['2026-11-02'].wfhHours") == 8
 
-            # Existing guest local data is uploaded on login/open, never replaced by cloud.
+            # Guest days are merged with cloud-only dates rather than replacing the ledger.
             fresh = browser.new_context(service_workers="block")
             fresh.route("**/fixture-cloud/*", cloud)
-            local = {**deepcopy(EMPTY), "version": 2, "days": {DAY["date"]: {**DAY, "wfhHours": 10, "note": "local wins"}}}
+            local = {**deepcopy(EMPTY), "version": 2, "settings": deepcopy(remote['a']['settings']), "days": {"2026-11-19": {**DAY, "date": "2026-11-19", "wfhHours": 10, "note": "guest addition"}}}
             fresh.add_init_script(f"localStorage.setItem('fixture-user','a'); if (!localStorage.getItem('{KEY}:a')) localStorage.setItem('{KEY}', {json.dumps(json.dumps(local))});")
             start = fresh.new_page()
             start.goto(URL)
             start.wait_for_load_state("networkidle")
             expect(start.locator("#pending")).to_have_text("false")
-            assert remote["a"]["days"][DAY["date"]]["note"] == "local wins"
+            assert remote["a"]["days"]["2026-11-19"]["note"] == "guest addition"
+            assert remote["a"]["days"][DAY["date"]]["wfhHours"] == 8
             fresh.close()
 
             # Storage notices belong only to account settings; sync never replaces drafts.

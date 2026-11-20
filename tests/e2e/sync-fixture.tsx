@@ -10,11 +10,14 @@ function Fixture() {
   return <>
     <output id="loading">{String(tracker.loading)}</output>
     <output id="user">{tracker.user?.uid ?? "guest"}</output>
+    <output id="owner">{tracker.account?.uid ?? "guest"}</output>
     <output id="state">{JSON.stringify(tracker.state)}</output>
     <output id="pending">{String(tracker.pending)}</output>
     <output id="syncing">{String(tracker.syncing)}</output>
     <output id="error">{tracker.error || tracker.syncError}</output>
     <button onClick={() => void tracker.save((state) => setWfhHours(state, "2026-11-02", 10, Date.now()))}>Lưu 10 giờ</button>
+    <button onClick={() => void tracker.save((state) => setWfhHours(state, "2026-11-02", 8, Date.now()))}>Lưu 8 giờ</button>
+    <button onClick={() => void tracker.logout()}>Đăng xuất</button>
     <button onClick={tracker.reload}>Tải lại</button>
     <button onClick={() => {
       localStorage.setItem("fixture-user", "b");

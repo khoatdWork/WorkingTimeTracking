@@ -4,6 +4,8 @@ Theo cấu trúc và ngôn ngữ thiết kế QuanLyTaiSan: mobile 320–430px, 
 
 Tokens: nền #F4F7FB, surface #FFFFFF, chữ #152B46, phụ #53657B, primary #2257C7, border #D8E1EC. Success #087F6D, warning #965100, destructive #B42318. Body 14–16px, số giờ tabular, CTA >=44px. Radius controls 10px, vùng clock 24px, danh sách không shadow từng hàng.
 
+P12 an toàn dữ liệu20/11: giữ palette/Be Vietnam Pro/một cột/shadcn. Cảnh báo cần hành động (mất phiên, sổ guest, first pull, lỗi/xung đột đồng bộ) xuất hiện trước nội dung với nút mở Tài khoản; ngoại lệ có chủ đích với P9 sau sự cố nhầm sổ. Trạng thái thường lệ vẫn trong Tài khoản. Role alert cho lỗi, status cho guest/first pull; wrap320px. Tài khoản có xuất hai bản/chọn bản qua AlertDialog; lựa chọn hết hiệu lực nếu owner/version/remote đổi. Bản sao lưu thêm nhóm Bản phục hồi tự động: tối đa10bản thiết bị và đọc10bản cloud, mỗi hàng tải JSON để đối chiếu trước khi chủ động nhập. Review: tái sử dụng nút/notice/dialog, không thêm route/dependency/màu/kiểu thẻ mới.
+
 Điểm nhấn là vòng tiến độ theo phút quanh đồng hồ hôm nay, vừa chỉ số giờ vừa cho biết thời điểm đủ giờ. Các tổng tuần/tháng là hai hàng sổ đối chiếu và một lịch tuần, không chia mọi số thành thẻ bằng nhau. Căn trái, đồng hồ căn giữa, số trong ledger căn phải. Màu luôn đi cùng nhãn chữ.
 
 ```

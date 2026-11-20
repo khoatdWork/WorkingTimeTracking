@@ -107,7 +107,7 @@ def offline_suite(browser, engine, url=BASE_URL, release=None):
     page.get_by_role("button", name="Quay lại Cài đặt", exact=True).click()
     page.get_by_role("button", name="Tài khoản & đồng bộ", exact=True).click()
     expect(page.get_by_role("status").filter(has_text="Đang mất mạng")).to_have_count(0)
-    expect(page.locator(".connection-notice")).to_have_count(0)
+    expect(page.locator(".connection-notice").filter(has_text="Đang mất mạng")).to_have_count(0)
     page.reload()
     expect(page.get_by_role("button", name="Tiếp tục làm việc", exact=True)).to_be_visible()
     assert page.evaluate("JSON.parse(localStorage.getItem('du-gio.tracker.v1'))") == ledger

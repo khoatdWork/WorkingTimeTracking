@@ -1,5 +1,15 @@
 # Kế hoạch và nghiệm thu
 
+## P12 — Chặn nhầm sổ và bảo toàn lịch sử dữ liệu
+
+Theo yêu cầu20/11 sau P11, người dùng xác nhận nhập JSON đã đúng và yêu cầu sửa lâu dài. Source đã giữ uid khi mất Auth, persistent login, merge có baseline/dừng conflict/missing/regression, checkpoint local, immutable cloud history+rules chặn client cũ, export/resolve/history UI, guard owner/version khi nhập/xóa.65unit/4Rules+SDK emulator, lint/typecheck/build và full Playwright Chromium/WebKit PASS trong phạm vi local. Chưa publish app/Rules; hosted Firebase P12/physical iPhone NOT RUN. Báo cáo docs/phases/P12, không coi P11 Console read-only hoặc user-confirmed JSON restore là P12 live verification.
+
+## P11 — Điều tra dữ liệu tháng 11 không xuất hiện
+
+Cập nhật20/11: Console thật read-only PASS sau khi người dùng đăng nhập; cloud vẫn có dữ liệu đã nhập. Đã bảo toàn hai bản cloud/guest và tạo candidate hợp nhất không xung đột, giữ riêng ngoài Git; core validation/assert và Playwright import/reload Chromium+WebKit PASS. Candidate có thêm trong Downloads. iPhone import và hosted server-confirmed sync vẫn NOT RUN; không sửa/deploy source.
+
+20/11/2026: hoàn tất điều tra source và tái hiện fixture, chưa sửa/deploy hoặc khôi phục dữ liệu thật. Ảnh iPhone xác nhận app đang ở sổ guest/chưa đăng nhập; cần bảo toàn bản guest/cloud rồi mở lại đúng tài khoản. Tái hiện thêm rủi ro whole-ledger overwrite và first-pull edit; báo cáo docs/phases/P11. Lint/typecheck/build44unit+4diagnostic/2Rules/Playwright Chromium+WebKit sync và repro PASS. Hosted Firebase document/backup/PITR/iPhone recovery NOT RUN; CLI chưa xác thực.
+
 ## P0 — Foundation
 Next/static export, strict TS, shadcn CLI, module/docs, runtime pin, GitHub Actions. Điều kiện: install/lint/typecheck/build.
 

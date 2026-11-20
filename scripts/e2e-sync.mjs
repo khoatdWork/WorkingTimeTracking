@@ -16,20 +16,23 @@ const server = await createServer({
     name: "sync-cloud-fixture",
     enforce: "pre",
     resolveId(source, importer) {
-      if (source === "./cloud" && importer?.replaceAll("\\", "/").includes("/tracking/data/"))
+      if ((source === "./cloud" || source === "./data/cloud") && importer?.replaceAll("\\", "/").includes("/tracking/"))
         return fixture("sync-cloud.ts");
     },
   }],
 });
 try {
   await server.listen();
-  const child = spawn(process.env.PYTHON || "python", ["tests/e2e/sync.py"], {
-    stdio: "inherit", env: { ...process.env, PYTHONIOENCODING: "utf-8" },
-  });
-  process.exitCode = await new Promise((done, fail) => {
-    child.on("exit", (code) => done(code ?? 1));
-    child.on("error", fail);
-  });
+  for (const script of ["tests/e2e/sync.py", "tests/e2e/data-safety.py"]) {
+    const child = spawn(process.env.PYTHON || "python", [script], {
+      stdio: "inherit", env: { ...process.env, PYTHONIOENCODING: "utf-8" },
+    });
+    process.exitCode = await new Promise((done, fail) => {
+      child.on("exit", (code) => done(code ?? 1));
+      child.on("error", fail);
+    });
+    if (process.exitCode) break;
+  }
 } finally {
   await server.close();
 }

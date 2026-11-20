@@ -59,7 +59,7 @@ def main():
                     button(page, name).click()
                     expect(button(page, "Quay lại Cài đặt")).to_be_visible()
                     if name == "Tài khoản & đồng bộ":
-                        expect(page.get_by_text("Đang lưu trên trình duyệt này.", exact=False)).to_be_visible()
+                        expect(page.get_by_text("Chưa đăng nhập Google. Đang dùng sổ riêng trên thiết bị này.", exact=True)).to_be_visible()
                     audit(page, engine, str(index), width)
                     back(page)
             button(page, "Nghỉ phép").click()

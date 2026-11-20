@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { initializeAuth, indexedDBLocalPersistence, browserLocalPersistence, browserPopupRedirectResolver, type Auth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 const config = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,11 +15,16 @@ export const firebaseConfigured = !!(
   config.projectId &&
   config.appId
 );
+let auth: Auth | undefined;
 export function firebaseClients() {
   if (!firebaseConfigured)
     throw new Error(
       "Chưa kết nối Firebase. Bạn có thể dùng trên thiết bị trong lúc chờ cấu hình.",
     );
   const app = getApps()[0] ?? initializeApp(config);
-  return { auth: getAuth(app), db: getFirestore(app) };
+  auth ??= initializeAuth(app, {
+    persistence: [indexedDBLocalPersistence, browserLocalPersistence],
+    popupRedirectResolver: browserPopupRedirectResolver,
+  });
+  return { auth, db: getFirestore(app) };
 }

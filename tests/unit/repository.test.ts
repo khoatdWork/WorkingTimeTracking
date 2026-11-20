@@ -5,6 +5,9 @@ import {
   writeLocal,
   exportCsv,
   LOCAL_KEY,
+  readAccount,
+  rememberAccount,
+  readRevisions,
 } from "@/modules/tracking/data/repository";
 afterEach(() => vi.unstubAllGlobals());
 describe("device storage", () => {
@@ -61,4 +64,53 @@ describe("device storage", () => {
     expect(csv).toContain("Giờ WFH đã ghi nhận");
     expect(csv).toContain('"2026-11-02","WFH","none","work","","","10",""');
   });
+});
+
+it("remembers a previous account, discovers a legacy ledger, and distinguishes deliberate sign-out", () => {
+  const items = new Map<string, string>();
+  vi.stubGlobal("localStorage", {
+    getItem: (key: string) => items.get(key) ?? null,
+    setItem: (key: string, value: string) => items.set(key, value),
+    get length() { return items.size; },
+    key: (index: number) => [...items.keys()][index] ?? null,
+  });
+  expect(readAccount()).toBeNull();
+  items.set(`${LOCAL_KEY}:a`, JSON.stringify({state:emptyState(),cloudVersion:1,dirty:false}));
+  expect(readAccount()?.uid).toBe("a");
+  rememberAccount({ uid: "a", label: "Account A" });
+  expect(readAccount()).toEqual({uid:"a",label:"Account A"});
+  rememberAccount(null);
+  expect(readAccount()).toBeNull();
+});
+
+it("preserves a recoverable prior ledger before deletion/import and fails closed if recovery cannot persist", () => {
+  const items = new Map<string, string>();
+  const setItem = (key: string, value: string) => items.set(key, value);
+  vi.stubGlobal("localStorage", { getItem: (key: string) => items.get(key) ?? null, setItem });
+  const state = setWfhHours(emptyState(), "2026-11-02", 8, Date.now());
+  writeLocal(state, 0);
+  writeLocal(emptyState(), 1);
+  expect(readRevisions(null)[0].state.days).toEqual(state.days);
+  const saved = readLocal();
+  vi.stubGlobal("localStorage", {
+    getItem: (key: string) => items.get(key) ?? null,
+    setItem: () => { throw new Error("quota"); },
+  });
+  expect(() => writeLocal(state, saved.version)).toThrow("Không lưu được");
+  expect(readLocal()).toEqual(saved);
+});
+it("bounds history growth while retaining the previous state needed to undo the last edit", () => {
+  const items = new Map<string, string>();
+  vi.stubGlobal("localStorage", {
+    getItem: (key: string) => items.get(key) ?? null,
+    setItem: (key: string, value: string) => items.set(key, value),
+  });
+  let state = emptyState();
+  for (let i = 0; i < 15; i++) {
+    state = writeLocal({ ...state, settings: { ...state.settings, lunchMinutes: i } }, state.version);
+  }
+  const revisions = readRevisions(null);
+  expect(revisions.length).toBeLessThanOrEqual(10);
+  expect(revisions[0].state.settings.lunchMinutes).toBe(13);
+  expect(readLocal().settings.lunchMinutes).toBe(14);
 });

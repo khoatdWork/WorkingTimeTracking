@@ -1,5 +1,5 @@
 import type { TrackerState } from "../../src/modules/tracking/core/domain";
-export async function readCloud(uid: string): Promise<TrackerState> {
+export async function readCloud(uid: string): Promise<TrackerState | null> {
   if (!navigator.onLine) throw new Error("offline");
   const response = await fetch(`/fixture-cloud/${uid}`);
   if (!response.ok) throw new Error("Firebase unavailable");
@@ -17,3 +17,4 @@ export function watchCloud(_uid: string, changed: () => void) {
   window.addEventListener("fixture-remote", changed);
   return () => window.removeEventListener("fixture-remote", changed);
 }
+export async function readCloudHistory(): Promise<TrackerState[]> { return []; }

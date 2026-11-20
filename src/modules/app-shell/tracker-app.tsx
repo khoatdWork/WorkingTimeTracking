@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
+import { firebaseConfigured } from "@/lib/firebase/client";
 import {
   Clock3,
   CalendarDays,
@@ -28,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useTracker } from "@/modules/tracking/data/use-tracker";
 import { download, exportCsv } from "@/modules/tracking/data/repository";
+import { BackupHistory } from "@/modules/tracking/backup-history";
 import { DayEditor } from "@/modules/tracking/day-editor";
 import { AccountPanel } from "@/modules/auth/account-panel";
 import { usePwa } from "@/modules/pwa/use-pwa";
@@ -49,7 +51,7 @@ type Screen = "today" | "history" | "reports" | "settings";
 type Destination = { screen: Screen; section: SettingsSection | null } | { date: string };
 export function TrackerApp() {
   const pwa = usePwa();
-  const { state, user, loading, busy, error, syncError, syncing, pending, save, retrySync, reload } = useTracker();
+  const { state, user, account, loading, busy, error, syncError, syncing, pending, conflict, cloudVersion, save, logout, resolveConflict, retrySync, reload } = useTracker();
   const [now, setNow] = useState<number | null>(null),
     [screen, setScreen] = useState<Screen>("today");
   const [editor, setEditor] = useState<string | null>(null),
@@ -57,11 +59,15 @@ export function TrackerApp() {
   const [todayExpanded, setTodayExpanded] = useState<TodaySection[]>([]);
   const [importState, setImportState] = useState<TrackerState | null>(null),
     [clear, setClear] = useState(false);
+  const [replacementBaseline, setReplacementBaseline] = useState<{ uid: string | null; version: number } | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const settingsHeading = useRef<HTMLHeadingElement>(null);
   const [settingsSection, setSettingsSection] = useState<SettingsSection | null>(null);
   const [settingsDirty, setSettingsDirty] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState<Destination | null>(null);
+  const [conflictChoice, setConflictChoice] = useState<{ side: "local" | "cloud"; uid: string; version: number; remote: TrackerState } | null>(null);
+  const [resolving, setResolving] = useState(false);
+  const [resolutionError, setResolutionError] = useState("");
   useEffect(() => { settingsHeading.current?.focus(); }, [screen, settingsSection, editor]);
   useEffect(() => {
     const tick = () => setNow(Date.now());
@@ -111,6 +117,8 @@ export function TrackerApp() {
     requestMove({ date });
   }
   const ready = state && now;
+  const chosen = conflictChoice && conflict && conflictChoice.uid === user?.uid &&
+    conflictChoice.version === state?.version && conflictChoice.remote === conflict.remote ? conflictChoice.side : null;
   return (
     <div className="app-frame">
       <a className="skip-link" href="#main-content">
@@ -130,6 +138,23 @@ export function TrackerApp() {
           </span>
         </a>
       </header>
+      {firebaseConfigured && !user && !loading && <div className="connection-notice" role={account ? "alert" : "status"}>
+        <span>{account ? "Cần đăng nhập lại Google. Sổ tài khoản vẫn được giữ trên thiết bị, chưa chuyển sang sổ khách."
+          : "Chưa đăng nhập Google. Đang dùng sổ riêng trên thiết bị."}</span>
+        <Button variant="outline" onClick={() => openSettings("account")}>Mở tài khoản</Button>
+      </div>}
+      {conflict && <div className="connection-notice" role="alert">
+        <span>Đồng bộ đã dừng để bảo vệ hai bản dữ liệu. Cần đối chiếu trước khi tiếp tục.</span>
+        <Button variant="outline" onClick={() => openSettings("account")}>Đối chiếu dữ liệu</Button>
+      </div>}
+      {user && syncError && !conflict && <div className="connection-notice" role="alert">
+        <span>Chưa đồng bộ được tài khoản. Các thay đổi vẫn ở trên thiết bị; cần kiểm tra đồng bộ.</span>
+        <Button variant="outline" onClick={() => openSettings("account")}>Xem đồng bộ</Button>
+      </div>}
+      {user && cloudVersion === null && !syncError && !conflict && !loading && <div className="connection-notice" role="status">
+        <span>Chưa đối chiếu được sổ tài khoản. Dữ liệu Firebase chưa được xác nhận; bản trên thiết bị vẫn được giữ.</span>
+        <Button variant="outline" onClick={() => openSettings("account")}>Xem đồng bộ</Button>
+      </div>}
       {pwa.waiting && !editor && !(screen === "settings" && settingsSection === "app") && (
         <div className="connection-notice update-notice" role="status">
           <span>Có phiên bản mới của Đủ giờ.</span>
@@ -163,7 +188,7 @@ export function TrackerApp() {
                 <RefreshCw />
                 Tải lại
               </Button>
-              {user && <AccountPanel user={user} busy={busy} />}
+              <AccountPanel user={user} accountLabel={account?.label} logout={logout} busy={busy} />
             </div>
           ) : (
             <>
@@ -233,9 +258,10 @@ export function TrackerApp() {
                       )
                     }
                   />}
-                  {settingsSection === "account" && <AccountPanel user={user} busy={busy} status={<>
+                  {settingsSection === "account" && <AccountPanel user={user} accountLabel={account?.label} logout={logout} busy={busy} status={<>
                     {!pwa.online && <div className="connection-notice" role="status">
-                      Đang mất mạng. Dữ liệu vẫn lưu trên thiết bị và tự đồng bộ khi có mạng, đã đăng nhập Google.
+                      {user ? "Đang mất mạng. Thay đổi được giữ trên thiết bị và sẽ đồng bộ sau khi có mạng."
+                        : "Đang mất mạng và chưa đăng nhập Google. Dữ liệu hiện chỉ lưu trên thiết bị."}
                     </div>}
                     {user && <div className="connection-notice" role="status">
                       {syncing ? "Đã giữ bản local · Đang đồng bộ Firebase…"
@@ -244,16 +270,24 @@ export function TrackerApp() {
                         : "Đã lưu local · Đã đồng bộ Firebase"}
                       {syncError && <Button variant="ghost" onClick={retrySync} disabled={busy}>Thử đồng bộ lại</Button>}
                     </div>}
+                    {conflict && <div className="form-stack">
+                      <Button variant="outline" onClick={() => download(`du-gio-thiet-bi-${today}.json`, JSON.stringify(state, null, 2))}>Xuất bản thiết bị</Button>
+                      {conflict.remote && <>
+                        <Button variant="outline" onClick={() => download(`du-gio-firebase-${today}.json`, JSON.stringify(conflict.remote, null, 2))}>Xuất bản Firebase</Button>
+                        <Button variant="outline" disabled={busy || resolving} onClick={() => { if (user && conflict.remote) { setResolutionError(""); setConflictChoice({ side: "cloud", uid: user.uid, version: state.version, remote: conflict.remote }); } }}>Chọn bản Firebase</Button>
+                        <Button variant="outline" disabled={busy || resolving} onClick={() => { if (user && conflict.remote) { setResolutionError(""); setConflictChoice({ side: "local", uid: user.uid, version: state.version, remote: conflict.remote }); } }}>Chọn bản thiết bị</Button>
+                      </>}
+                    </div>}
                   </>} />}
                   {settingsSection === "app" && <PwaPanel pwa={pwa} busy={busy} />}
-                  {settingsSection === "backup" && <section className="panel form-stack">
+                  {settingsSection === "backup" && <><section className="panel form-stack">
                     <div className="section-heading">
                       <h2>Bản sao lưu</h2>
                       <Download size={19} />
                     </div>
                     <p className="help">
                       Dữ liệu luôn có bản local trên thiết bị. Khi mở app, đăng nhập hoặc có mạng trở lại,
-                      app tự đồng bộ với Firebase: tải về khi chưa có bản local, tải lên các thay đổi local chưa đồng bộ. {" "}
+                      app tự đồng bộ với Firebase: tải về khi chưa có bản local, ghép các thay đổi không xung đột và giữ cả hai bản nếu cùng ngày bị sửa khác nhau. {" "}
                       JSON giữ nguyên ca làm, trạng thái WFH và cài đặt. CSV
                       dùng để đối chiếu trên bảng tính. Giờ vào/về trong CSV là UTC; WFH cố định có cột số giờ riêng.
                     </p>
@@ -300,6 +334,7 @@ export function TrackerApp() {
                       ref={fileInput}
                       onChange={async (e) => {
                         const file = e.target.files?.[0];
+                        const baseline = { uid: user?.uid ?? account?.uid ?? null, version: state.version };
                         e.target.value = "";
                         if (!file) return;
                         try {
@@ -308,6 +343,7 @@ export function TrackerApp() {
                           setImportState(
                             validateState(JSON.parse(await file.text())),
                           );
+                          setReplacementBaseline(baseline);
                         } catch (e) {
                           toast.error(
                             e instanceof Error
@@ -324,11 +360,11 @@ export function TrackerApp() {
                     <Button
                       variant="destructive"
                       disabled={busy}
-                      onClick={() => setClear(true)}
+                      onClick={() => { setReplacementBaseline({ uid: user?.uid ?? account?.uid ?? null, version: state.version }); setClear(true); }}
                     >
                       Xóa toàn bộ sổ hiện tại
                     </Button>
-                  </section>}
+                  </section><BackupHistory key={`${user?.uid ?? account?.uid ?? "guest"}:${state.version}`} uid={user?.uid ?? account?.uid ?? null} /></>}
                 </>
               )}
             </>
@@ -359,6 +395,24 @@ export function TrackerApp() {
         </nav>
       )}
       <Toaster position="top-center" richColors />
+      <AlertDialog open={!!chosen} onOpenChange={(open) => { if (!open && !resolving) setConflictChoice(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Chọn bản {chosen === "cloud" ? "Firebase" : "thiết bị"} làm sổ hiện tại?</AlertDialogTitle>
+            <AlertDialogDescription>Thao tác này thay toàn bộ sổ bằng bản đã chọn. Hãy xuất cả hai bản trước nếu cần kết hợp các ngày khác nhau. Bản thiết bị trước khi thay được giữ trong Bản sao lưu; mọi lần thay sổ Firebase đều giữ bản lịch sử.</AlertDialogDescription>
+          </AlertDialogHeader>
+          {resolutionError && <p role="alert" className="form-error">{resolutionError}</p>}
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={resolving}>Tiếp tục đối chiếu</AlertDialogCancel>
+            <Button disabled={busy || resolving} onClick={async () => {
+              setResolving(true); setResolutionError("");
+              try { if (!chosen) throw new Error("Hai bản vừa thay đổi. Hãy chọn lại."); await resolveConflict(chosen === "cloud"); setConflictChoice(null); }
+              catch (e) { setResolutionError(e instanceof Error ? e.message : "Chưa chọn được bản dữ liệu."); }
+              finally { setResolving(false); }
+            }}>{resolving ? "Đang kiểm tra hai bản…" : "Dùng bản đã chọn"}</Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog open={!!pendingNavigation} onOpenChange={(open) => { if (!open) setPendingNavigation(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -374,7 +428,7 @@ export function TrackerApp() {
       <AlertDialog
         open={!!importState || clear}
         onOpenChange={(open) => {
-          if (!open) {
+          if (!open && !busy) {
             setImportState(null);
             setClear(false);
           }
@@ -392,23 +446,27 @@ export function TrackerApp() {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Hủy</AlertDialogCancel>
-            <AlertDialogAction
+            <AlertDialogCancel disabled={busy}>Hủy</AlertDialogCancel>
+            <Button
               disabled={busy}
               onClick={async () => {
                 const result = clear ? emptyState() : importState;
-                if (result)
-                  await run(
-                    (current) => ({ ...result, version: current.version }),
+                if (result) {
+                  const ok = await run(
+                    (current) => {
+                      if (!replacementBaseline || replacementBaseline.uid !== (user?.uid ?? account?.uid ?? null) || current.version !== replacementBaseline.version)
+                        throw new Error("Tài khoản hoặc dữ liệu đã đổi từ lúc mở xác nhận. Hãy hủy và chọn lại bản cần nhập/xóa; chưa thay sổ.");
+                      return { ...result, version: current.version };
+                    },
                     clear ? "Đã xóa sổ hiện tại" : "Đã nhập bản sao lưu",
                   );
-                setImportState(null);
-                setClear(false);
+                  if (ok) { setImportState(null); setClear(false); setReplacementBaseline(null); }
+                }
               }}
             >
               {" "}
               {clear ? "Xóa toàn bộ" : "Thay sổ hiện tại"}
-            </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
